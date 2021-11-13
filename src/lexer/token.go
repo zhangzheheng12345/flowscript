@@ -20,6 +20,7 @@ const (
     BEGIN
     END
     STOP
+    ECHO
     NUM
     SYMBOL
     TMP
