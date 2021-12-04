@@ -39,6 +39,8 @@ func Lex(str []string) []Token {
                 result = append(result,Token{MULTI,""})
             } else if word == "div" {
                 result = append(result,Token{DIV,""})
+            } else if word == "mod" {
+                result = append(result,Token{MOD,""})
             } else if word == "equal" {
                 result = append(result,Token{EQUAL,""})
             } else if word == "bigr" {
@@ -53,12 +55,8 @@ func Lex(str []string) []Token {
                 result = append(result,Token{OR,""})
             } else if word == "var" {
                 result = append(result,Token{VAR,""})
-            } else if word == "set" {
-                result = append(result,Token{SET,""})
             } else if word == "if" {
                 result = append(result,Token{IF,""})
-            } else if word == "while" {
-                result = append(result,Token{WHILE,""})
             } else if word == "def" {
                 result = append(result,Token{DEF,""})
             } else if word == "begin" {

@@ -5,6 +5,7 @@ const (
     SUB
     MULTI
     DIV
+    MOD
     EQUAL
     BIGR
     SMLR
@@ -12,9 +13,7 @@ const (
     AND
     OR
     VAR
-    SET
     IF
-    WHILE
     SEND
     DEF
     BEGIN

@@ -2,4 +2,286 @@ package parser
 
 import (
     "fmt"
+    "strings"
+    "strconv"
+    "lexer"
 )
+
+func ParseValue(token lexer.Token) Value {
+    if token.Type() == NUM {
+        return Int_{ strconv.Atoi(token.Value())}
+    } else if token.Type() == SYMBOL {
+        return Symbol_{ token.Value() }
+    } else if token.Type() == TMP {
+        return Tmp_{}
+    } else {
+        fmt.Println("Error: expecting a Value but got other kinds. ")
+    }
+}
+
+func Parse(tokens []lexer.Token) ([]Ast, int) {
+    codes := make([]Ast)
+    sendList := make([]Ast)
+    index := 0
+    checkSend := func() {
+        if len(sendList) > 0 {
+            senList = append(sendList,codes[len(codes) - 1])
+            codes = codes[:len(codes) - 1]
+            codes = append(codes, Send_{sendList})
+            sendList = make([]Ast)
+        }
+    }
+    for ; index < len(tokens); index++ {
+        if tokens[index].Type() == lexer.ADD {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Add_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to add. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.SUB {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Sub_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to substrict. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.MULTI {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Multi_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to multiply. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.DIV {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Div_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to divide. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.BIGR {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Bigr_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to compare. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.SMLR {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Smlr_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to compare. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.EQUAL {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Equal_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to compare. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.AND {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, And_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to and. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.OR {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Or_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to or. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.NOT {
+            if index + 1 < len(tokens) {
+                index++
+                op := ParseValue(tokens[index])
+                codes = append(codes, Not_{op})
+            } else {
+                fmt.Println("Error: lose argumanet to not. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.VAR {
+            /*
+            var name => initialize with 0
+            var name v => initialize with v
+            */
+            if index + 1 < len(tokens) {
+                index++
+                var name string
+                if tokens[index].Type() == lexer.SYMBOL {
+                    name = tokens[index].Value()
+                } else {
+                    fmt.Println("Error: unallowed variable name. Token: ", index)
+                    name = ""
+                }
+                var op Value
+                if index + 1 < len(tokens) {
+                    switch tokens[index].Type() {
+                        case lexer.NUM, lexer.SYMBOL, lexer.TMP:
+                            /* initialize with given value */
+                            op = ParseValue(tokens[index])
+                        default:
+                            /* initialize with 0 */
+                            op = nil
+                    }
+                } else {
+                    /* initialize with 0 */
+                    op = nil
+                }
+                codes = append(codes,Var_{name, op})
+            } else {
+                fmt.Println("Error: lost the variable's name while trying to define one")
+            }
+        } else if tokens[index].Type() == lexer.IF {
+            /*
+            if codition begin ... end
+            */
+            if index + 3 < len(tokens) {
+                index++
+                condition := ParseValue(tokens[index])
+                index++
+                if tokens[index].Type() == lexer.BEGIN {
+                    index++
+                    codesInBlock, i := Parse(tokens[index:])
+                    index += i
+                    if index < len(tokens) && tokens[index].Type() == lexer.END {
+                        codes = append(codes,If_{codition, codesInBlock})
+                    } else {
+                        fmt.Println("Error: lost ' end ' at the end of the block. Token ", index)
+                    }
+                } else {
+                    fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+                }
+            } else {
+                fmt.Println("Error: not complete if block. Token: ", index)
+            }
+        } else of tokens[index].Type() == lexer.SEND {
+            /*
+            > ... > ... # wrong
+            ... > ... > ... # right
+            */
+            if index == 0 || tokens[index - 1].Type() == lexer.STOP {
+                fmt.Println("Error: use ' > ' at the start of a sentence. There's nothing to send. Token: ",index)
+            } else {
+                sendList := append(sendList, codes[len(codes) - 1]
+                codes = codes[:len(codes) - 1]
+            }
+        } else if tokens[index].Type() == lexer.DEF {
+            if index + 3 < len(tokens) {
+                index++
+                var name string
+                if tokens[index].Type() == lexer.SYMBOL {
+                    name = tokens[index].Value()
+                } else {
+                    fmt.Println("Error: unallowed function name. Token: ", index)
+                    name = ""
+                }
+                index++
+                argList := make([]string)
+                for tokens[index].Type() == lexer.SYMBOL && index < len(tokens) {
+                    argList = append(argList, tokens[index].Value())
+                }
+                if tokens[index].Type() == lexer.BEGIN {
+                    index++
+                    codesInFunc, i := Parse(tokens[index:])
+                    index += i
+                    if index < len(tokens) && tokens[index].Type() == lexer.END {
+                    codes = append(codes,Def_{name, argList,codesInFunc})
+                    } else {
+                        fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+                    }
+                } else {
+                    fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+                }
+            } else {
+                fmt.Println("Error: not complete def block. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.BEGIN {
+            if index + 1 < len(tokens) {
+                index++
+                codesInBlock, i := Parse(tokens[index:])
+                index += i
+                if index < len(tokens) && tokens[index].Type() == lexer.END {
+                    codes = append(codes, Block_{codesInBlock})
+                } else {
+                    fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+                }
+            } else {
+                fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.ECHO {
+            if index + 1 < len(tokens) {
+                codes = append(codes, Echo_{ParseValue(token[index])})
+            } else {
+                fmt.Println("Error: lose argument to echo. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.NUM {
+            fmt.Println("Error: unexpected constant number. Token: ", index)
+        } else if tokens[index].Type() == lexer.TMP {
+            fmt.Println("Error: unexpected ' - ' (tmp mark) . Token: ", index)
+        } else if tokens[index].Type() == lexer.SYMBOL {
+            name := tokens[index].Value()
+            args := make([]Value)
+            for ; index < len(tokens) && (
+                tokens[index].Type() == lexer.NUM ||
+                tokens[index].Type() == lexer.SYMBOL ||
+                tokens[index].Type() == lexer.TMP); index++ {
+                args = append(args,ParseValue(tokens[index]))
+            }
+            index--
+            codes = append(codes, Call_{name, args})
+        } else if tokens[index].Type() == lexer.STOP {
+            checkSend()
+        } else if tokens[index].Type() == lexer.END {
+            checkSend()
+            return codes,index
+        }
+    }
+    checkSend()
+    return codes,index
+}
+
+/*
+    RunCode(string) receives a text script ( string ) and run it directly. 
+    The runtime status would not be saved as the script runs in a Block_. 
+*/
+func RunCode(str string) {
+    tmpQueue.Clear()
+    tokens := lexer.Lex(strings.Split(str,"")
+    codes, index := Parse(tokens)
+    if index < len(tokens) {
+        fmt.Println("Error: unexpected ' end '. Token: ", index)
+    } else {
+        Block_{codes}.run()
+    }
+}
