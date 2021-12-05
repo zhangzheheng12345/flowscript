@@ -4,32 +4,55 @@ import (
     "fmt"
 )
 
-/* function object */
+/*
+Structure Func_ contains all the information for a function to run.
+Func_.args contains the arguments' name in order to add them in a new variable scope after calling the function.
+Func_.codes contains the codes in the function to run later.
+*/
 type Func_ struct {
     args []string
     codes []Ast
 }
 
-/* function running */
+/*
+Func_.run([]int) run the codes in the function.
+*/
 func (func_ Func_) run(args []int) int {
+    /* provide a independence scope for the function*/
     Scope = MakeScope(Scope)
     FuncScope = MakeFuncScope(FuncScope)
+    /* add the arguments to the local scope*/
     for key, arg := range args {
         Scope.Add(func_.args[key],arg)
     }
+    /* run the codes. 
+    the last expression will give the return value. 
+    the default return value is 0. 
+    */
     result := 0
     for _, code := range func_.codes {
         result = code.run()
     }
+    /* delete the local variables and change the scope before leave the function*/
     Scope = Scope.Back()
     FuncScope = FuncScope.Back()
     return result
 }
 
-/* scopes */
+/*
+Global variable, Scope, contains all the variable at present.
+If someone want to add global variable by Golang in a embeding way,
+he should Add(string,int) variable to Scope directly,
+because all the codes run with RunCode(string) will be inside a independence Block_,
+so you can't add global variable / function by native FlowScript.
+*/
 var Scope *Scope_ = &Scope_{nil, make(map[string]int)}
 var FuncScope *FuncScope_ = &FuncScope_{nil, make(map[string]int)}
 
+/*
+exp1 > exp2 > exp3
+The values of the send sequence expressions will be pushed to this queue.
+*/
 var tmpQueue Queue_
 
 /* scope system ( only for variables ) */

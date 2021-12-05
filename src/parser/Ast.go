@@ -113,11 +113,14 @@ type Var_ struct {
 
 func (var_ Var_) run() int {
     if var_.op != nil {
+        /* give a start value */
         Scope.Add(var_.name,var_.op.get())
     } else {
         if tmpQueue.Size() == 0 {
+            /* default 0 */
             Scope.Add(var_.name,0)
         } else {
+            /* autoly pick value from send queue */
             Scope.Add(var_.name,tmpQueue.Get())
             tmoQueue.Pop()
         }
@@ -136,6 +139,7 @@ func (def_ Def_) run() int {
     return 0
 }
 
+/* a send sequence */
 type Send_ struct {
     codes []Ast
 }
@@ -149,6 +153,11 @@ func (send_ Send_) run() int {
     return result
 }
 
+/*
+begin
+    ...
+end
+*/
 type Block_ struct {
     codes []Ast
 }
@@ -165,6 +174,11 @@ func (block_ Block_) run() int {
     return result
 }
 
+/*
+if condition begin
+    ...
+end
+*/
 type If_ struct {
     condition Value
     codes []Ast
@@ -185,6 +199,7 @@ func (if_ If_) run() int {
     return 0
 }
 
+/* call a user defined function*/
 type Call_ struct {
     name string
     args []Value
@@ -198,6 +213,7 @@ func (call_ Call_) run() int {
     return FuncScope.Find(call_.name).run(argsValue)
 }
 
+/* output to stdout */
 type Echo_ struct {
     op Value
 }

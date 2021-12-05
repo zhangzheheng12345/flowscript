@@ -5,14 +5,17 @@ import (
     "strings"
 )
 
+/* Check if a character is a number. */
 func IsSingleNum(str string) bool {
     return len(str) == 1 && []byte(str)[0] >= 48 && []byte(str)[0] <= 57
 }
 
+/* Check if a character is a alpha */
 func IsSingleAlpha(str string) bool {
     return len(str) == 1 && []byte(str)[0] >= 65 && []byte(str)[0] <= 122
 }
 
+/* Core lexer code */
 func Lex(str []string) []Token {
     result := make([]Token)
     for index := 0;index < len(str);index++ {
@@ -83,6 +86,12 @@ func Lex(str []string) []Token {
                  (str[index] == "\n" &&
                   result[len[result - 1].type() != SEND &&
                   result[len[result - 1].type() != BEGIN) {
+            /*
+            begin \n ... => not end
+            > \n ... => not end
+            ; => end, obviously
+            or will autoly end
+            */
             result = append(result,Token{STOP,""})
         } else {
             fmt.Println("Warn: Unexpected token of: ",index + 1)

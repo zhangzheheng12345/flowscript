@@ -7,6 +7,10 @@ import (
     "lexer"
 )
 
+/*
+ParseValue(lexer.Token) receive a single token (lexer.Token) ,
+and translate it into a value which is able to get directly (Value_).
+*/
 func ParseValue(token lexer.Token) Value {
     if token.Type() == NUM {
         return Int_{ strconv.Atoi(token.Value())}
@@ -19,6 +23,12 @@ func ParseValue(token lexer.Token) Value {
     }
 }
 
+/*
+Parse([]lexer.Token) receives a token sequence (lexer.Token) , 
+and translates it into AST sequence (Ast_).
+It returns the processed AST sequence and a int number.
+The int number describes where Parse() function stop parsing. (Slice index)
+*/
 func Parse(tokens []lexer.Token) ([]Ast, int) {
     codes := make([]Ast)
     sendList := make([]Ast)
@@ -71,6 +81,16 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
                 codes = append(codes, Div_{op1, op2})
             } else {
                 fmt.Println("Error: lose argumanet to divide. Token: ", index)
+            }
+        } else if tokens[index].Type() == lexer.MOD {
+            if index + 2 < len(tokens) {
+                index++
+                op1 := ParseValue(tokens[index])
+                index++
+                op2 := ParseValue(tokens[index])
+                codes = append(codes, Mod_{op1, op2})
+            } else {
+                fmt.Println("Error: lose argumanet to mod. Token: ", index)
             }
         } else if tokens[index].Type() == lexer.BIGR {
             if index + 2 < len(tokens) {
@@ -272,8 +292,8 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 }
 
 /*
-    RunCode(string) receives a text script ( string ) and run it directly. 
-    The runtime status would not be saved as the script runs in a Block_. 
+RunCode(string) receives a text script ( string ) and run it directly. 
+The runtime status would not be saved as the script runs in a Block_. 
 */
 func RunCode(str string) {
     tmpQueue.Clear()

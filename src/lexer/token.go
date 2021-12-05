@@ -1,5 +1,6 @@
 package lexer
 
+/* token kinds */
 const (
     ADD = iota
     SUB
@@ -25,6 +26,7 @@ const (
     TMP
 )
 
+/* token structure, including kind and value */
 type Token struct {
     kind byte
     value string
