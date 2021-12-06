@@ -126,6 +126,7 @@ func (funcScope_ FuncScope_) Back() *FuncScope_ {
 }
 
 /* Queue_ ( for tmpQueue ) */
+// TODO: Use a list to realize this
 type Queue_ struct {
     data []int
 }
