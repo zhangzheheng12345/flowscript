@@ -93,8 +93,22 @@ func Lex(str []string) []Token {
             or will autoly end
             */
             result = append(result,Token{STOP,""})
-        } else {
-            fmt.Println("Warn: Unexpected token of: ",index + 1)
+        } else if str[index] == "(" {
+            begin := index
+            count := 1
+            for ;index < len(str) && count != 0;index++ {
+                if str[index] == "(" {
+                    count++
+                } else {
+                    count--
+                }
+            }
+            result = append(result, Token{XEXP, strings.Join(str[begin:index],"")})
+            index--
+        } else if str[index] == ")" {
+            fmt.Println("Error: too much back parenthesis. Letter: ", index)
+        }else {
+            fmt.Println("Warn: unexpected token of: ",index + 1)
         }
     }
     return result

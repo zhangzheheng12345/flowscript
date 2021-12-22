@@ -2,6 +2,7 @@ package parser
 
 import (
     "fmt"
+    "xlexer"
 )
 
 type Ast interface {
@@ -145,11 +146,12 @@ type Send_ struct {
 }
 
 func (send_ Send_) run() int {
+    tmpQueue = MakeTmpQueue(&tmpQueue)
     for _, code := range send_.codes {
         tmpQueue.Add(code.run())
     }
     result := tmpQueue.Get()
-    tmpQueue.Clear()
+    tmpQueue = tmpQueue.Clear()
     return result
 }
 
@@ -221,4 +223,8 @@ type Echo_ struct {
 func (echo_ Echo_) run() int {
     fmt.Println(echo_.op.get())
     return 0
+}
+
+type Exp_ struct {
+    tokens []xlexer.Token
 }

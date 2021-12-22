@@ -2,6 +2,7 @@ package parser
 
 import (
     "fmt"
+    "xlexer"
 )
 
 type Value interface {
@@ -35,4 +36,13 @@ func (tmp_ Tmp_) get() int {
     result := tmpQueue.Get()
     tmpQueue.Pop()
     return result
+}
+
+type Exp_ struct {
+    tokens []xlexer.Token
+}
+
+func (exp_ Exp_) get() int {
+    /* in xparse */
+    return E_(T_(exp_.tokens))
 }

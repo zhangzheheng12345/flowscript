@@ -1,33 +1,17 @@
-package lexer
+package xlexer
 
-/* token kinds */
 const (
     ADD = iota
     SUB
     MULTI
     DIV
-    MOD
-    EQUAL
-    BIGR
-    SMLR
-    NOT
-    AND
-    OR
-    VAR
-    IF
-    SEND
-    DEF
-    BEGIN
-    END
-    XEXP
-    STOP
-    ECHO
+    FPAREN
+    BPAREN
     NUM
     SYMBOL
     TMP
 )
 
-/* token structure, including kind and value */
 type Token struct {
     kind byte
     value string

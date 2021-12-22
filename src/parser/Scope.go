@@ -53,7 +53,7 @@ var FuncScope *FuncScope_ = &FuncScope_{nil, make(map[string]int)}
 exp1 > exp2 > exp3
 The values of the send sequence expressions will be pushed to this queue.
 */
-var tmpQueue Queue_
+var tmpQueue *Queue_ = nil
 
 /* scope system ( only for variables ) */
 type Scope_ struct {
@@ -126,23 +126,38 @@ func (funcScope_ FuncScope_) Back() *FuncScope_ {
 }
 
 /* Queue_ ( for tmpQueue ) */
-// TODO: Use a list to realize this
+
+// Give a proper beginning size of a queue
+const maxBufferSize = 5
+
 type Queue_ struct {
+    father *Queue_
     data []int
+    dataLen int
 }
 
-func (queue_ Queue_) Add(value int) {
-    queue_.data = append(queue_.data,value)
+func MakeTmpQueue(father *Queue_) *Queue_ {
+    return &Queue{father, make([]int, maxBufferSize), 0}
+}
+
+func (queue_ *Queue_) Add(value int) {
+    queue_.dataLen++
+    if queue_.dataLen > maxBufferSize {
+        queue_.data = append(queue_.data,value)
+    } else {
+        queue_.data[queue_.dataLen - 1] = value
+    }
 }
 
 func (queue_ Queue) Get() int {
     return queue_.data[0]
 }
 
-func (queue_ Queue) Pop() {
+func (queue_ *Queue) Pop() {
     queue_.data = queue_.data[1:]
 }
 
-func (queue_ Queue_) Clear() {
-    queue_.data = make([]int)
+func (queue_ *Queue_) Clear() *Queue_ {
+    queue_.data = nil
+    return queue_.father
 }

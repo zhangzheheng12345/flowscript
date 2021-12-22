@@ -5,6 +5,7 @@ import (
     "strings"
     "strconv"
     "lexer"
+    "xlexer"
 )
 
 /*
@@ -12,12 +13,14 @@ ParseValue(lexer.Token) receive a single token (lexer.Token) ,
 and translate it into a value which is able to get directly (Value_).
 */
 func ParseValue(token lexer.Token) Value {
-    if token.Type() == NUM {
+    if token.Type() == lexer.NUM {
         return Int_{ strconv.Atoi(token.Value())}
-    } else if token.Type() == SYMBOL {
+    } else if token.Type() == lexer.SYMBOL {
         return Symbol_{ token.Value() }
-    } else if token.Type() == TMP {
+    } else if token.Type() == lexer.TMP {
         return Tmp_{}
+    } else if token.Type() == lexer.XEXP {
+        return Exp_{xlexer.Lex(strings.Split(token.Value(),""))}
     } else {
         fmt.Println("Error: expecting a Value but got other kinds. ")
     }
