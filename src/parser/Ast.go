@@ -5,6 +5,14 @@ import (
     "xlexer"
 )
 
+/* Tool function, for cannot convert bool to int directly */
+func booltoint(value bool) int {
+    if value {
+        return 1
+    }
+    return 0
+}
+
 type Ast interface {
     run() int
 }
@@ -60,7 +68,7 @@ type Bigr_ struct {
 }
 
 func (bigr_ Bigr_) run() int {
-    return int(bigr_.op1.get() > bigr_.op2.get())
+    return booltoint(bigr_.op1.get() > bigr_.op2.get())
 }
 
 type Smlr_ struct {
@@ -69,7 +77,7 @@ type Smlr_ struct {
 }
 
 func (smlr_ Smlr_) run() int {
-    return int(smlr_.op1.get() < smlr_.op2.get())
+    return booltoint(smlr_.op1.get() < smlr_.op2.get())
 }
 
 type Equal_ struct {
@@ -78,7 +86,7 @@ type Equal_ struct {
 }
 
 func (equal_ Equal_) run() int {
-    return int(equal_.op1.get() == equal_.op2.get())
+    return booltoint(equal_.op1.get() == equal_.op2.get())
 }
 
 type And_ struct {
@@ -87,7 +95,7 @@ type And_ struct {
 }
 
 func (and_ And_) run() int {
-    return int(bool(and_.op1.get()) && bool(and_.op2.get()))
+    return booltoint(bool(and_.op1.get()) && bool(and_.op2.get()))
 }
 
 type Or_ struct {
@@ -96,7 +104,7 @@ type Or_ struct {
 }
 
 func (or_ Or_) run() int {
-    return int(bool(or_.op1.get()) || bool(or_.op2.get()))
+    return booltoint(bool(or_.op1.get()) || bool(or_.op2.get()))
 }
 
 type Not_ struct {
@@ -104,7 +112,7 @@ type Not_ struct {
 }
 
 func (not_ Not_) run() int {
-    return int(!bool(not_.op1.get()))
+    return booltoint(!bool(not_.op1.get()))
 }
 
 type Var_ struct {
