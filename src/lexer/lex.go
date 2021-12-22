@@ -17,9 +17,9 @@ func IsSingleAlpha(str string) bool {
 
 /* Core lexer code */
 func Lex(str []string) []Token {
-    result := make([]Token)
+    result := make([]Token,0)
     for index := 0;index < len(str);index++ {
-        if str[index] == " " || stt[index] == "\t" {
+        if str[index] == " " || str[index] == "\t" {
             // Do nothing
         } else if str[index] == "#" {
             for ;index < len(str) && str[index] != "\n"; index++ {
@@ -32,7 +32,7 @@ func Lex(str []string) []Token {
                 (IsSingleAlpha(str[index]) ||
                  IsSingleNum(str[index]) ||
                  str[index] == "_"); index++ {}
-            word = strings.Join(str[begin:index],"")
+            word := strings.Join(str[begin:index],"")
             index--
             if word == "add" {
                 result = append(result,Token{ADD,""})
@@ -83,9 +83,9 @@ func Lex(str []string) []Token {
         } else if str[index] == "-" {
             result = append(result,Token{TMP,""})
         } else if str[index] == ";" ||
-                 (str[index] == "\n" &&
-                  result[len[result - 1].type() != SEND &&
-                  result[len[result - 1].type() != BEGIN) {
+                ( str[index] == "\n" && 
+                  result[len(result) - 1].Type() != SEND && 
+                  result[len(result) - 1].Type() != BEGIN ) {
             /*
             begin \n ... => not end
             > \n ... => not end

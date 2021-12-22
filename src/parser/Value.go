@@ -1,9 +1,5 @@
 package parser
 
-import (
-    "fmt"
-)
-
 type Value interface {
     get() int
 }

@@ -19,9 +19,9 @@ func TestRunCode(t *testing.T) {
     const t2 =
         "def func a b begin\n" +
         "\tadd a b > echo -\n" +
-        "\smlr a 100 > if - begin\n" +
+        "\tsmlr a 100 > if - begin\n" +
         "\t\tadd a b > func b -\n" +
-        "\tend\n"
+        "\tend\n" +
         "end\n" +
         "func 1 2"
     fmt.Println("t2----\n",t2)
