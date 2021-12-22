@@ -1,6 +1,6 @@
 module parser
 
-go 1.17
+go 1.16
 
 require lexer v0.0.0
-replace lexer => .\..\lexer
+replace lexer => ./../lexer
