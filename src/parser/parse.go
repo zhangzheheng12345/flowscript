@@ -208,7 +208,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
             } else {
                 fmt.Println("Error: not complete if block. Token: ", index)
             }
-        } else of tokens[index].Type() == lexer.SEND {
+        } else if tokens[index].Type() == lexer.SEND {
             /*
             > ... > ... # wrong
             ... > ... > ... # right
@@ -216,7 +216,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
             if index == 0 || tokens[index - 1].Type() == lexer.STOP {
                 fmt.Println("Error: use ' > ' at the start of a sentence. There's nothing to send. Token: ",index)
             } else {
-                sendList := append(sendList, codes[len(codes) - 1]
+                sendList := append(sendList, codes[len(codes) - 1])
                 codes = codes[:len(codes) - 1]
             }
         } else if tokens[index].Type() == lexer.DEF {
@@ -300,7 +300,7 @@ The runtime status would not be saved as the script runs in a Block_.
 */
 func RunCode(str string) {
     tmpQueue.Clear()
-    tokens := lexer.Lex(strings.Split(str,"")
+    tokens := lexer.Lex(strings.Split(str,""))
     codes, index := Parse(tokens)
     if index < len(tokens) {
         fmt.Println("Error: unexpected ' end '. Token: ", index)
