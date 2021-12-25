@@ -137,7 +137,7 @@ type Queue_ struct {
 }
 
 func MakeTmpQueue(father *Queue_) *Queue_ {
-    return &Queue{father, make([]int, maxBufferSize), 0}
+    return &Queue_{father, make([]int, maxBufferSize), 0}
 }
 
 func (queue_ *Queue_) Add(value int) {
@@ -149,15 +149,19 @@ func (queue_ *Queue_) Add(value int) {
     }
 }
 
-func (queue_ Queue) Get() int {
+func (queue_ Queue_) Get() int {
     return queue_.data[0]
 }
 
-func (queue_ *Queue) Pop() {
+func (queue_ *Queue_) Pop() {
     queue_.data = queue_.data[1:]
 }
 
 func (queue_ *Queue_) Clear() *Queue_ {
     queue_.data = nil
     return queue_.father
+}
+
+func (queue_ Queue_) Size() int {
+    return queue_.dataLen
 }

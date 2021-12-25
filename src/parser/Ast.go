@@ -95,7 +95,7 @@ type And_ struct {
 }
 
 func (and_ And_) run() int {
-    return booltoint(bool(and_.op1.get()) && bool(and_.op2.get()))
+    return booltoint((and_.op1.get() != 0) && (and_.op2.get() != 0))
 }
 
 type Or_ struct {
@@ -104,7 +104,7 @@ type Or_ struct {
 }
 
 func (or_ Or_) run() int {
-    return booltoint(bool(or_.op1.get()) || bool(or_.op2.get()))
+    return booltoint((or_.op1.get() != 0) || (or_.op2.get() != 0))
 }
 
 type Not_ struct {
@@ -112,7 +112,7 @@ type Not_ struct {
 }
 
 func (not_ Not_) run() int {
-    return booltoint(!bool(not_.op1.get()))
+    return booltoint(not_.op.get() == 0)
 }
 
 type Var_ struct {
@@ -131,7 +131,7 @@ func (var_ Var_) run() int {
         } else {
             /* autoly pick value from send queue */
             Scope.Add(var_.name,tmpQueue.Get())
-            tmoQueue.Pop()
+            tmpQueue.Pop()
         }
     }
     return 0
@@ -144,7 +144,7 @@ type Def_ struct {
 }
 
 func (def_ Def_) run() int {
-    FuncScope.Add(def_.name,Func{def_.args,def_.codes})
+    FuncScope.Add(def_.name,Func_{def_.args,def_.codes})
     return 0
 }
 
