@@ -26,7 +26,7 @@ func Lex(str []string) []Token {
                 ( IsSingleAlpha(str[index]) ||
                 IsSingleNum(str[index]) ||
                 str[index] == "_" );index++ {}
-            result = append(result,Token{NUM, strings.Join(str[begin:index], "")})
+            result = append(result,Token{SYMBOL, strings.Join(str[begin:index], "")})
             index--
         } else if IsSingleNum(str[index]) {
             begin := index

@@ -2,7 +2,6 @@ package parser
 
 import (
     "fmt"
-    "xlexer"
 )
 
 /* Tool function, for cannot convert bool to int directly */
@@ -154,7 +153,7 @@ type Send_ struct {
 }
 
 func (send_ Send_) run() int {
-    tmpQueue = MakeTmpQueue(&tmpQueue)
+    tmpQueue = MakeTmpQueue(tmpQueue)
     for _, code := range send_.codes {
         tmpQueue.Add(code.run())
     }
@@ -216,7 +215,7 @@ type Call_ struct {
 }
 
 func (call_ Call_) run() int {
-    argsValue := make([]int)
+    argsValue := make([]int,0)
     for _, arg := range call_.args {
         argsValue = append(argsValue,arg.get())
     }
@@ -231,8 +230,4 @@ type Echo_ struct {
 func (echo_ Echo_) run() int {
     fmt.Println(echo_.op.get())
     return 0
-}
-
-type Exp_ struct {
-    tokens []xlexer.Token
 }

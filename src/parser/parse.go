@@ -23,6 +23,7 @@ func ParseValue(token lexer.Token) Value {
         return Exp_{xlexer.Lex(strings.Split(token.Value(),""))}
     } else {
         fmt.Println("Error: expecting a Value but got other kinds. ")
+        return nil
     }
 }
 
@@ -33,15 +34,15 @@ It returns the processed AST sequence and a int number.
 The int number describes where Parse() function stop parsing. (Slice index)
 */
 func Parse(tokens []lexer.Token) ([]Ast, int) {
-    codes := make([]Ast)
-    sendList := make([]Ast)
+    codes := make([]Ast,0)
+    sendList := make([]Ast,0)
     index := 0
     checkSend := func() {
         if len(sendList) > 0 {
-            senList = append(sendList,codes[len(codes) - 1])
+            sendList = append(sendList,codes[len(codes) - 1])
             codes = codes[:len(codes) - 1]
             codes = append(codes, Send_{sendList})
-            sendList = make([]Ast)
+            sendList = make([]Ast,0)
         }
     }
     for ; index < len(tokens); index++ {
@@ -198,7 +199,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
                     codesInBlock, i := Parse(tokens[index:])
                     index += i
                     if index < len(tokens) && tokens[index].Type() == lexer.END {
-                        codes = append(codes,If_{codition, codesInBlock})
+                        codes = append(codes,If_{condition, codesInBlock})
                     } else {
                         fmt.Println("Error: lost ' end ' at the end of the block. Token ", index)
                     }
@@ -230,7 +231,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
                     name = ""
                 }
                 index++
-                argList := make([]string)
+                argList := make([]string,0)
                 for tokens[index].Type() == lexer.SYMBOL && index < len(tokens) {
                     argList = append(argList, tokens[index].Value())
                 }
@@ -264,7 +265,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
             }
         } else if tokens[index].Type() == lexer.ECHO {
             if index + 1 < len(tokens) {
-                codes = append(codes, Echo_{ParseValue(token[index])})
+                codes = append(codes, Echo_{ParseValue(tokens[index])})
             } else {
                 fmt.Println("Error: lose argument to echo. Token: ", index)
             }

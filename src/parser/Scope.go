@@ -47,7 +47,7 @@ because all the codes run with RunCode(string) will be inside a independence Blo
 so you can't add global variable / function by native FlowScript.
 */
 var Scope *Scope_ = &Scope_{nil, make(map[string]int)}
-var FuncScope *FuncScope_ = &FuncScope_{nil, make(map[string]int)}
+var FuncScope *FuncScope_ = &FuncScope_{nil, make(map[string]Func_)}
 
 /*
 exp1 > exp2 > exp3
@@ -93,23 +93,23 @@ func (scope_ Scope_) Back() *Scope_ {
 /* function scope system ( only for functions ) */
 type FuncScope_ struct {
     father *FuncScope_
-    vars map[string]int
+    vars map[string]Func_
 }
 
 func MakeFuncScope(father *FuncScope_) *FuncScope_ {
-    return &FuncScope_{father,make(map[string]int)}
+    return &FuncScope_{father,make(map[string]Func_)}
 }
 
-func (funcScope_ FuncScope_) Add(key string, value int) {
+func (funcScope_ FuncScope_) Add(key string, value Func_) {
     _, ok := funcScope_.vars[key]
     if ok {
         fmt.Println("Error: Try to define a function that has been defined. func: " + key)
     } else {
-        scope_.vars[key] = value
+        FuncScope_.vars[key] = value
     }
 }
 
-func (funcScope_ FuncScope_) Find(key string) int {
+func (funcScope_ FuncScope_) Find(key string) Func_ {
     v, ok := funcScope_.vars[key]
     if ok {
         return v

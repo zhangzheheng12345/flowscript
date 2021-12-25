@@ -25,12 +25,12 @@ func T_(tokens []xlexer.Token, value int) ([]xlexer.Token, int) {
         return nil, value
     }
     switch tokens[0].Type() {
-        case ADD, SUB:
+        case xlexer.ADD, xlexer.SUB:
             return tokens, value
-        case MULTI:
+        case xlexer.MULTI:
             tail, v := T_(F(tokens))
             return tail, value * v
-        case DIV:
+        case xlexer.DIV:
             tail, v := T_(F(tokens))
             return tail, value / v
         default:
