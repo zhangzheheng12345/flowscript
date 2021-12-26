@@ -19,7 +19,7 @@ func IsSingleAlpha(str string) bool {
 func Lex(str []string) []Token {
     result := make([]Token,0)
     for index := 0;index < len(str);index++ {
-        if str[index] == " " || str[index] == "\t" {
+        if str[index] == " " || str[index] == "\t" || str[index] == "\n" {
             // Do nothing
         } else if str[index] == "#" {
             for ;index < len(str) && str[index] != "\n"; index++ {
@@ -108,7 +108,7 @@ func Lex(str []string) []Token {
         } else if str[index] == ")" {
             fmt.Println("Error: too much back parenthesis. Letter: ", index)
         }else {
-            fmt.Println("Warn: unexpected token of: ",index + 1)
+            fmt.Println("Warn: unexpected token of: ",index + 1,str[index])
         }
     }
     return result

@@ -105,7 +105,7 @@ func (funcScope_ FuncScope_) Add(key string, value Func_) {
     if ok {
         fmt.Println("Error: Try to define a function that has been defined. func: " + key)
     } else {
-        FuncScope_.vars[key] = value
+        funcScope_.vars[key] = value
     }
 }
 
@@ -117,8 +117,8 @@ func (funcScope_ FuncScope_) Find(key string) Func_ {
         return funcScope_.father.Find(key)
     } else {
         fmt.Println("Error: Try to use a function that hasn't been defined. func: " + key)
+        return Func_{[]string{}, []Ast{}}
     }
-    return 0
 }
 
 func (funcScope_ FuncScope_) Back() *FuncScope_ {

@@ -10,7 +10,7 @@ func TestRunCode(t *testing.T) {
         "var a 1\n" + 
         "var b 3\n" + 
         "smlr a b > if - begin\n" +
-        "\techo a\n"
+        "\techo a\n" +
         "end"
     fmt.Println("t1----\n",t1)
     RunCode(t1)
@@ -25,6 +25,6 @@ func TestRunCode(t *testing.T) {
         "end\n" +
         "func 1 2"
     fmt.Println("t2----\n",t2)
-    RunCode(t1)
+    RunCode(t2)
     fmt.Println("t2----")
 }

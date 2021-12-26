@@ -14,7 +14,8 @@ and translate it into a value which is able to get directly (Value_).
 */
 func ParseValue(token lexer.Token) Value {
     if token.Type() == lexer.NUM {
-        return Int_{ strconv.Atoi(token.Value())}
+        num, _ := strconv.Atoi(token.Value())
+        return Int_{ num }
     } else if token.Type() == lexer.SYMBOL {
         return Symbol_{ token.Value() }
     } else if token.Type() == lexer.TMP {
@@ -22,7 +23,7 @@ func ParseValue(token lexer.Token) Value {
     } else if token.Type() == lexer.XEXP {
         return Exp_{xlexer.Lex(strings.Split(token.Value(),""))}
     } else {
-        fmt.Println("Error: expecting a Value but got other kinds. ")
+        fmt.Println("Error: expecting a Value but got kind: ",token.Type())
         return nil
     }
 }
@@ -170,6 +171,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
                 }
                 var op Value
                 if index + 1 < len(tokens) {
+                    index++
                     switch tokens[index].Type() {
                         case lexer.NUM, lexer.SYMBOL, lexer.TMP:
                             /* initialize with given value */
@@ -217,7 +219,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
             if index == 0 || tokens[index - 1].Type() == lexer.STOP {
                 fmt.Println("Error: use ' > ' at the start of a sentence. There's nothing to send. Token: ",index)
             } else {
-                sendList := append(sendList, codes[len(codes) - 1])
+                sendList = append(sendList, codes[len(codes) - 1])
                 codes = codes[:len(codes) - 1]
             }
         } else if tokens[index].Type() == lexer.DEF {
@@ -265,6 +267,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
             }
         } else if tokens[index].Type() == lexer.ECHO {
             if index + 1 < len(tokens) {
+                index++
                 codes = append(codes, Echo_{ParseValue(tokens[index])})
             } else {
                 fmt.Println("Error: lose argument to echo. Token: ", index)
@@ -275,7 +278,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
             fmt.Println("Error: unexpected ' - ' (tmp mark) . Token: ", index)
         } else if tokens[index].Type() == lexer.SYMBOL {
             name := tokens[index].Value()
-            args := make([]Value)
+            args := make([]Value,0)
             for ; index < len(tokens) && (
                 tokens[index].Type() == lexer.NUM ||
                 tokens[index].Type() == lexer.SYMBOL ||
@@ -300,7 +303,6 @@ RunCode(string) receives a text script ( string ) and run it directly.
 The runtime status would not be saved as the script runs in a Block_. 
 */
 func RunCode(str string) {
-    tmpQueue.Clear()
     tokens := lexer.Lex(strings.Split(str,""))
     codes, index := Parse(tokens)
     if index < len(tokens) {
