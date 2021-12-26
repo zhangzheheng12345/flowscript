@@ -8,7 +8,7 @@ import (
 
 func TestLex(t *testing.T) {
     const t1 = 
-        "add 1 var1 > var var2"
+        "add 1 var1 > var var2 \n"
     var res1 = []Token{
         Token{ADD, ""},
         Token{NUM, "1"},
@@ -16,6 +16,7 @@ func TestLex(t *testing.T) {
         Token{SEND, ""},
         Token{VAR, ""},
         Token{SYMBOL, "var2"},
+        Token{STOP,""},
     }
     result := Lex(strings.Split(t1,""))
     for key, value := range result {

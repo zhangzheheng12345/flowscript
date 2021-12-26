@@ -236,13 +236,14 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
                 argList := make([]string,0)
                 for tokens[index].Type() == lexer.SYMBOL && index < len(tokens) {
                     argList = append(argList, tokens[index].Value())
+                    index++
                 }
                 if tokens[index].Type() == lexer.BEGIN {
                     index++
                     codesInFunc, i := Parse(tokens[index:])
                     index += i
                     if index < len(tokens) && tokens[index].Type() == lexer.END {
-                    codes = append(codes,Def_{name, argList,codesInFunc})
+                        codes = append(codes,Def_{name, argList,codesInFunc})
                     } else {
                         fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
                     }
@@ -278,6 +279,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
             fmt.Println("Error: unexpected ' - ' (tmp mark) . Token: ", index)
         } else if tokens[index].Type() == lexer.SYMBOL {
             name := tokens[index].Value()
+            index++
             args := make([]Value,0)
             for ; index < len(tokens) && (
                 tokens[index].Type() == lexer.NUM ||

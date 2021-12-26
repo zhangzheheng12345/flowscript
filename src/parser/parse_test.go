@@ -15,11 +15,11 @@ func TestRunCode(t *testing.T) {
     fmt.Println("t1----\n",t1)
     RunCode(t1)
     fmt.Println("t1----")
-    /* expected result: [output] fibonacci sequence. Last one smaller tha 100 */
+    /* expected result: [output] fibonacci sequence. Last one smaller tha 10 */
     const t2 =
         "def func a b begin\n" +
         "\tadd a b > echo -\n" +
-        "\tsmlr a 100 > if - begin\n" +
+        "\tsmlr a 10> if - begin\n" +
         "\t\tadd a b > func b -\n" +
         "\tend\n" +
         "end\n" +
