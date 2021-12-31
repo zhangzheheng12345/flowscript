@@ -2,7 +2,7 @@ package parser
 
 import (
     "fmt"
-    "xlexer"
+    "github.com/xlexer"
     "strconv"
 )
 

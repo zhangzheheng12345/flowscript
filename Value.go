@@ -1,7 +1,7 @@
 package parser
 
 import (
-    "xlexer"
+    "github.com/xlexer"
 )
 
 type Value interface {
