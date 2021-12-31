@@ -27,4 +27,16 @@ func TestRunCode(t *testing.T) {
     fmt.Println("t2----\n",t2)
     RunCode(t2)
     fmt.Println("t2----")
+    /* a small FlowScript example */
+    const t3 =
+        "def func a begin\n" +
+        "\tmulti a a > echo -\n" +
+        "\tsmlr a 1000 > if - begin\n" +
+        "\t\tadd a 1 > func -\n" +
+        "\tend\n" +
+        "end\n" +
+        "func 1\n"
+    fmt.Println("t3----\n",t3)
+    RunCode(t3)
+    fmt.Println("t3----") 
 }

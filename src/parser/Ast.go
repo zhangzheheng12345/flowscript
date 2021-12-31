@@ -40,7 +40,7 @@ type Multi_ struct {
 }
 
 func (multi_ Multi_) run() int {
-    return multi_.op1.get() + multi_.op2.get()
+    return multi_.op1.get() * multi_.op2.get()
 }
 
 type Div_ struct {
