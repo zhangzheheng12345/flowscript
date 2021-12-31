@@ -1,4 +1,4 @@
-module parser
+module FlowScript
 
 go 1.16
 
