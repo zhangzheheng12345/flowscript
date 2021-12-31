@@ -4,8 +4,8 @@ import (
     "fmt"
     "strings"
     "strconv"
-    "github.com/lexer"
-    "github.com/xlexer"
+    "github.com/zhangzheheng12345/FlowScript/lexer"
+    "github.com/zhangzheheng12345/FlowScript/xlexer"
 )
 
 /*

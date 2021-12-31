@@ -1,7 +1,7 @@
 package parser
 
 import (
-    "github.com/xlexer"
+    "github.com/zhangzheheng12345/FlowScript/xlexer"
 )
 
 type Value interface {
