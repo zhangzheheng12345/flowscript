@@ -11,5 +11,5 @@ to import it to your Go project.
 
 Use: 
 
-    FlowScript.RunCode( <your codes(type string)> )
+    parser.RunCode( <your codes(type string)> )
 to run FlowScript. 
