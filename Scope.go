@@ -10,6 +10,8 @@ Func_.args contains the arguments' name in order to add them in a new variable s
 Func_.codes contains the codes in the function to run later.
 */
 type Func_ struct {
+    lasts *Scope_
+    lastf *FuncScope_
     args []string
     codes []Ast
 }
@@ -19,8 +21,8 @@ Func_.run([]int) run the codes in the function.
 */
 func (func_ Func_) run(args []int) int {
     /* provide a independence scope for the function*/
-    Scope = MakeScope(Scope)
-    FuncScope = MakeFuncScope(FuncScope)
+    Scope = MakeScope(Scope, func_.lasts)
+    FuncScope = MakeFuncScope(FuncScope, func_.lastf)
     /* add the arguments to the local scope*/
     for key, arg := range args {
         Scope.Add(func_.args[key],arg)
@@ -57,12 +59,13 @@ var tmpQueue *Queue_ = nil
 
 /* scope system ( only for variables ) */
 type Scope_ struct {
+    last *Scope_
     father *Scope_
     vars map[string]int
 }
 
-func MakeScope(father *Scope_) *Scope_ {
-    return &Scope_{father,make(map[string]int)}
+func MakeScope(father *Scope_, last *Scope_) *Scope_ {
+    return &Scope_{last,father,make(map[string]int)}
 }
 
 func (scope_ Scope_) Add(key string, value int) {
@@ -87,17 +90,18 @@ func (scope_ Scope_) Find(key string) int {
 }
 
 func (scope_ Scope_) Back() *Scope_ {
-    return scope_.father
+    return scope_.last
 }
 
 /* function scope system ( only for functions ) */
 type FuncScope_ struct {
+    last *FuncScope_
     father *FuncScope_
     vars map[string]Func_
 }
 
-func MakeFuncScope(father *FuncScope_) *FuncScope_ {
-    return &FuncScope_{father,make(map[string]Func_)}
+func MakeFuncScope(father *FuncScope_, last *FuncScope_) *FuncScope_ {
+    return &FuncScope_{last,father,make(map[string]Func_)}
 }
 
 func (funcScope_ FuncScope_) Add(key string, value Func_) {
@@ -122,7 +126,7 @@ func (funcScope_ FuncScope_) Find(key string) Func_ {
 }
 
 func (funcScope_ FuncScope_) Back() *FuncScope_ {
-    return funcScope_.father
+    return funcScope_.last
 }
 
 /* Queue_ ( for tmpQueue ) */

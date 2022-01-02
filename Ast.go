@@ -143,7 +143,7 @@ type Def_ struct {
 }
 
 func (def_ Def_) run() int {
-    FuncScope.Add(def_.name,Func_{def_.args,def_.codes})
+    FuncScope.Add(def_.name,Func_{Scope,def_.args,def_.codes})
     return 0
 }
 
