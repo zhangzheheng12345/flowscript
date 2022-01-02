@@ -7,13 +7,16 @@ import (
 )
 
 func E_(tokens []xlexer.Token, value int) int {
+    if len(tokens) == 0 {
+        return value
+    }
     switch tokens[0].Type() {
         case xlexer.ADD:
             return value + E_(T(tokens[1:]))
         case xlexer.SUB:
             return value - E_(T(tokens[1:]))
         default:
-            fmt.Println("Error: unexpected token in xparser")
+            fmt.Println("Error: unexpected token in xparser: ", tokens[0].Type())
             return 0
     }
 }
@@ -23,27 +26,27 @@ func T(tokens []xlexer.Token) ([]xlexer.Token, int) {
 }
 
 func T_(tokens []xlexer.Token, value int) ([]xlexer.Token, int) {
-    if tokens == nil {
-        return nil, value
+    if len(tokens) == 0 {
+        return tokens, value
     }
     switch tokens[0].Type() {
         case xlexer.ADD, xlexer.SUB:
             return tokens, value
         case xlexer.MULTI:
-            tail, v := T_(F(tokens))
+            tail, v := T_(F(tokens[1:]))
             return tail, value * v
         case xlexer.DIV:
-            tail, v := T_(F(tokens))
+            tail, v := T_(F(tokens[1:]))
             return tail, value / v
         default:
-            fmt.Println("Error: unexpected token in xparser")
+            fmt.Println("Error: unexpected token in xparser: ", tokens[0].Type())
             return tokens[1:], 0
     }
 }
 
 func F(tokens []xlexer.Token) ([]xlexer.Token, int) {
-    if tokens == nil {
-        return nil, 1
+    if len(tokens) == 0 {
+        return tokens, 1
     }
     switch tokens[0].Type() {
         case xlexer.SYMBOL:
@@ -66,10 +69,10 @@ func F(tokens []xlexer.Token) ([]xlexer.Token, int) {
                 }
                 index++
             }
-            if index >= len(tokens) {
+            if index >= len(tokens) && tokens[index - 1].Type() != xlexer.BPAREN {
                 fmt.Println("Error: lose back parenthesis in xparser")
             }
-            return tokens[index:], Exp_{ tokens[1:index] }.get()
+            return tokens[index:], Exp_{ tokens[1:index - 1] }.get()
         default:
             fmt.Println("Error: X expression mistake")
             return tokens[1:], 0
