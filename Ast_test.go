@@ -8,6 +8,7 @@ import (
 func TestFunc(t *testing.T) {
     fmt.Println("t1-----")
     FuncScope.Add("func",Func_{
+        Scope,FuncScope,
         []string{
             "a",
             "b",

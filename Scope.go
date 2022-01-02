@@ -10,8 +10,8 @@ Func_.args contains the arguments' name in order to add them in a new variable s
 Func_.codes contains the codes in the function to run later.
 */
 type Func_ struct {
-    lasts *Scope_
-    lastf *FuncScope_
+    fathers *Scope_
+    fatherf *FuncScope_
     args []string
     codes []Ast
 }
@@ -21,8 +21,8 @@ Func_.run([]int) run the codes in the function.
 */
 func (func_ Func_) run(args []int) int {
     /* provide a independence scope for the function*/
-    Scope = MakeScope(Scope, func_.lasts)
-    FuncScope = MakeFuncScope(FuncScope, func_.lastf)
+    Scope = MakeScope(func_.fathers,Scope)
+    FuncScope = MakeFuncScope(func_.fatherf,FuncScope)
     /* add the arguments to the local scope*/
     for key, arg := range args {
         Scope.Add(func_.args[key],arg)
@@ -48,8 +48,8 @@ he should Add(string,int) variable to Scope directly,
 because all the codes run with RunCode(string) will be inside a independence Block_,
 so you can't add global variable / function by native FlowScript.
 */
-var Scope *Scope_ = &Scope_{nil, make(map[string]int)}
-var FuncScope *FuncScope_ = &FuncScope_{nil, make(map[string]Func_)}
+var Scope *Scope_ = &Scope_{nil, nil, make(map[string]int)}
+var FuncScope *FuncScope_ = &FuncScope_{nil, nil, make(map[string]Func_)}
 
 /*
 exp1 > exp2 > exp3
@@ -121,7 +121,7 @@ func (funcScope_ FuncScope_) Find(key string) Func_ {
         return funcScope_.father.Find(key)
     } else {
         fmt.Println("Error: Try to use a function that hasn't been defined. func: " + key)
-        return Func_{[]string{}, []Ast{}}
+        return Func_{nil,nil, []string{}, []Ast{}}
     }
 }
 
@@ -158,6 +158,7 @@ func (queue_ Queue_) Get() int {
 }
 
 func (queue_ *Queue_) Pop() {
+    queue_.dataLen--
     queue_.data = queue_.data[1:]
 }
 

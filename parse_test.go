@@ -29,9 +29,10 @@ func TestRunCode(t *testing.T) {
     fmt.Println("t2----")
     /* a small FlowScript example */
     const t3 =
+        "var addition_ 100\n" +
         "def func a begin\n" +
-        "\tmulti a a > echo -\n" +
-        "\tsmlr a 1000 > if - begin\n" +
+        "\tmulti a a > add - addition_ > echo -\n" +
+        "\tsmlr a 20 > if - begin\n" +
         "\t\tadd a 1 > func -\n" +
         "\tend\n" +
         "end\n" +

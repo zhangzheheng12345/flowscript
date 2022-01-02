@@ -143,7 +143,7 @@ type Def_ struct {
 }
 
 func (def_ Def_) run() int {
-    FuncScope.Add(def_.name,Func_{Scope,def_.args,def_.codes})
+    FuncScope.Add(def_.name,Func_{Scope,FuncScope,def_.args,def_.codes})
     return 0
 }
 
@@ -172,8 +172,8 @@ type Block_ struct {
 }
 
 func (block_ Block_) run() int {
-    Scope = MakeScope(Scope)
-    FuncScope = MakeFuncScope(FuncScope)
+    Scope = MakeScope(Scope,Scope)
+    FuncScope = MakeFuncScope(FuncScope,FuncScope)
     result := 0
     for _, code := range block_.codes {
         result = code.run()
@@ -195,8 +195,8 @@ type If_ struct {
 
 func (if_ If_) run() int {
     if if_.condition.get() != 0 {
-        Scope = MakeScope(Scope)
-        FuncScope = MakeFuncScope(FuncScope)
+        Scope = MakeScope(Scope,Scope)
+        FuncScope = MakeFuncScope(FuncScope,FuncScope)
         result := 1
         for _, code := range if_.codes {
             result = code.run()
