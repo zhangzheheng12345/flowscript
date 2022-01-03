@@ -14,8 +14,8 @@ func E_(tokens []xlexer.Token, value int) int {
         case xlexer.ADD:
             return value + E_(T(tokens[1:]))
         case xlexer.SUB
-            // TODO: A bug here 1-2-3 will be calculate as 1-(2-3)
-            return value - E_(T(tokens[1:]))
+            tail, v := T(tokens[1:])
+            return E_(tail, value - v)
         default:
             fmt.Println("Error: unexpected token in xparser: ", tokens[0].Type())
             return 0
@@ -37,8 +37,8 @@ func T_(tokens []xlexer.Token, value int) ([]xlexer.Token, int) {
             tail, v := T_(F(tokens[1:]))
             return tail, value * v
         case xlexer.DIV:
-            tail, v := T_(F(tokens[1:]))
-            return tail, value / v
+            tail, v := F(tokens[1:])
+            return T_(tail, value / v)
         default:
             fmt.Println("Error: unexpected token in xparser: ", tokens[0].Type())
             return tokens[1:], 0
