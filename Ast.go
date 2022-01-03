@@ -31,7 +31,7 @@ type Sub_ struct {
 }
 
 func (sub_ Sub_) run() int {
-    return sub_.op1.get() + sub_.op2.get()
+    return sub_.op1.get() - sub_.op2.get()
 }
 
 type Multi_ struct {
@@ -49,7 +49,7 @@ type Div_ struct {
 }
 
 func (div_ Div_) run() int {
-    return div_.op1.get() + div_.op2.get()
+    return div_.op1.get() / div_.op2.get()
 }
 
 type Mod_ struct {

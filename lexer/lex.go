@@ -82,6 +82,8 @@ func Lex(str []string) []Token {
             result = append(result,Token{SEND,""})
         } else if str[index] == "-" {
             result = append(result,Token{TMP,""})
+        } else if str[index] == ";" {
+            result = append(result,Token{STOP,""})
         } else if str[index] == "\n" {
             if result[len(result) - 1].Type() != SEND && result[len(result) - 1].Type() != BEGIN {
                /*
@@ -92,17 +94,18 @@ func Lex(str []string) []Token {
                result = append(result,Token{STOP,""})
             }
         } else if str[index] == "(" {
+            index++
             begin := index
             count := 1
             for ;index < len(str) && count != 0;index++ {
                 if str[index] == "(" {
                     count++
-                } else {
+                } else if str[index] == ")" {
                     count--
                 }
             }
-            result = append(result, Token{XEXP, strings.Join(str[begin:index],"")})
             index--
+            result = append(result, Token{XEXP, strings.Join(str[begin:index],"")})
         } else if str[index] == ")" {
             fmt.Println("Error: too much back parenthesis. Letter: ", index)
         } else if str[index] == "\n" {

@@ -13,7 +13,8 @@ func E_(tokens []xlexer.Token, value int) int {
     switch tokens[0].Type() {
         case xlexer.ADD:
             return value + E_(T(tokens[1:]))
-        case xlexer.SUB:
+        case xlexer.SUB
+            // TODO: A bug here 1-2-3 will be calculate as 1-(2-3)
             return value - E_(T(tokens[1:]))
         default:
             fmt.Println("Error: unexpected token in xparser: ", tokens[0].Type())

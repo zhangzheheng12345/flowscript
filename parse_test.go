@@ -39,5 +39,12 @@ func TestRunCode(t *testing.T) {
         "func 1\n"
     fmt.Println("t3----\n",t3)
     RunCode(t3)
-    fmt.Println("t3----") 
+    fmt.Println("t3----")
+    const t4 =
+        "var a 6\n" +
+        "echo a; add 0 1 > echo -;\n" +
+        "add 0 1 > echo (3+4*5---a)"
+    fmt.Println("t4----\n",t4)
+    RunCode(t4)
+    fmt.Println("t4----")
 }

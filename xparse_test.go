@@ -15,6 +15,7 @@ func TestExp(t *testing.T) {
         {"3*2+4-1",9},
         {"4+6*(3-1)-6/3",14},
         {"(6+4)-6*(7/1)",0-32},
+        {"3+4*5-6-7",10},
     }
     for k, v := range table {
         fmt.Println(k)
