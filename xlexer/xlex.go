@@ -34,8 +34,8 @@ func Lex(str []string) []Token {
 			for ; index < len(str) && IsSingleNum(str[index]); index++ {
 				// Do nothing
 			}
-			if result[len(result)-1].Type() == TMP {
-				result = append(result, Token{NUM, "-" + strings.Join(str[begin:index], "")})
+			if len(result) != 0 && result[len(result)-1].Type() == TMP {
+				result[len(result)-1] = Token{NUM, "-" + strings.Join(str[begin:index], "")}
 			} else {
 				result = append(result, Token{NUM, strings.Join(str[begin:index], "")})
 			}
