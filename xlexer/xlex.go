@@ -3,7 +3,7 @@ package xlexer
 import (
 	"fmt"
 	"strings"
-    "https://github.com/zhangzheheng12345/FlowScript/tools"
+    "github.com/zhangzheheng12345/FlowScript/tools"
 )
 
 func Lex(str []string) []Token {
@@ -12,14 +12,9 @@ func Lex(str []string) []Token {
 		if str[index] == " " || str[index] == "\t" {
 			// Do nothing
 		} else if str[index] == "_" || tools.IsSingleAlpha(str[index]) {
-			begin := index
-			for ; index < len(str) &&
-				(tools.IsSingleAlpha(str[index]) ||
-				 tools.IsSingleNum(str[index]) ||
-				 tools.str[index] == "_"); index++ {
-			}
-			result = append(result, Token{SYMBOL, strings.Join(str[begin:index], "")})
-			index--
+			var symbol string
+            symbol, index = tools.PickSymbol(str, index)
+			result = append(result, Token{SYMBOL, symbol})
 		} else if tools.IsSingleNum(str[index]) {
 			begin := index
 			for ; index < len(str) && tools.IsSingleNum(str[index]); index++ {

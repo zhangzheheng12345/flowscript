@@ -3,7 +3,7 @@ package lexer
 import (
     "fmt"
     "strings"
-    "https://github.com/zhangzheheng12345/FlowScript/tools"
+    "github.com/zhangzheheng12345/FlowScript/tools"
 )
 
 /* Core lexer code */
