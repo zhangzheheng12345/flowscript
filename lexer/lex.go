@@ -3,17 +3,8 @@ package lexer
 import (
     "fmt"
     "strings"
+    "https://github.com/zhangzheheng12345/FlowScript/tools"
 )
-
-/* Check if a character is a number. */
-func IsSingleNum(str string) bool {
-    return len(str) == 1 && []byte(str)[0] >= 48 && []byte(str)[0] <= 57
-}
-
-/* Check if a character is a alpha */
-func IsSingleAlpha(str string) bool {
-    return len(str) == 1 && []byte(str)[0] >= 65 && []byte(str)[0] <= 122
-}
 
 /* Core lexer code */
 func Lex(str []string) []Token {
@@ -26,11 +17,11 @@ func Lex(str []string) []Token {
                 // Do nothing
             }
             index--
-        } else if IsSingleAlpha(str[index]) || str[index] == "_"{
+        } else if tools.IsSingleAlpha(str[index]) || str[index] == "_"{
             begin := index
             for ;index < len(str) && 
-                (IsSingleAlpha(str[index]) ||
-                 IsSingleNum(str[index]) ||
+                (tools.IsSingleAlpha(str[index]) ||
+                 tools.IsSingleNum(str[index]) ||
                  str[index] == "_"); index++ {}
             word := strings.Join(str[begin:index],"")
             index--
@@ -71,9 +62,9 @@ func Lex(str []string) []Token {
             } else {
                 result = append(result,Token{SYMBOL,word})
             }
-        } else if IsSingleNum(str[index]) {
+        } else if tools.IsSingleNum(str[index]) {
             begin := index
-            for ; index < len(str) && IsSingleNum(str[index]); index++ {
+            for ; index < len(str) && tools.IsSingleNum(str[index]); index++ {
                 // Do nothing
             }
             result = append(result,Token{NUM,strings.Join(str[begin:index],"")})

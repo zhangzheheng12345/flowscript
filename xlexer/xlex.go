@@ -3,35 +3,26 @@ package xlexer
 import (
 	"fmt"
 	"strings"
+    "https://github.com/zhangzheheng12345/FlowScript/tools"
 )
-
-/* Check if a character is a number. */
-func IsSingleNum(str string) bool {
-	return len(str) == 1 && []byte(str)[0] >= 48 && []byte(str)[0] <= 57
-}
-
-/* Check if a character is a alpha */
-func IsSingleAlpha(str string) bool {
-	return len(str) == 1 && []byte(str)[0] >= 65 && []byte(str)[0] <= 122
-}
 
 func Lex(str []string) []Token {
 	result := make([]Token, 0)
 	for index := 0; index < len(str); index++ {
 		if str[index] == " " || str[index] == "\t" {
 			// Do nothing
-		} else if str[index] == "_" || IsSingleAlpha(str[index]) {
+		} else if str[index] == "_" || tools.IsSingleAlpha(str[index]) {
 			begin := index
 			for ; index < len(str) &&
-				(IsSingleAlpha(str[index]) ||
-					IsSingleNum(str[index]) ||
-					str[index] == "_"); index++ {
+				(tools.IsSingleAlpha(str[index]) ||
+				 tools.IsSingleNum(str[index]) ||
+				 tools.str[index] == "_"); index++ {
 			}
 			result = append(result, Token{SYMBOL, strings.Join(str[begin:index], "")})
 			index--
-		} else if IsSingleNum(str[index]) {
+		} else if tools.IsSingleNum(str[index]) {
 			begin := index
-			for ; index < len(str) && IsSingleNum(str[index]); index++ {
+			for ; index < len(str) && tools.IsSingleNum(str[index]); index++ {
 				// Do nothing
 			}
 			if len(result) != 0 && result[len(result)-1].Type() == TMP {

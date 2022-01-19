@@ -8,7 +8,7 @@ A embeded script language interpreter written by Go.
 Use:
 
 ```go
-    import "https://github.com/zhangzheheng12345/FlowScript" 
+import "https://github.com/zhangzheheng12345/FlowScript" 
 ```
 
 to import it to your Go project. 
@@ -16,7 +16,7 @@ to import it to your Go project.
 Use:
 
 ```go
-    parser.RunCode( <your codes(type string)> )
+parser.RunCode( <your codes(type string)> )
 ```
 
-to run FlowScript.
+to run FlowScript code.
