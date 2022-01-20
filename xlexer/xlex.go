@@ -2,8 +2,8 @@ package xlexer
 
 import (
 	"fmt"
-	"strings"
-    "github.com/zhangzheheng12345/FlowScript/tools"
+
+	"github.com/zhangzheheng12345/FlowScript/tools"
 )
 
 func Lex(str []string) []Token {
@@ -13,19 +13,12 @@ func Lex(str []string) []Token {
 			// Do nothing
 		} else if str[index] == "_" || tools.IsSingleAlpha(str[index]) {
 			var symbol string
-            symbol, index = tools.PickSymbol(str, index)
+			symbol, index = tools.PickSymbol(str, index)
 			result = append(result, Token{SYMBOL, symbol})
 		} else if tools.IsSingleNum(str[index]) {
-			begin := index
-			for ; index < len(str) && tools.IsSingleNum(str[index]); index++ {
-				// Do nothing
-			}
-			if len(result) != 0 && result[len(result)-1].Type() == TMP {
-				result[len(result)-1] = Token{NUM, "-" + strings.Join(str[begin:index], "")}
-			} else {
-				result = append(result, Token{NUM, strings.Join(str[begin:index], "")})
-			}
-			index--
+			var num string
+			num, index = tools.PickNum(str, index)
+			result = append(result, Token{NUM, num})
 		} else if str[index] == "(" {
 			result = append(result, Token{FPAREN, ""})
 		} else if str[index] == ")" {
@@ -38,6 +31,10 @@ func Lex(str []string) []Token {
 				result[len(result)-1].Type() == TMP ||
 				result[len(result)-1].Type() == BPAREN {
 				result = append(result, Token{SUB, ""})
+			} else if index+1 < len(str) && tools.IsSingleNum(str[index+1]) {
+				var num string
+				num, index = tools.PickNum(str, index)
+				result = append(result, Token{NUM, num})
 			} else {
 				result = append(result, Token{TMP, ""})
 			}

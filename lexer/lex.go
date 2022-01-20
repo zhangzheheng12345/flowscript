@@ -62,7 +62,6 @@ func Lex(str []string) []Token {
 			var num string
 			num, index = tools.PickNum(str, index)
 			result = append(result, Token{NUM, num})
-			index--
 		} else if str[index] == ">" {
 			result = append(result, Token{SEND, ""})
 		} else if str[index] == "-" {
