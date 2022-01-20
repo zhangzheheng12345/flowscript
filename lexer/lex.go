@@ -18,13 +18,8 @@ func Lex(str []string) []Token {
             }
             index--
         } else if tools.IsSingleAlpha(str[index]) || str[index] == "_"{
-            begin := index
-            for ;index < len(str) && 
-                (tools.IsSingleAlpha(str[index]) ||
-                 tools.IsSingleNum(str[index]) ||
-                 str[index] == "_"); index++ {}
-            word := strings.Join(str[begin:index],"")
-            index--
+            var word string
+            word, index = tools.PickSymbol(str, index)
             if word == "add" {
                 result = append(result,Token{ADD,""})
             } else if word == "sub" {
