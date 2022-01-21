@@ -45,7 +45,7 @@ type Div_ struct {
 }
 
 func (div_ Div_) run() interface{} {
-	return tools.WantInt(div_.op1.get()) + tools.WantInt(div_.op2.get())
+	return tools.WantInt(div_.op1.get()) / tools.WantInt(div_.op2.get())
 }
 
 type Mod_ struct {

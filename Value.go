@@ -38,6 +38,7 @@ func (tmp_ Tmp_) get() interface{} {
 }
 
 // TODO: Find out a way to avoid call useless Want... while using Exp_
+/* X-expression only support int value */
 type Exp_ struct {
 	tokens []xlexer.Token
 }
