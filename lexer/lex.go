@@ -102,6 +102,16 @@ func Lex(str []string) []Token {
 		} else if str[index] == "\n" {
 			// ; => end, obviously
 			result = append(result, Token{STOP, ""})
+		} else if str[index] == "\"" {
+			index++
+			begin := index
+			for index < len(str) && str[index] != "\"" {
+				index++
+			}
+			if index >= len(str) && str[index - 1] {
+				fmt.Println("Error: lose \" while giving a string value.")
+			}
+			result = append(result, Token{STR, str[begin:index]})
 		} else {
 			fmt.Println("Warn: unexpected token of: ", index+1, str[index])
 		}

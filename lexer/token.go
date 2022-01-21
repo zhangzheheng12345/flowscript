@@ -24,6 +24,7 @@ const (
     ECHO
     NUM
     SYMBOL
+    STR
     TMP
 )
 

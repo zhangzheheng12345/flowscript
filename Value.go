@@ -26,6 +26,14 @@ func (symbol_ Symbol_) get() interface{} {
 	return Scope.Find(symbol_.name)
 }
 
+type Str_ struct {
+	value string
+}
+
+func (str_ Str_) get() interface{} {
+	return str_.value
+}
+
 /* get value from the send value queue*/
 type Tmp_ struct {
 	// no content
