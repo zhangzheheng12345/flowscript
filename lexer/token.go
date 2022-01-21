@@ -25,6 +25,7 @@ const (
     NUM
     SYMBOL
     STR
+    CHAR
     TMP
 )
 

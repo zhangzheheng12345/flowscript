@@ -136,6 +136,23 @@ func Lex(str []string) []Token {
 				fmt.Println("Error: lose \" while giving a string value.")
 			}
 			result = append(result, Token{STR, res})
+		} else if str[index] == "'" {
+			/* Char */
+			index++
+			if index + 1 < len(str) {
+				if len(str[index]) > 1 {
+					fmt.Println("Error: a char value must be ascii but not other wide codeset. Letter: ", index)
+				} else {
+					index++
+					if str[index] == "'" {
+						result = append(result, Token{CHAR, str[index - 1]})
+					} else {
+						fmt.Println("Error: lose ' while giving a char value")
+					}
+				}
+			} else {
+				fmt.Println("Error: lose ' while giving a char value")
+			}
 		} else {
 			fmt.Println("Warn: unexpected token of: ", index+1, str[index])
 		}
