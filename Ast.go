@@ -260,6 +260,12 @@ type Echo_ struct {
 }
 
 func (echo_ Echo_) run() interface{} {
-	fmt.Println(echo_.op.get())
+    op := echo_.op.get()
+    v, ok := op.(byte)
+    if ok {
+        fmt.Println(string([]byte{v}))
+    } else {
+	    fmt.Println(op)
+    }
 	return 0
 }

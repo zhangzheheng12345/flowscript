@@ -24,6 +24,8 @@ func ParseValue(token lexer.Token) Value {
         return Exp_{xlexer.Lex(strings.Split(token.Value(),""))}
     } else if token.Type() == lexer.STR {
         return Str_{ token.Value() }
+    } else if token.Type() == lexer.CHAR {
+        return Char_{ token.Value()[0] }
     } else {
         fmt.Println("Error: expecting a Value but got kind: ",token.Type())
         return nil
