@@ -21,13 +21,18 @@ func (add_ Add_) run() interface{} {
 	v1 := add_.op1.get()
 	v2 := add_.op2.get()
 	switch v := v1.(type) {
-	case int, byte:
+	case int:
+		return v + tools.WantInt(v2)
+    case byte:
 		return int(v) + tools.WantInt(v2)
 	case []int:
 		/* Connect two lists */
 		return append(v, tools.WantIntList(v2)...)
 	case string:
 		return v + tools.WantString(v2)
+    default:
+        fmt.Println("Error: try to add a unkown type value with another")
+        return nil
 	}
 }
 
@@ -94,11 +99,13 @@ func (equal_ Equal_) run() interface{} {
 	v1 := equal_.op1.get()
 	v2 := equal_.op2.get()
 	switch v := v1.(type) {
-	case int, byte:
+	case int:
+		return tools.BoolToInt(v == tools.WantInt(v2))
+    case byte:
 		return tools.BoolToInt(int(v) == tools.WantInt(v2))
 	case []int:
 		/* Compare two lists */
-		li2 = tools.WantIntList(v2)
+		li2 := tools.WantIntList(v2)
 		for i, value := range v {
 			if value != li2[i] {
 				return 0
@@ -107,6 +114,9 @@ func (equal_ Equal_) run() interface{} {
 		return 1
 	case string:
 		return tools.BoolToInt(v == tools.WantString(v2))
+    default:
+        fmt.Println("Error: try to compare a unkown type value to another. Operation: equal")
+        return nil
 	}
 }
 
