@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -36,4 +37,60 @@ func PickNum(str []string, index int) (string, int) {
 		// Do nothing
 	}
 	return strings.Join(str[begin:index], ""), index - 1
+}
+
+func WantInt(value interface{}) int {
+	switch v := value.(type) {
+	case int:
+		return v
+	case byte:
+		return int(v)
+	case []int:
+		fmt.Println("Error: int or char type value wanted, but got a int list")
+		return 0
+	case string:
+		fmt.Println("Error: int or char type value wanted, but got a string")
+		return 0
+	default:
+		fmt.Println("Error: int or char type value wanted, but got other unknown type value")
+		return 0
+	}
+}
+
+func WantIntList(value interface{}) []int {
+	switch v := value.(type) {
+	case int:
+		fmt.Println("Error: int list wanted, but got a int value")
+		return make([]int, 0)
+	case byte:
+		fmt.Println("Error: int list wanted, but got a char value")
+		return make([]int, 0)
+	case []int:
+		return v
+	case string:
+		fmt.Println("Error: int list wanted, but got a string")
+		return make([]int, 0)
+	default:
+		fmt.Println("Error: istringe wanted, but got other unknown type value")
+		return make([]int, 0)
+	}
+}
+
+func WantString(value interface{}) string {
+	switch v := value.(type) {
+	case int:
+		fmt.Println("Error: string wanted, but got a int value")
+		return ""
+	case byte:
+		fmt.Println("Error: string wanted, but got a char value")
+		return ""
+	case []int:
+		fmt.Println("Error: string wanted, but got a char value")
+		return ""
+	case string:
+		return v
+	default:
+		fmt.Println("Error: string wanted, but got other unknown type value")
+		return ""
+	}
 }
