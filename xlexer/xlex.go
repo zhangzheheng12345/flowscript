@@ -26,11 +26,10 @@ func Lex(str []string) []Token {
 		} else if str[index] == "+" {
 			result = append(result, Token{ADD, ""})
 		} else if str[index] == "-" {
-			if len(result) > 0 &&
-				result[len(result)-1].Type() == NUM ||
+			if len(result) > 0 && (result[len(result)-1].Type() == NUM ||
 				result[len(result)-1].Type() == SYMBOL ||
 				result[len(result)-1].Type() == TMP ||
-				result[len(result)-1].Type() == BPAREN {
+				result[len(result)-1].Type() == BPAREN) {
 				result = append(result, Token{SUB, ""})
 			} else if index+1 < len(str) && tools.IsSingleNum(str[index+1]) {
 				var num string
