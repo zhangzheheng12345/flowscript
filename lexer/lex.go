@@ -104,14 +104,38 @@ func Lex(str []string) []Token {
 			result = append(result, Token{STOP, ""})
 		} else if str[index] == "\"" {
 			index++
-			begin := index
+			// TODO: Avoid connect string very often ( res is connected very often
+			res := ""
 			for index < len(str) && str[index] != "\"" {
+				if str[index] == "\\" {
+					/* Escape character */
+					index++
+					if index < len(str) {
+						if str[index] == "\"" {
+							res += "\""
+						} else if str[index] == "\\" {
+							res += "\\"
+						} else if str[index] == "n" {
+							res += "\n"
+						} else if str[index] == "r" {
+							res += "\r"
+						} else if str[index] == "t" {
+							res += "\t"
+						} else if str[index] == "a" {
+							res += "\a"
+						} else {
+							fmt.Println("Error: unexpected escape character. Letter: ", index)
+						}
+					}
+				} else {
+					res += str[index]
+				}
 				index++
 			}
 			if index >= len(str) && str[index - 1] == "\"" {
 				fmt.Println("Error: lose \" while giving a string value.")
 			}
-			result = append(result, Token{STR, strings.Join(str[begin:index], "")})
+			result = append(result, Token{STR, res})
 		} else {
 			fmt.Println("Warn: unexpected token of: ", index+1, str[index])
 		}
