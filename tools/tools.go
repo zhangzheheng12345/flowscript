@@ -5,6 +5,14 @@ import (
 	"strings"
 )
 
+/* Tool function, for cannot convert bool to int directly */
+func BoolToInt(value bool) int {
+	if value {
+		return 1
+	}
+	return 0
+}
+
 /* Check if a character is a number. */
 func IsSingleNum(str string) bool {
 	return len(str) == 1 && []byte(str)[0] >= 48 && []byte(str)[0] <= 57
