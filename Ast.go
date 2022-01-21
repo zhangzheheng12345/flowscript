@@ -7,17 +7,11 @@ import (
 )
 
 /* Tool function, for cannot convert bool to int directly */
-func booltoint(value bool) int {
-	if value {
-		return 1
-	}
-	return 0
-}
-
 type Ast interface {
 	run() interface{}
 }
 
+// TODO:Support more type functions. add, multi should support string and list, and len, index... functions
 type Add_ struct {
 	op1 Value
 	op2 Value
@@ -69,7 +63,7 @@ type Bigr_ struct {
 }
 
 func (bigr_ Bigr_) run() interface{} {
-	return booltoint(tools.WantInt(bigr_.op1.get()) > tools.WantInt(bigr_.op2.get()))
+	return tools.BoolToInt(tools.WantInt(bigr_.op1.get()) > tools.WantInt(bigr_.op2.get()))
 }
 
 type Smlr_ struct {
@@ -78,7 +72,7 @@ type Smlr_ struct {
 }
 
 func (smlr_ Smlr_) run() interface{} {
-	return booltoint(tools.WantInt(smlr_.op1.get()) < tools.WantInt(smlr_.op2.get()))
+	return tools.BoolToInt(tools.WantInt(smlr_.op1.get()) < tools.WantInt(smlr_.op2.get()))
 }
 
 type Equal_ struct {
@@ -87,7 +81,7 @@ type Equal_ struct {
 }
 
 func (equal_ Equal_) run() interface{} {
-	return booltoint(tools.WantInt(equal_.op1.get()) == tools.WantInt(equal_.op2.get()))
+	return tools.BoolToInt(tools.WantInt(equal_.op1.get()) == tools.WantInt(equal_.op2.get()))
 }
 
 type And_ struct {
@@ -96,7 +90,7 @@ type And_ struct {
 }
 
 func (and_ And_) run() interface{} {
-	return booltoint((tools.WantInt(and_.op1.get()) != 0) && (tools.WantInt(and_.op2.get()) != 0))
+	return tools.BoolToInt((tools.WantInt(and_.op1.get()) != 0) && (tools.WantInt(and_.op2.get()) != 0))
 }
 
 type Or_ struct {
@@ -105,7 +99,7 @@ type Or_ struct {
 }
 
 func (or_ Or_) run() interface{} {
-	return booltoint((tools.WantInt(or_.op1.get()) != 0) || (tools.WantInt(or_.op1.get()) != 0))
+	return tools.BoolToInt((tools.WantInt(or_.op1.get()) != 0) || (tools.WantInt(or_.op1.get()) != 0))
 }
 
 type Not_ struct {
@@ -113,7 +107,7 @@ type Not_ struct {
 }
 
 func (not_ Not_) run() interface{} {
-	return booltoint(tools.WantInt(not_.op.get()) == 0)
+	return tools.BoolToInt(tools.WantInt(not_.op.get()) == 0)
 }
 
 type Var_ struct {

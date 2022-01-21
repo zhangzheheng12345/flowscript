@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/zhangzheheng12345/FlowScript/tools"
 	"github.com/zhangzheheng12345/FlowScript/xlexer"
 )
 
@@ -52,11 +53,11 @@ func F(tokens []xlexer.Token) ([]xlexer.Token, int) {
 	}
 	switch tokens[0].Type() {
 	case xlexer.SYMBOL:
-		return tokens[1:], Scope.Find(tokens[0].Value())
+		return tokens[1:], tools.WantInt(Scope.Find(tokens[0].Value()))
 	case xlexer.TMP:
 		result := tmpQueue.Get()
 		tmpQueue.Pop()
-		return tokens[1:], result
+		return tokens[1:], tools.WantInt(result)
 	case xlexer.NUM:
 		num, _ := strconv.Atoi(tokens[0].Value())
 		return tokens[1:], num
@@ -74,7 +75,7 @@ func F(tokens []xlexer.Token) ([]xlexer.Token, int) {
 		if index >= len(tokens) && tokens[index-1].Type() != xlexer.BPAREN {
 			fmt.Println("Error: lose back parenthesis in xparser")
 		}
-		return tokens[index:], Exp_{tokens[1 : index-1]}.get()
+		return tokens[index:], tools.WantInt(Exp_{tokens[1 : index-1]}.get())
 	default:
 		fmt.Println("Error: X expression mistake")
 		return tokens[1:], 0
