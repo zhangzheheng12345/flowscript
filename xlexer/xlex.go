@@ -26,7 +26,8 @@ func Lex(str []string) []Token {
 		} else if str[index] == "+" {
 			result = append(result, Token{ADD, ""})
 		} else if str[index] == "-" {
-			if result[len(result)-1].Type() == NUM ||
+			if len(result) > 0 &&
+				result[len(result)-1].Type() == NUM ||
 				result[len(result)-1].Type() == SYMBOL ||
 				result[len(result)-1].Type() == TMP ||
 				result[len(result)-1].Type() == BPAREN {
