@@ -145,7 +145,30 @@ func Lex(str []string) []Token {
 				} else {
 					index++
 					if str[index] == "'" {
-						result = append(result, Token{CHAR, str[index - 1]})
+						if str[index] == "\\" {
+						/* Escape character */
+						index++
+						if index < len(str) {
+							res := ""
+							if str[index] == "\"" {
+								result"\""
+							} else if str[index] == "\\" {
+								res = "\\"
+							} else if str[index] == "n" {
+								res = "\n"
+							} else if str[index] == "r" {
+								res = "\r"
+							} else if str[index] == "t" {
+								res = "\t"
+							} else if str[index] == "a" {
+								res = "\a"
+							} else {
+								fmt.Println("Error: unexpected escape character. Letter: ", index)
+							}
+							result = append(result, Token{CHAR, res})
+						} else {
+							result = append(result, Token{CHAR, str[index - 1]})
+						}
 					} else {
 						fmt.Println("Error: lose ' while giving a char value")
 					}
