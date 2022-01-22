@@ -34,6 +34,14 @@ func (str_ Str_) get() interface{} {
 	return str_.value
 }
 
+type Char_ struct {
+    value byte
+}
+
+func (char_ Char_) get() interface{} {
+    return char_.value
+}
+
 /* get value from the send value queue*/
 type Tmp_ struct {
 	// no content
