@@ -132,26 +132,24 @@ func Lex(str []string) []Token {
 				}
 				index++
 			}
-			if index >= len(str) && str[index - 1] == "\"" {
+			if index >= len(str) && str[index-1] == "\"" {
 				fmt.Println("Error: lose \" while giving a string value.")
 			}
 			result = append(result, Token{STR, res})
 		} else if str[index] == "'" {
 			/* Char */
 			index++
-			if index + 1 < len(str) {
+			if index+1 < len(str) {
 				if len(str[index]) > 1 {
 					fmt.Println("Error: a char value must be ascii but not other wide codeset. Letter: ", index)
 				} else {
-					index++
-					if str[index] == "'" {
-						if str[index] == "\\" {
+					res := ""
+					if str[index] == "\\" {
 						/* Escape character */
 						index++
 						if index < len(str) {
-							res := ""
 							if str[index] == "\"" {
-								result"\""
+								res = "\""
 							} else if str[index] == "\\" {
 								res = "\\"
 							} else if str[index] == "n" {
@@ -165,10 +163,13 @@ func Lex(str []string) []Token {
 							} else {
 								fmt.Println("Error: unexpected escape character. Letter: ", index)
 							}
-							result = append(result, Token{CHAR, res})
-						} else {
-							result = append(result, Token{CHAR, str[index - 1]})
 						}
+					} else {
+						res = str[index-1]
+					}
+					index++
+					if str[index] == "'" {
+						result = append(result, Token{CHAR, res})
 					} else {
 						fmt.Println("Error: lose ' while giving a char value")
 					}
