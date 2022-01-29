@@ -23,16 +23,16 @@ func (add_ Add_) run() interface{} {
 	switch v := v1.(type) {
 	case int:
 		return v + tools.WantInt(v2)
-    case byte:
+	case byte:
 		return int(v) + tools.WantInt(v2)
 	case []int:
 		/* Connect two lists */
 		return append(v, tools.WantIntList(v2)...)
 	case string:
 		return v + tools.WantString(v2)
-    default:
-        fmt.Println("Error: try to add a unkown type value with another")
-        return nil
+	default:
+		fmt.Println("Error: try to add a unkown type value with another")
+		return nil
 	}
 }
 
@@ -101,7 +101,7 @@ func (equal_ Equal_) run() interface{} {
 	switch v := v1.(type) {
 	case int:
 		return tools.BoolToInt(v == tools.WantInt(v2))
-    case byte:
+	case byte:
 		return tools.BoolToInt(int(v) == tools.WantInt(v2))
 	case []int:
 		/* Compare two lists */
@@ -114,9 +114,9 @@ func (equal_ Equal_) run() interface{} {
 		return 1
 	case string:
 		return tools.BoolToInt(v == tools.WantString(v2))
-    default:
-        fmt.Println("Error: try to compare a unkown type value to another. Operation: equal")
-        return nil
+	default:
+		fmt.Println("Error: try to compare a unkown type value to another. Operation: equal")
+		return nil
 	}
 }
 
@@ -260,12 +260,12 @@ type Echo_ struct {
 }
 
 func (echo_ Echo_) run() interface{} {
-    op := echo_.op.get()
-    v, ok := op.(byte)
-    if ok {
-        fmt.Println(string([]byte{v}))
-    } else {
-	    fmt.Println(op)
-    }
+	op := echo_.op.get()
+	v, ok := op.(byte)
+	if ok {
+		fmt.Println(string([]byte{v}))
+	} else {
+		fmt.Println(op)
+	}
 	return 0
 }

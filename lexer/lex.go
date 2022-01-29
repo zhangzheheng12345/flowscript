@@ -110,23 +110,8 @@ func Lex(str []string) []Token {
 				if str[index] == "\\" {
 					/* Escape character */
 					index++
-					if index < len(str) {
-						if str[index] == "\"" {
-							res += "\""
-						} else if str[index] == "\\" {
-							res += "\\"
-						} else if str[index] == "n" {
-							res += "\n"
-						} else if str[index] == "r" {
-							res += "\r"
-						} else if str[index] == "t" {
-							res += "\t"
-						} else if str[index] == "a" {
-							res += "\a"
-						} else {
-							fmt.Println("Error: unexpected escape character. Letter: ", index)
-						}
-					}
+					escChar := tools.PickEscapeChar(str, index)
+                    res += escChar
 				} else {
 					res += str[index]
 				}
@@ -147,23 +132,7 @@ func Lex(str []string) []Token {
 					if str[index] == "\\" {
 						/* Escape character */
 						index++
-						if index < len(str) {
-							if str[index] == "\"" {
-								res = "\""
-							} else if str[index] == "\\" {
-								res = "\\"
-							} else if str[index] == "n" {
-								res = "\n"
-							} else if str[index] == "r" {
-								res = "\r"
-							} else if str[index] == "t" {
-								res = "\t"
-							} else if str[index] == "a" {
-								res = "\a"
-							} else {
-								fmt.Println("Error: unexpected escape character. Letter: ", index)
-							}
-						}
+						res = tools.PickEscapeChar(str, index)
 					} else {
 						res = str[index-1]
 					}

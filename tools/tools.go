@@ -74,3 +74,24 @@ func WantString(value interface{}) string {
 	}
 	return v
 }
+
+/*  */
+func PickEscapeChar(str []string, index int) string {
+	if index < len(str) {
+		if str[index] == "\"" {
+			return "\""
+		} else if str[index] == "\\" {
+			return "\\"
+		} else if str[index] == "n" {
+			return "\n"
+		} else if str[index] == "r" {
+			return "\r"
+		} else if str[index] == "t" {
+			return "\t"
+		} else if str[index] == "a" {
+			return "\a"
+		}
+	}
+	fmt.Println("Error: unexpected escape character. Letter: ", index)
+	return ""
+}
