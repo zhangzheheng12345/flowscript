@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/zhangzheheng12345/FlowScript/tools"
 )
@@ -166,6 +167,60 @@ func (var_ Var_) run() interface{} {
 		}
 	}
 	return 0
+}
+
+type Len_ struct {
+	op Value
+}
+
+func (len_ Len_) run() interface{} {
+	switch v := len_.op.get().(type) {
+	case int, byte:
+		fmt.Println("Error: Try to get the length of a int or char value.")
+		return 0
+	case []int:
+		return len(v)
+	case string:
+		return len(v)
+	default:
+		fmt.Println("Error: Try to get the length of a unknown type value.")
+		return 0
+	}
+}
+
+type Index_ struct {
+	op    Value
+	index Value
+}
+
+func (index_ Index_) run() interface{} {
+	index := tools.WantInt(index_.index.get())
+	switch v := index_.op.get().(type) {
+	case int, byte:
+		fmt.Println("Error: Try to index a int or char value.")
+		return 0
+	case []int:
+		if index < 0 && -index <= len(v) {
+			return v[len(v)+index]
+		} else if index >= 0 && index < len(v) {
+			return v[index]
+		} else {
+			fmt.Println("Error: index out of range. Index: ", index, " length of the list: ", len(v))
+			return 0
+		}
+	case string:
+		if index < 0 && -index <= len(v) {
+			return strings.Split(v, "")[len(v)+index]
+		} else if index >= 0 && index < len(v) {
+			return strings.Split(v, "")[index]
+		} else {
+			fmt.Println("Error: index out of range. Index: ", index, " length of the list: ", len(v))
+			return 0
+		}
+	default:
+		fmt.Println("Error: Try to index a unknown type value.")
+		return 0
+	}
 }
 
 type Def_ struct {

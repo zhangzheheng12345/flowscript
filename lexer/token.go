@@ -14,6 +14,8 @@ const (
 	AND
 	OR
 	VAR
+	LEN
+	INDEX
 	IF
 	SEND
 	DEF

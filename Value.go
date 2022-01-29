@@ -35,11 +35,11 @@ func (str_ Str_) get() interface{} {
 }
 
 type Char_ struct {
-    value byte
+	value byte
 }
 
 func (char_ Char_) get() interface{} {
-    return char_.value
+	return char_.value
 }
 
 /* get value from the send value queue*/
