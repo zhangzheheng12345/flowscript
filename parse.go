@@ -170,14 +170,14 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				if tokens[index].Type() == lexer.SYMBOL {
 					name = tokens[index].Value()
 				} else {
-					fmt.Println("Error: unallowed variable name. Token: ", tokens[index].Type())
+					fmt.Println("Error: unallowed variable name. Token: ", index)
 					name = ""
 				}
 				var op Value
 				if index+1 < len(tokens) {
 					index++
 					switch tokens[index].Type() {
-					case lexer.NUM, lexer.SYMBOL, lexer.TMP:
+					case lexer.NUM, lexer.SYMBOL, lexer.STR, lexer.TMP:
 						/* initialize with given value */
 						op = ParseValue(tokens[index])
 					default:
