@@ -2,6 +2,7 @@ package lexer
 
 /* token kinds */
 const (
+	/* Basic tokens */
 	ADD = iota
 	SUB
 	MULTI
@@ -14,8 +15,6 @@ const (
 	AND
 	OR
 	VAR
-	LEN
-	INDEX
 	IF
 	SEND
 	DEF
@@ -23,12 +22,17 @@ const (
 	END
 	XEXP
 	STOP
-	ECHO
 	NUM
 	SYMBOL
 	STR
 	CHAR
 	TMP
+	/* Buildin commands */
+	ECHO
+	LEN
+	INDEX
+	APP
+	SLICE
 )
 
 /* token structure, including kind and value */

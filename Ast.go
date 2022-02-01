@@ -7,12 +7,10 @@ import (
 	"github.com/zhangzheheng12345/FlowScript/tools"
 )
 
-/* Tool function, for cannot convert bool to int directly */
 type Ast interface {
 	run() interface{}
 }
 
-// TODO:Support more type functions. add, multi should support string and list, and len, index... functions
 type Add_ struct {
 	op1 Value
 	op2 Value
@@ -181,7 +179,7 @@ func (len_ Len_) run() interface{} {
 	case []int:
 		return len(v)
 	case string:
-		return len(v)
+		return len(strings.Split(v, ""))
 	default:
 		fmt.Println("Error: Try to get the length of a unknown type value.")
 		return 0
@@ -219,6 +217,49 @@ func (index_ Index_) run() interface{} {
 		}
 	default:
 		fmt.Println("Error: Try to index a unknown type value.")
+		return 0
+	}
+}
+
+type App_ struct {
+	op1 Value
+	op2 Value
+}
+
+func (app_ App_) run() interface{} {
+	switch v := app_.op1.get().(type) {
+	case int, byte:
+		fmt.Println("Error: Try to append a value after a int or char value.")
+		return 0
+	case []int:
+		return append(v, tools.WantInt(app_.op2.get()))
+	case string:
+		return v + string([]byte{tools.WantInt(app_.op2.get())})
+	default:
+		fmt.Println("Error: Try to append sth after a unknown type value.")
+		return 0
+	}
+}
+
+type Slice_ struct {
+	op1 Value
+	op2 Value
+	op3 Value
+}
+
+func (slice_ Slice_) run() interface{} {
+	// TODO: Support minus index in slice
+	switch v := slice_.op1.get().(type) {
+	case int, byte:
+		fmt.Println("Error: Try to slice a int or char value.")
+		return 0
+	case []int:
+		return v[tools.WantInt(slice_.op2.get()) : tools.WantInt(slice_.op3.get())]
+	case string:
+		return strings.Join(string.Split(v, "")[
+			tools.WantInt(slice_.op2.get()) : tools.WantInt(slice_.op3.get())], "")
+	default:
+		fmt.Println("Error: Try to append sth after a unknown type value.")
 		return 0
 	}
 }

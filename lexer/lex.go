@@ -60,6 +60,10 @@ func Lex(str []string) []Token {
 				result = append(result, Token{LEN, ""})
 			} else if word == "index" {
 				result = append(result, Token{INDEX, ""})
+			} else if word == "app" {
+				result = append(result, Token{APP, ""})
+			} else if word == "slice" {
+				result = append(result, Token{SLICE, ""})
 			} else {
 				result = append(result, Token{SYMBOL, word})
 			}

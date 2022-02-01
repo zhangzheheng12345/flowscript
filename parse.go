@@ -208,7 +208,29 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Index_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to or. Token: ", index)
+				fmt.Println("Error: lose argumanet to index. Token: ", index)
+			}
+		} else if tokens[index].Type() == lexer.APP {
+			if index+2 < len(tokens) {
+				index++
+				op1 := ParseValue(tokens[index])
+				index++
+				op2 := ParseValue(tokens[index])
+				codes = append(codes, App_{op1, op2})
+			} else {
+				fmt.Println("Error: lose argumanet to index. Token: ", index)
+			}
+		} else if tokens[index].Type() == lexer.INDEX {
+			if index+3 < len(tokens) {
+				index++
+				op1 := ParseValue(tokens[index])
+				index++
+				op2 := ParseValue(tokens[index])
+				index++
+				op3 := ParseValue(tokens[index])
+				codes = append(codes, Slice_{op1, op2, op3})
+			} else {
+				fmt.Println("Error: lose argumanet to index. Token: ", index)
 			}
 		} else if tokens[index].Type() == lexer.IF {
 			/*
