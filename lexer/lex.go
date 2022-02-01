@@ -56,6 +56,8 @@ func Lex(str []string) []Token {
 				result = append(result, Token{END, ""})
 			} else if word == "echo" {
 				result = append(result, Token{ECHO, ""})
+			} else if word == "list" {
+				result = append(result, Token{LIST, ""})
 			} else if word == "len" {
 				result = append(result, Token{LEN, ""})
 			} else if word == "index" {

@@ -29,6 +29,7 @@ const (
 	TMP
 	/* Buildin commands */
 	ECHO
+	LIST
 	LEN
 	INDEX
 	APP

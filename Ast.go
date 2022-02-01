@@ -258,9 +258,21 @@ func (slice_ Slice_) run() interface{} {
 	case string:
 		return strings.Join(strings.Split(v, "")[tools.WantInt(slice_.op2.get()):tools.WantInt(slice_.op3.get())], "")
 	default:
-		fmt.Println("Error: Try to append sth after a unknown type value.")
+		fmt.Println("Error: Try to slice a unknown type value.")
 		return 0
 	}
+}
+
+type List_ struct {
+	ops []Value
+}
+
+func (list_ List_) run() interface{} {
+	res := make([]int, 0)
+	for _, v := range list_.ops {
+		res = append(res, tools.WantInt(v.get()))
+	}
+	return res
 }
 
 type Def_ struct {
