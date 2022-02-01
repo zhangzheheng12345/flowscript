@@ -234,7 +234,7 @@ func (app_ App_) run() interface{} {
 	case []int:
 		return append(v, tools.WantInt(app_.op2.get()))
 	case string:
-		return v + string([]byte{tools.WantInt(app_.op2.get())})
+		return v + string([]byte{byte(tools.WantInt(app_.op2.get()))})
 	default:
 		fmt.Println("Error: Try to append sth after a unknown type value.")
 		return 0
@@ -254,10 +254,9 @@ func (slice_ Slice_) run() interface{} {
 		fmt.Println("Error: Try to slice a int or char value.")
 		return 0
 	case []int:
-		return v[tools.WantInt(slice_.op2.get()) : tools.WantInt(slice_.op3.get())]
+		return v[tools.WantInt(slice_.op2.get()):tools.WantInt(slice_.op3.get())]
 	case string:
-		return strings.Join(string.Split(v, "")[
-			tools.WantInt(slice_.op2.get()) : tools.WantInt(slice_.op3.get())], "")
+		return strings.Join(strings.Split(v, "")[tools.WantInt(slice_.op2.get()):tools.WantInt(slice_.op3.get())], "")
 	default:
 		fmt.Println("Error: Try to append sth after a unknown type value.")
 		return 0

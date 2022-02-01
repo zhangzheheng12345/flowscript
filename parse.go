@@ -220,7 +220,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			} else {
 				fmt.Println("Error: lose argumanet to index. Token: ", index)
 			}
-		} else if tokens[index].Type() == lexer.INDEX {
+		} else if tokens[index].Type() == lexer.SLICE {
 			if index+3 < len(tokens) {
 				index++
 				op1 := ParseValue(tokens[index])
