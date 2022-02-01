@@ -90,6 +90,8 @@ func PickEscapeChar(str []string, index int) string {
 			return "\t"
 		} else if str[index] == "a" {
 			return "\a"
+		} else if str[index] == "b" {
+			return "\b"
 		}
 	}
 	fmt.Println("Error: unexpected escape character. Letter: ", index)

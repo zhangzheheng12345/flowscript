@@ -142,7 +142,7 @@ func Lex(str []string) []Token {
 						index++
 						res = tools.PickEscapeChar(str, index)
 					} else {
-						res = str[index-1]
+						res = str[index]
 					}
 					index++
 					if str[index] == "'" {
