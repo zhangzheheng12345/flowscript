@@ -370,9 +370,9 @@ func (echo_ Echo_) run() interface{} {
 	op := echo_.op.get()
 	v, ok := op.(byte)
 	if ok {
-		fmt.Println(string([]byte{v}))
+		fmt.Print(string([]byte{v}))
 	} else {
-		fmt.Println(op)
+		fmt.Print(op)
 	}
 	return 0
 }
@@ -388,6 +388,7 @@ func (input_ Input_) run() interface{} {
 	var res string
 	_, err := fmt.Scan(&res)
 	if err != nil {
+        fmt.Println(err)
 		return ""
 	}
 	return res
