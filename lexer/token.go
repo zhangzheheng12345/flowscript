@@ -30,6 +30,7 @@ const (
 	/* Buildin commands */
 	ECHO
 	INPUT
+	LIST
 	LEN
 	INDEX
 	APP
