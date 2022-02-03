@@ -364,3 +364,19 @@ func (echo_ Echo_) run() interface{} {
 	}
 	return 0
 }
+
+/* Read from stdin */
+type Input_ struct {
+	// op is a reminding string
+	op Value
+}
+
+func (input_ Input_) run() interface{} {
+	Echo_{ input_.op }.run()
+	var res string
+	_, err := fmt.Scan(&res)
+	if err != nil {
+		return ""
+	}
+	return res
+}

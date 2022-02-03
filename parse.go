@@ -154,8 +154,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 		} else if tokens[index].Type() == lexer.NOT {
 			if index+1 < len(tokens) {
 				index++
-				op := ParseValue(tokens[index])
-				codes = append(codes, Not_{op})
+				codes = append(codes, Not_{ ParseValue(tokens[index]) })
 			} else {
 				fmt.Println("Error: lose argumanet to not. Token: ", index)
 			}
@@ -314,6 +313,13 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			if index+1 < len(tokens) {
 				index++
 				codes = append(codes, Echo_{ParseValue(tokens[index])})
+			} else {
+				fmt.Println("Error: lose argument to echo. Token: ", index)
+			}
+		} else if tokens[index].Type() == lexer.INPUT {
+			if index+1 < len(tokens) {
+				index++
+				codes = append(codes, Input_{ParseValue(tokens[index])})
 			} else {
 				fmt.Println("Error: lose argument to echo. Token: ", index)
 			}
