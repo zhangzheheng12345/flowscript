@@ -198,23 +198,19 @@ func (index_ Index_) run() interface{} {
 		fmt.Println("Error: Try to index a int or char value.")
 		return 0
 	case []int:
-		if index < 0 && -index <= len(v) {
-			return v[len(v)+index]
-		} else if index >= 0 && index < len(v) {
-			return v[index]
-		} else {
-			fmt.Println("Error: index out of range. Index: ", index, " length of the list: ", len(v))
-			return 0
-		}
+		abs, err := tools.AbsIndex(len(v), index)
+        if err {
+            return 0
+        } else {
+            return v[abs]
+        }
 	case string:
-		if index < 0 && -index <= len(v) {
-			return strings.Split(v, "")[len(v)+index]
-		} else if index >= 0 && index < len(v) {
-			return strings.Split(v, "")[index]
-		} else {
-			fmt.Println("Error: index out of range. Index: ", index, " length of the list: ", len(v))
-			return 0
-		}
+		abs, err := tools.AbsIndex(len(strings.Split(v, "")), index)
+        if err {
+            return ""
+        } else {
+            return strings.Split(v, "")[abs]
+        }
 	default:
 		fmt.Println("Error: Try to index a unknown type value.")
 		return 0
@@ -249,14 +245,30 @@ type Slice_ struct {
 
 func (slice_ Slice_) run() interface{} {
 	// TODO: Support minus index in slice
+    begin := tools.WantInt(slice_.op2.get())
+    end := tools.WantInt(slice_.op3.get())
+    var err1, err2 bool
 	switch v := slice_.op1.get().(type) {
 	case int, byte:
 		fmt.Println("Error: Try to slice a int or char value.")
 		return 0
 	case []int:
-		return v[tools.WantInt(slice_.op2.get()):tools.WantInt(slice_.op3.get())]
+        begin, err1 = tools.AbsIndex(len(v), begin)
+        end, err2 = tools.AbsIndex(len(v), end)
+        if err1 || err2 {
+            return 0
+        } else {
+            return v[begin:end]
+        }
 	case string:
-		return strings.Join(strings.Split(v, "")[tools.WantInt(slice_.op2.get()):tools.WantInt(slice_.op3.get())], "")
+        splited := strings.Split(v, "")
+        begin, err1 = tools.AbsIndex(len(splited), begin)
+        end, err2 = tools.AbsIndex(len(splited), end)
+        if err1 || err2 {
+            return 0
+        } else {
+            return strings.Join(splited[begin:end], "")
+        }
 	default:
 		fmt.Println("Error: Try to slice a unknown type value.")
 		return 0

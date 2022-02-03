@@ -97,3 +97,14 @@ func PickEscapeChar(str []string, index int) string {
 	fmt.Println("Error: unexpected escape character. Letter: ", index)
 	return ""
 }
+
+func AbsIndex(length int, index int) (int, bool) {
+    if index >= 0 && index < length {
+        return index, false
+    } else if index < 0 && -index <= length {
+        return length + index, false
+    } else {
+        fmt.Println("Error: index out of range. Index: ", index, " length of the list: ", length)
+        return 0, true
+    }
+}
