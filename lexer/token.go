@@ -18,6 +18,7 @@ const (
 	IF
 	SEND
 	DEF
+	STRUCT
 	BEGIN
 	END
 	XEXP

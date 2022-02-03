@@ -5,46 +5,9 @@ import (
 )
 
 /*
-Structure Func_ contains all the information for a function to run.
-Func_.args contains the arguments' name in order to add them in a new variable scope after calling the function.
-Func_.codes contains the codes in the function to run later.
-*/
-type Func_ struct {
-	fathers *Scope_
-	fatherf *FuncScope_
-	args    []string
-	codes   []Ast
-}
-
-/*
-Func_.run([]int) run the codes in the function.
-*/
-func (func_ Func_) run(args []interface{}) interface{} {
-	/* provide a independence scope for the function*/
-	Scope = MakeScope(func_.fathers, Scope)
-	FuncScope = MakeFuncScope(func_.fatherf, FuncScope)
-	/* add the arguments to the local scope*/
-	for key, arg := range args {
-		Scope.Add(func_.args[key], arg)
-	}
-	/* run the codes.
-	   the last expression will give the return value.
-	   the default return value is 0.
-	*/
-	var result interface{}
-	for _, code := range func_.codes {
-		result = code.run()
-	}
-	/* delete the local variables and change the scope before leave the function*/
-	Scope = Scope.Back()
-	FuncScope = FuncScope.Back()
-	return result
-}
-
-/*
 Global variable, Scope, contains all the variable at present.
 If someone want to add global variable by Golang in a embeding way,
-he should Add(string,int) variable to Scope directly,
+he should Scope.Add(string,interface{}) variable to Scope directly,
 because all the codes run with RunCode(string) will be inside a independence Block_,
 so you can't add global variable / function by native FlowScript.
 */

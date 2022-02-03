@@ -2,6 +2,7 @@ package parser
 
 import (
 	"github.com/zhangzheheng12345/FlowScript/xlexer"
+	"github.com/zhangzheheng12345/FlowScript/tools"
 )
 
 type Value interface {
@@ -19,11 +20,18 @@ func (int_ Int_) get() interface{} {
 
 /* variables */
 type Symbol_ struct {
-	name string
+	// A.B.C makes a struct visiting chain
+	name []string
 }
 
 func (symbol_ Symbol_) get() interface{} {
-	return Scope.Find(symbol_.name)
+	// TODO: Will len(symbol_.name) == 0 ?
+	base := Scope.Find(symbol_.name[0])
+	// Iterating the chain
+	for _, memberName := range symbol_.name[1:] {
+		base = tools.WantStruct(base).Member(memberName)
+	}
+	return base
 }
 
 type Str_ struct {
