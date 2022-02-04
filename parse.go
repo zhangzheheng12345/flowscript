@@ -20,6 +20,7 @@ func ParseValue(token lexer.Token) Value {
 	} else if token.Type() == lexer.SYMBOL {
 		return Symbol_{strings.Split(token.Value(), ".")}
 	} else if token.Type() == lexer.TMP {
+        // TODO: make tmp mark support member visiting chain -.A.B.C...
 		return Tmp_{}
 	} else if token.Type() == lexer.XEXP {
 		return Exp_{xlexer.Lex(strings.Split(token.Value(), ""))}
