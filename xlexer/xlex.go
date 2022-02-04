@@ -3,7 +3,7 @@ package xlexer
 import (
 	"fmt"
 
-	"github.com/zhangzheheng12345/FlowScript/tools"
+	"github.com/zhangzheheng12345/FlowScript/lex_tools"
 )
 
 func Lex(str []string) []Token {
@@ -11,13 +11,13 @@ func Lex(str []string) []Token {
 	for index := 0; index < len(str); index++ {
 		if str[index] == " " || str[index] == "\t" {
 			// Do nothing
-		} else if str[index] == "_" || tools.IsSingleAlpha(str[index]) {
+		} else if str[index] == "_" || lextools.IsSingleAlpha(str[index]) {
 			var symbol string
-			symbol, index = tools.PickSymbol(str, index)
+			symbol, index = lextools.PickSymbol(str, index)
 			result = append(result, Token{SYMBOL, symbol})
-		} else if tools.IsSingleNum(str[index]) {
+		} else if lextools.IsSingleNum(str[index]) {
 			var num string
-			num, index = tools.PickNum(str, index)
+			num, index = lextools.PickNum(str, index)
 			result = append(result, Token{NUM, num})
 		} else if str[index] == "(" {
 			result = append(result, Token{FPAREN, ""})
@@ -31,9 +31,9 @@ func Lex(str []string) []Token {
 				result[len(result)-1].Type() == TMP ||
 				result[len(result)-1].Type() == BPAREN) {
 				result = append(result, Token{SUB, ""})
-			} else if index+1 < len(str) && tools.IsSingleNum(str[index+1]) {
+			} else if index+1 < len(str) && lextools.IsSingleNum(str[index+1]) {
 				var num string
-				num, index = tools.PickNum(str, index)
+				num, index = lextools.PickNum(str, index)
 				result = append(result, Token{NUM, num})
 			} else {
 				result = append(result, Token{TMP, ""})

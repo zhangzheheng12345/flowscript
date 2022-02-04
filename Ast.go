@@ -3,8 +3,6 @@ package parser
 import (
 	"fmt"
 	"strings"
-
-	"github.com/zhangzheheng12345/FlowScript/tools"
 )
 
 type Ast interface {
@@ -21,14 +19,14 @@ func (add_ Add_) run() interface{} {
 	v2 := add_.op2.get()
 	switch v := v1.(type) {
 	case int:
-		return v + tools.WantInt(v2)
+		return v + WantInt(v2)
 	case byte:
-		return int(v) + tools.WantInt(v2)
+		return int(v) + WantInt(v2)
 	case []int:
 		/* Connect two lists */
-		return append(v, tools.WantIntList(v2)...)
+		return append(v, WantIntList(v2)...)
 	case string:
-		return v + tools.WantString(v2)
+		return v + WantString(v2)
 	default:
 		fmt.Println("Error: try to add a unkown type value with another")
 		return nil
@@ -41,7 +39,7 @@ type Sub_ struct {
 }
 
 func (sub_ Sub_) run() interface{} {
-	return tools.WantInt(sub_.op1.get()) - tools.WantInt(sub_.op2.get())
+	return WantInt(sub_.op1.get()) - WantInt(sub_.op2.get())
 }
 
 type Multi_ struct {
@@ -50,7 +48,7 @@ type Multi_ struct {
 }
 
 func (multi_ Multi_) run() interface{} {
-	return tools.WantInt(multi_.op1.get()) * tools.WantInt(multi_.op2.get())
+	return WantInt(multi_.op1.get()) * WantInt(multi_.op2.get())
 }
 
 type Div_ struct {
@@ -59,7 +57,7 @@ type Div_ struct {
 }
 
 func (div_ Div_) run() interface{} {
-	return tools.WantInt(div_.op1.get()) / tools.WantInt(div_.op2.get())
+	return WantInt(div_.op1.get()) / WantInt(div_.op2.get())
 }
 
 type Mod_ struct {
@@ -68,7 +66,7 @@ type Mod_ struct {
 }
 
 func (mod_ Mod_) run() interface{} {
-	return tools.WantInt(mod_.op1.get()) % tools.WantInt(mod_.op2.get())
+	return WantInt(mod_.op1.get()) % WantInt(mod_.op2.get())
 }
 
 type Bigr_ struct {
@@ -77,7 +75,7 @@ type Bigr_ struct {
 }
 
 func (bigr_ Bigr_) run() interface{} {
-	return tools.BoolToInt(tools.WantInt(bigr_.op1.get()) > tools.WantInt(bigr_.op2.get()))
+	return BoolToInt(WantInt(bigr_.op1.get()) > WantInt(bigr_.op2.get()))
 }
 
 type Smlr_ struct {
@@ -86,7 +84,7 @@ type Smlr_ struct {
 }
 
 func (smlr_ Smlr_) run() interface{} {
-	return tools.BoolToInt(tools.WantInt(smlr_.op1.get()) < tools.WantInt(smlr_.op2.get()))
+	return BoolToInt(WantInt(smlr_.op1.get()) < WantInt(smlr_.op2.get()))
 }
 
 type Equal_ struct {
@@ -99,12 +97,12 @@ func (equal_ Equal_) run() interface{} {
 	v2 := equal_.op2.get()
 	switch v := v1.(type) {
 	case int:
-		return tools.BoolToInt(v == tools.WantInt(v2))
+		return BoolToInt(v == WantInt(v2))
 	case byte:
-		return tools.BoolToInt(int(v) == tools.WantInt(v2))
+		return BoolToInt(int(v) == WantInt(v2))
 	case []int:
 		/* Compare two lists */
-		li2 := tools.WantIntList(v2)
+		li2 := WantIntList(v2)
 		for i, value := range v {
 			if value != li2[i] {
 				return 0
@@ -112,7 +110,7 @@ func (equal_ Equal_) run() interface{} {
 		}
 		return 1
 	case string:
-		return tools.BoolToInt(v == tools.WantString(v2))
+		return BoolToInt(v == WantString(v2))
 	default:
 		fmt.Println("Error: try to compare a unkown type value to another. Operation: equal")
 		return nil
@@ -125,7 +123,7 @@ type And_ struct {
 }
 
 func (and_ And_) run() interface{} {
-	return tools.BoolToInt((tools.WantInt(and_.op1.get()) != 0) && (tools.WantInt(and_.op2.get()) != 0))
+	return BoolToInt((WantInt(and_.op1.get()) != 0) && (WantInt(and_.op2.get()) != 0))
 }
 
 type Or_ struct {
@@ -134,7 +132,7 @@ type Or_ struct {
 }
 
 func (or_ Or_) run() interface{} {
-	return tools.BoolToInt((tools.WantInt(or_.op1.get()) != 0) || (tools.WantInt(or_.op1.get()) != 0))
+	return BoolToInt((WantInt(or_.op1.get()) != 0) || (WantInt(or_.op1.get()) != 0))
 }
 
 type Not_ struct {
@@ -142,7 +140,7 @@ type Not_ struct {
 }
 
 func (not_ Not_) run() interface{} {
-	return tools.BoolToInt(tools.WantInt(not_.op.get()) == 0)
+	return BoolToInt(WantInt(not_.op.get()) == 0)
 }
 
 type Var_ struct {
@@ -192,20 +190,20 @@ type Index_ struct {
 }
 
 func (index_ Index_) run() interface{} {
-	index := tools.WantInt(index_.index.get())
+	index := WantInt(index_.index.get())
 	switch v := index_.op.get().(type) {
 	case int, byte:
 		fmt.Println("Error: Try to index a int or char value.")
 		return 0
 	case []int:
-		abs, err := tools.AbsIndex(len(v), index)
+		abs, err := AbsIndex(len(v), index)
         if err {
             return 0
         } else {
             return v[abs]
         }
 	case string:
-		abs, err := tools.AbsIndex(len(strings.Split(v, "")), index)
+		abs, err := AbsIndex(len(strings.Split(v, "")), index)
         if err {
             return ""
         } else {
@@ -228,7 +226,7 @@ func (app_ App_) run() interface{} {
 		fmt.Println("Error: Try to append a value after a int or char value.")
 		return 0
 	case []int:
-		return append(v, tools.WantInt(app_.op2.get()))
+		return append(v, WantInt(app_.op2.get()))
 	case string:
 		return v + string([]byte{byte(tools.WantInt(app_.op2.get()))})
 	default:
@@ -245,16 +243,16 @@ type Slice_ struct {
 
 func (slice_ Slice_) run() interface{} {
 	// TODO: Support minus index in slice
-    begin := tools.WantInt(slice_.op2.get())
-    end := tools.WantInt(slice_.op3.get())
+    begin := WantInt(slice_.op2.get())
+    end := WantInt(slice_.op3.get())
     var err1, err2 bool
 	switch v := slice_.op1.get().(type) {
 	case int, byte:
 		fmt.Println("Error: Try to slice a int or char value.")
 		return 0
 	case []int:
-        begin, err1 = tools.AbsIndex(len(v), begin)
-        end, err2 = tools.AbsIndex(len(v), end)
+        begin, err1 = AbsIndex(len(v), begin)
+        end, err2 = AbsIndex(len(v), end)
         if err1 || err2 {
             return 0
         } else {
@@ -262,8 +260,8 @@ func (slice_ Slice_) run() interface{} {
         }
 	case string:
         splited := strings.Split(v, "")
-        begin, err1 = tools.AbsIndex(len(splited), begin)
-        end, err2 = tools.AbsIndex(len(splited), end)
+        begin, err1 = AbsIndex(len(splited), begin)
+        end, err2 = AbsIndex(len(splited), end)
         if err1 || err2 {
             return 0
         } else {
@@ -282,7 +280,7 @@ type List_ struct {
 func (list_ List_) run() interface{} {
 	res := make([]int, 0)
 	for _, v := range list_.ops {
-		res = append(res, tools.WantInt(v.get()))
+		res = append(res, WantInt(v.get()))
 	}
 	return res
 }
@@ -345,7 +343,7 @@ type If_ struct {
 }
 
 func (if_ If_) run() interface{} {
-	if if_.condition.get() != 0 {
+	if WantInt(if_.condition.get()) != 0 {
 		Scope = MakeScope(Scope, Scope)
 		FuncScope = MakeFuncScope(FuncScope, FuncScope)
 		var result interface{}

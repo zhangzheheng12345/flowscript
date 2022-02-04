@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zhangzheheng12345/FlowScript/tools"
+    "github.com/zhangzheheng12345/FlowScript/lex_tools"
 )
 
 // TODO: Support string and list syntax and more
@@ -19,7 +19,7 @@ func Lex(str []string) []Token {
 				// Do nothing
 			}
 			index--
-		} else if tools.IsSingleAlpha(str[index]) || str[index] == "_" {
+		} else if lextools.IsSingleAlpha(str[index]) || str[index] == "_" {
 			var word string
 			word, index = tools.PickSymbol(str, index)
 			if word == "add" {
@@ -73,16 +73,16 @@ func Lex(str []string) []Token {
 			} else {
 				result = append(result, Token{SYMBOL, word})
 			}
-		} else if tools.IsSingleNum(str[index]) {
+		} else if lextools.IsSingleNum(str[index]) {
 			var num string
-			num, index = tools.PickNum(str, index)
+			num, index = lextools.PickNum(str, index)
 			result = append(result, Token{NUM, num})
 		} else if str[index] == ">" {
 			result = append(result, Token{SEND, ""})
 		} else if str[index] == "-" {
 			if index+1 < len(str) && tools.IsSingleNum(str[index+1]) {
 				var num string
-				num, index = tools.PickNum(str, index)
+				num, index = lextools.PickNum(str, index)
 				result = append(result, Token{NUM, num})
 			} else {
 				result = append(result, Token{TMP, ""})
@@ -124,7 +124,7 @@ func Lex(str []string) []Token {
 				if str[index] == "\\" {
 					/* Escape character */
 					index++
-					escChar := tools.PickEscapeChar(str, index)
+					escChar := lextools.PickEscapeChar(str, index)
 					res += escChar
 				} else {
 					res += str[index]
@@ -146,7 +146,7 @@ func Lex(str []string) []Token {
 					if str[index] == "\\" {
 						/* Escape character */
 						index++
-						res = tools.PickEscapeChar(str, index)
+						res = lextools.PickEscapeChar(str, index)
 					} else {
 						res = str[index]
 					}
