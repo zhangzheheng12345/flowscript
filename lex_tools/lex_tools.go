@@ -1,7 +1,8 @@
 package lextools
 
 import (
-    "strings"
+	"fmt"
+	"strings"
 )
 
 /* Check if a character is a number. */
@@ -20,7 +21,8 @@ func PickSymbol(str []string, index int) (string, int) {
 	for ; index < len(str) &&
 		(IsSingleAlpha(str[index]) ||
 			IsSingleNum(str[index]) ||
-			str[index] == "_"); index++ {
+			str[index] == "_" ||
+			str[index] == "."); index++ {
 		// Do nothing
 	}
 	return strings.Join(str[begin:index], ""), index - 1

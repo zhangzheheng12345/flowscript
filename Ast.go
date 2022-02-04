@@ -197,18 +197,18 @@ func (index_ Index_) run() interface{} {
 		return 0
 	case []int:
 		abs, err := AbsIndex(len(v), index)
-        if err {
-            return 0
-        } else {
-            return v[abs]
-        }
+		if err {
+			return 0
+		} else {
+			return v[abs]
+		}
 	case string:
 		abs, err := AbsIndex(len(strings.Split(v, "")), index)
-        if err {
-            return ""
-        } else {
-            return strings.Split(v, "")[abs]
-        }
+		if err {
+			return ""
+		} else {
+			return strings.Split(v, "")[abs]
+		}
 	default:
 		fmt.Println("Error: Try to index a unknown type value.")
 		return 0
@@ -228,7 +228,7 @@ func (app_ App_) run() interface{} {
 	case []int:
 		return append(v, WantInt(app_.op2.get()))
 	case string:
-		return v + string([]byte{byte(tools.WantInt(app_.op2.get()))})
+		return v + string([]byte{byte(WantInt(app_.op2.get()))})
 	default:
 		fmt.Println("Error: Try to append sth after a unknown type value.")
 		return 0
@@ -243,30 +243,30 @@ type Slice_ struct {
 
 func (slice_ Slice_) run() interface{} {
 	// TODO: Support minus index in slice
-    begin := WantInt(slice_.op2.get())
-    end := WantInt(slice_.op3.get())
-    var err1, err2 bool
+	begin := WantInt(slice_.op2.get())
+	end := WantInt(slice_.op3.get())
+	var err1, err2 bool
 	switch v := slice_.op1.get().(type) {
 	case int, byte:
 		fmt.Println("Error: Try to slice a int or char value.")
 		return 0
 	case []int:
-        begin, err1 = AbsIndex(len(v), begin)
-        end, err2 = AbsIndex(len(v), end)
-        if err1 || err2 {
-            return 0
-        } else {
-            return v[begin:end]
-        }
+		begin, err1 = AbsIndex(len(v), begin)
+		end, err2 = AbsIndex(len(v), end)
+		if err1 || err2 {
+			return 0
+		} else {
+			return v[begin:end]
+		}
 	case string:
-        splited := strings.Split(v, "")
-        begin, err1 = AbsIndex(len(splited), begin)
-        end, err2 = AbsIndex(len(splited), end)
-        if err1 || err2 {
-            return 0
-        } else {
-            return strings.Join(splited[begin:end], "")
-        }
+		splited := strings.Split(v, "")
+		begin, err1 = AbsIndex(len(splited), begin)
+		end, err2 = AbsIndex(len(splited), end)
+		if err1 || err2 {
+			return 0
+		} else {
+			return strings.Join(splited[begin:end], "")
+		}
 	default:
 		fmt.Println("Error: Try to slice a unknown type value.")
 		return 0
@@ -294,6 +294,23 @@ type Def_ struct {
 func (def_ Def_) run() interface{} {
 	FuncScope.Add(def_.name, Func_{Scope, FuncScope, def_.args, def_.codes})
 	return 0
+}
+
+/* Struct_ ( with one underline ) is the command */
+type Struct_ struct {
+    codes []Ast
+}
+
+func (struct_ Struct_) run() interface{} {
+    Scope = MakeScope(Scope, Scope)
+	FuncScope = MakeFuncScope(FuncScope, FuncScope)
+	for _, code := range struct_.codes {
+		code.run()
+	}
+    result := Scope.vars
+	Scope = Scope.Back()
+	FuncScope = FuncScope.Back()
+	return Struct{ result }
 }
 
 /* a send sequence */
@@ -394,11 +411,11 @@ type Input_ struct {
 }
 
 func (input_ Input_) run() interface{} {
-	Echo_{ input_.op }.run()
+	Echo_{input_.op}.run()
 	var res string
 	_, err := fmt.Scan(&res)
 	if err != nil {
-        fmt.Println(err)
+		fmt.Println(err)
 		return ""
 	}
 	return res

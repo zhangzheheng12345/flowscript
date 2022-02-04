@@ -3,7 +3,7 @@ package parser
 import (
 	"fmt"
 	"strconv"
-    
+
 	"github.com/zhangzheheng12345/FlowScript/xlexer"
 )
 

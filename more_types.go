@@ -1,7 +1,7 @@
 package parser
 
 import (
-    "fmt"
+	"fmt"
 )
 
 /*
@@ -41,12 +41,13 @@ func (func_ Func_) run(args []interface{}) interface{} {
 	return result
 }
 
-type Struct_ struct {
+/* Struct ( no underlines ) is a type */
+type Struct struct {
 	members map[string]interface{}
 }
 
-func (struct_ Struct_) Member(name string) interface{} {
-	v, ok := struct_.members[string]
+func (this Struct) Member(name string) interface{} {
+	v, ok := this.members[name]
 	if ok {
 		return v
 	} else {

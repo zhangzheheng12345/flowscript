@@ -2,9 +2,9 @@ package parser
 
 import (
 	"fmt"
-    "strconv"
+	"strconv"
 	"strings"
-    
+
 	"github.com/zhangzheheng12345/FlowScript/lexer"
 	"github.com/zhangzheheng12345/FlowScript/xlexer"
 )
@@ -18,7 +18,7 @@ func ParseValue(token lexer.Token) Value {
 		num, _ := strconv.Atoi(token.Value())
 		return Int_{num}
 	} else if token.Type() == lexer.SYMBOL {
-		return Symbol_{token.Value()}
+		return Symbol_{strings.Split(token.Value(), ".")}
 	} else if token.Type() == lexer.TMP {
 		return Tmp_{}
 	} else if token.Type() == lexer.XEXP {
@@ -155,7 +155,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 		} else if tokens[index].Type() == lexer.NOT {
 			if index+1 < len(tokens) {
 				index++
-				codes = append(codes, Not_{ ParseValue(tokens[index]) })
+				codes = append(codes, Not_{ParseValue(tokens[index])})
 			} else {
 				fmt.Println("Error: lose argumanet to not. Token: ", index)
 			}
@@ -246,7 +246,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				index++
 			}
 			codes = append(codes, List_{ops})
-            index--
+			index--
 		} else if tokens[index].Type() == lexer.IF {
 			/*
 			   if codition begin ... end
@@ -277,7 +277,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			*/
 			if index == 0 || tokens[index-1].Type() == lexer.STOP {
 				fmt.Println("Error: use ' > ' at the start of a sentence. There's nothing to send. Token: ", index)
-			} else {
+			} else if len(codes) > 0 {
 				sendList = append(sendList, codes[len(codes)-1])
 				codes = codes[:len(codes)-1]
 			}
@@ -324,6 +324,24 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				}
 			} else {
 				fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+			}
+		} else if tokens[index].Type() == lexer.STRUCT {
+			if index+2 < len(tokens) {
+				index++
+				if tokens[index].Type() == lexer.BEGIN {
+					index++
+					codesInStruct, i := Parse(tokens[index:])
+					index += i
+					if index < len(tokens) && tokens[index].Type() == lexer.END {
+						codes = append(codes, Struct_{codesInStruct})
+					} else {
+						fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+					}
+				} else {
+					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+				}
+			} else {
+				fmt.Println("Error: not complete def block. Token: ", index)
 			}
 		} else if tokens[index].Type() == lexer.ECHO {
 			if index+1 < len(tokens) {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-    "github.com/zhangzheheng12345/FlowScript/lex_tools"
+	"github.com/zhangzheheng12345/FlowScript/lex_tools"
 )
 
 // TODO: Support string and list syntax and more
@@ -21,7 +21,7 @@ func Lex(str []string) []Token {
 			index--
 		} else if lextools.IsSingleAlpha(str[index]) || str[index] == "_" {
 			var word string
-			word, index = tools.PickSymbol(str, index)
+			word, index = lextools.PickSymbol(str, index)
 			if word == "add" {
 				result = append(result, Token{ADD, ""})
 			} else if word == "sub" {
@@ -80,7 +80,7 @@ func Lex(str []string) []Token {
 		} else if str[index] == ">" {
 			result = append(result, Token{SEND, ""})
 		} else if str[index] == "-" {
-			if index+1 < len(str) && tools.IsSingleNum(str[index+1]) {
+			if index+1 < len(str) && lextools.IsSingleNum(str[index+1]) {
 				var num string
 				num, index = lextools.PickNum(str, index)
 				result = append(result, Token{NUM, num})
@@ -90,7 +90,7 @@ func Lex(str []string) []Token {
 		} else if str[index] == ";" {
 			result = append(result, Token{STOP, ""})
 		} else if str[index] == "\n" {
-			if result[len(result)-1].Type() != SEND && result[len(result)-1].Type() != BEGIN {
+			if len(result) > 0 && result[len(result)-1].Type() != SEND && result[len(result)-1].Type() != BEGIN {
 				/*
 				   begin \n ... => not end
 				   > \n ... => not end
