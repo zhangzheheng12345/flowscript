@@ -16,9 +16,10 @@ const (
 	OR
 	VAR
 	IF
+	ELSE
 	SEND
 	DEF
-    LAMBDA
+	LAMBDA
 	STRUCT
 	BEGIN
 	END

@@ -249,6 +249,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			/*
 			   if codition begin ... end
 			*/
+			var ifnode If_
 			if index+3 < len(tokens) {
 				index++
 				condition := ParseValue(tokens[index])
@@ -258,7 +259,8 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					codesInBlock, i := Parse(tokens[index:])
 					index += i
 					if index < len(tokens) && tokens[index].Type() == lexer.END {
-						codes = append(codes, If_{condition, codesInBlock})
+						ifnode.condition = condition
+						ifnode.ifcodes = codesInBlock
 					} else {
 						fmt.Println("Error: lost ' end ' at the end of the block. Token ", index)
 					}
@@ -268,6 +270,24 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			} else {
 				fmt.Println("Error: not complete if block. Token: ", index)
 			}
+			if index+3 < len(tokens) && tokens[index+1].Type() == lexer.ELSE {
+				index += 2
+				if tokens[index].Type() == lexer.BEGIN {
+					index++
+					codesInBlock, i := Parse(tokens[index:])
+					index += i
+					if index < len(tokens) && tokens[index].Type() == lexer.END {
+						ifnode.elsecodes = codesInBlock
+					} else {
+						fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+					}
+				} else {
+					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+				}
+			} else {
+				fmt.Println("Error: not complete else block. Token: ", index)
+			}
+			codes = append(codes, ifnode)
 		} else if tokens[index].Type() == lexer.SEND {
 			/*
 			   > ... > ... # wrong
@@ -331,7 +351,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
 				}
 			} else {
-				fmt.Println("Error: not complete def block. Token: ", index)
+				fmt.Println("Error: not complete lambda block. Token: ", index)
 			}
 		} else if tokens[index].Type() == lexer.BEGIN {
 			if index+1 < len(tokens) {

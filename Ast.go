@@ -362,20 +362,28 @@ end
 */
 type If_ struct {
 	condition Value
-	codes     []Ast
+	ifcodes   []Ast
+	elsecodes []Ast
 }
 
 func (if_ If_) run() interface{} {
 	if WantInt(if_.condition.get()) != 0 {
 		Scope = MakeScope(Scope, Scope)
 		var result interface{}
-		for _, code := range if_.codes {
+		for _, code := range if_.ifcodes {
+			result = code.run()
+		}
+		Scope = Scope.Back()
+		return result
+	} else {
+		Scope = MakeScope(Scope, Scope)
+		var result interface{} = 0
+		for _, code := range if_.elsecodes {
 			result = code.run()
 		}
 		Scope = Scope.Back()
 		return result
 	}
-	return 0
 }
 
 /* call a user defined function*/

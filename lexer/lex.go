@@ -48,6 +48,8 @@ func Lex(str []string) []Token {
 				result = append(result, Token{VAR, ""})
 			} else if word == "if" {
 				result = append(result, Token{IF, ""})
+			} else if word == "else" {
+				result = append(result, Token{ELSE, ""})
 			} else if word == "def" {
 				result = append(result, Token{DEF, ""})
 			} else if word == "lambda" {
