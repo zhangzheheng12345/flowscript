@@ -310,6 +310,29 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			} else {
 				fmt.Println("Error: not complete def block. Token: ", index)
 			}
+		} else if tokens[index].Type() == lexer.LAMBDA {
+			if index+2 < len(tokens) {
+				index++
+				argList := make([]string, 0)
+				for tokens[index].Type() == lexer.SYMBOL && index < len(tokens) {
+					argList = append(argList, tokens[index].Value())
+					index++
+				}
+				if tokens[index].Type() == lexer.BEGIN {
+					index++
+					codesInFunc, i := Parse(tokens[index:])
+					index += i
+					if index < len(tokens) && tokens[index].Type() == lexer.END {
+						codes = append(codes, Lambda_{argList, codesInFunc})
+					} else {
+						fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+					}
+				} else {
+					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+				}
+			} else {
+				fmt.Println("Error: not complete def block. Token: ", index)
+			}
 		} else if tokens[index].Type() == lexer.BEGIN {
 			if index+1 < len(tokens) {
 				index++

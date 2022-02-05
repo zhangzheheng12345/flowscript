@@ -18,6 +18,7 @@ const (
 	IF
 	SEND
 	DEF
+    LAMBDA
 	STRUCT
 	BEGIN
 	END

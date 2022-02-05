@@ -297,6 +297,15 @@ func (def_ Def_) run() interface{} {
 	return res
 }
 
+type Lambda_ struct {
+	args  []string
+	codes []Ast
+}
+
+func (lambda_ Lambda_) run() interface{} {
+	return Func_{Scope, lambda_.args, lambda_.codes}
+}
+
 /* Struct_ ( with one underline ) is the command */
 type Struct_ struct {
 	codes []Ast
