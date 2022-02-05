@@ -168,7 +168,7 @@ func Lex(str []string) []Token {
 				fmt.Println("Error: lose ' while giving a char value")
 			}
 		} else {
-			fmt.Println("Warn: unexpected token of: ", index+1, str[index])
+			fmt.Println("Error: unexpected token of: ", index+1, str[index])
 		}
 	}
 	return result
