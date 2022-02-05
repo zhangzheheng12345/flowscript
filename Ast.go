@@ -298,19 +298,19 @@ func (def_ Def_) run() interface{} {
 
 /* Struct_ ( with one underline ) is the command */
 type Struct_ struct {
-    codes []Ast
+	codes []Ast
 }
 
 func (struct_ Struct_) run() interface{} {
-    Scope = MakeScope(Scope, Scope)
+	Scope = MakeScope(Scope, Scope)
 	FuncScope = MakeFuncScope(FuncScope, FuncScope)
 	for _, code := range struct_.codes {
 		code.run()
 	}
-    result := Scope.vars
+	result := Scope.vars
 	Scope = Scope.Back()
 	FuncScope = FuncScope.Back()
-	return Struct{ result }
+	return Struct{result}
 }
 
 /* a send sequence */

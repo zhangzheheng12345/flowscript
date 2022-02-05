@@ -20,14 +20,15 @@ func (int_ Int_) get() interface{} {
 /* variables */
 type Symbol_ struct {
 	// A.B.C makes a struct visiting chain
-	name []string
+	base  string
+	after []string
 }
 
 func (symbol_ Symbol_) get() interface{} {
 	// TODO: Will len(symbol_.name) == 0 ?
-	base := Scope.Find(symbol_.name[0])
+	base := Scope.Find(symbol_.base)
 	// Iterating the chain
-	for _, memberName := range symbol_.name[1:] {
+	for _, memberName := range symbol_.after {
 		base = WantStruct(base).Member(memberName)
 	}
 	return base
@@ -51,13 +52,16 @@ func (char_ Char_) get() interface{} {
 
 /* get value from the send value queue*/
 type Tmp_ struct {
-	// no content
+	after []string
 }
 
 func (tmp_ Tmp_) get() interface{} {
-	result := tmpQueue.Get()
+	base := tmpQueue.Get()
 	tmpQueue.Pop()
-	return result
+	for _, v := range tmp_.after {
+		base = WantStruct(base).Member(v)
+	}
+	return base
 }
 
 // TODO: Find out a way to avoid call useless Want... while using Exp_

@@ -18,10 +18,14 @@ func ParseValue(token lexer.Token) Value {
 		num, _ := strconv.Atoi(token.Value())
 		return Int_{num}
 	} else if token.Type() == lexer.SYMBOL {
-		return Symbol_{strings.Split(token.Value(), ".")}
+		splited := strings.Split(token.Value(), ".")
+		return Symbol_{splited[0], splited[1:]}
 	} else if token.Type() == lexer.TMP {
-        // TODO: make tmp mark support member visiting chain -.A.B.C...
-		return Tmp_{}
+		if token.Value() == "" {
+			return Tmp_{nil}
+		} else {
+			return Tmp_{strings.Split(token.Value(), ".")}
+		}
 	} else if token.Type() == lexer.XEXP {
 		return Exp_{xlexer.Lex(strings.Split(token.Value(), ""))}
 	} else if token.Type() == lexer.STR {
