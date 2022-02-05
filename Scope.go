@@ -12,7 +12,6 @@ because all the codes run with RunCode(string) will be inside a independence Blo
 so you can't add global variable / function by native FlowScript.
 */
 var Scope *Scope_ = &Scope_{nil, nil, make(map[string]interface{})}
-var FuncScope *FuncScope_ = &FuncScope_{nil, nil, make(map[string]Func_)}
 
 /*
 exp1 > exp2 > exp3
@@ -55,44 +54,6 @@ func (scope_ Scope_) Find(key string) interface{} {
 func (scope_ Scope_) Back() *Scope_ {
 	return scope_.last
 }
-
-/* function scope system ( only for functions ) */
-type FuncScope_ struct {
-	last   *FuncScope_
-	father *FuncScope_
-	vars   map[string]Func_
-}
-
-func MakeFuncScope(father *FuncScope_, last *FuncScope_) *FuncScope_ {
-	return &FuncScope_{last, father, make(map[string]Func_)}
-}
-
-func (funcScope_ FuncScope_) Add(key string, value Func_) {
-	_, ok := funcScope_.vars[key]
-	if ok {
-		fmt.Println("Error: Try to define a function that has been defined. func: " + key)
-	} else {
-		funcScope_.vars[key] = value
-	}
-}
-
-func (funcScope_ FuncScope_) Find(key string) Func_ {
-	v, ok := funcScope_.vars[key]
-	if ok {
-		return v
-	} else if funcScope_.father != nil {
-		return funcScope_.father.Find(key)
-	} else {
-		fmt.Println("Error: Try to use a function that hasn't been defined. func: " + key)
-		return Func_{nil, nil, []string{}, []Ast{}}
-	}
-}
-
-func (funcScope_ FuncScope_) Back() *FuncScope_ {
-	return funcScope_.last
-}
-
-/* Queue_ ( for tmpQueue ) */
 
 // Give a proper beginning size of a queue
 const maxBufferSize = 5

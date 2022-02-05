@@ -85,12 +85,12 @@ func Lex(str []string) []Token {
 				num, index = lextools.PickNum(str, index)
 				result = append(result, Token{NUM, num})
 			} else if index+1 < len(str) && str[index+1] == "." {
-                index++
+				index++
 				var chain string
 				chain, index = lextools.PickSymbol(str, index)
-				result = append(result, Token{TMP, chain[1:]})
+				result = append(result, Token{SYMBOL, "-" + chain})
 			} else {
-				result = append(result, Token{TMP, ""})
+				result = append(result, Token{SYMBOL, "-"})
 			}
 		} else if str[index] == ";" {
 			result = append(result, Token{STOP, ""})

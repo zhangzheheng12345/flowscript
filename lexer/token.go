@@ -27,7 +27,6 @@ const (
 	SYMBOL
 	STR
 	CHAR
-	TMP
 	/* Buildin commands */
 	ECHO
 	INPUT

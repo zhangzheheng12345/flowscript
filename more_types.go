@@ -11,7 +11,6 @@ Func_.codes contains the codes in the function to run later.
 */
 type Func_ struct {
 	fathers *Scope_
-	fatherf *FuncScope_
 	args    []string
 	codes   []Ast
 }
@@ -22,7 +21,6 @@ Func_.run([]int) run the codes in the function.
 func (func_ Func_) run(args []interface{}) interface{} {
 	/* provide a independence scope for the function*/
 	Scope = MakeScope(func_.fathers, Scope)
-	FuncScope = MakeFuncScope(func_.fatherf, FuncScope)
 	/* add the arguments to the local scope*/
 	for key, arg := range args {
 		Scope.Add(func_.args[key], arg)
@@ -37,7 +35,6 @@ func (func_ Func_) run(args []interface{}) interface{} {
 	}
 	/* delete the local variables and change the scope before leave the function*/
 	Scope = Scope.Back()
-	FuncScope = FuncScope.Back()
 	return result
 }
 

@@ -292,8 +292,9 @@ type Def_ struct {
 }
 
 func (def_ Def_) run() interface{} {
-	FuncScope.Add(def_.name, Func_{Scope, FuncScope, def_.args, def_.codes})
-	return 0
+	res := Func_{Scope, def_.args, def_.codes}
+	Scope.Add(def_.name, res)
+	return res
 }
 
 /* Struct_ ( with one underline ) is the command */
@@ -303,13 +304,11 @@ type Struct_ struct {
 
 func (struct_ Struct_) run() interface{} {
 	Scope = MakeScope(Scope, Scope)
-	FuncScope = MakeFuncScope(FuncScope, FuncScope)
 	for _, code := range struct_.codes {
 		code.run()
 	}
 	result := Scope.vars
 	Scope = Scope.Back()
-	FuncScope = FuncScope.Back()
 	return Struct{result}
 }
 
@@ -339,13 +338,11 @@ type Block_ struct {
 
 func (block_ Block_) run() interface{} {
 	Scope = MakeScope(Scope, Scope)
-	FuncScope = MakeFuncScope(FuncScope, FuncScope)
 	var result interface{}
 	for _, code := range block_.codes {
 		result = code.run()
 	}
 	Scope = Scope.Back()
-	FuncScope = FuncScope.Back()
 	return result
 }
 
@@ -362,13 +359,11 @@ type If_ struct {
 func (if_ If_) run() interface{} {
 	if WantInt(if_.condition.get()) != 0 {
 		Scope = MakeScope(Scope, Scope)
-		FuncScope = MakeFuncScope(FuncScope, FuncScope)
 		var result interface{}
 		for _, code := range if_.codes {
 			result = code.run()
 		}
 		Scope = Scope.Back()
-		FuncScope = FuncScope.Back()
 		return result
 	}
 	return 0
@@ -376,7 +371,7 @@ func (if_ If_) run() interface{} {
 
 /* call a user defined function*/
 type Call_ struct {
-	name string
+	name Value
 	args []Value
 }
 
@@ -385,7 +380,7 @@ func (call_ Call_) run() interface{} {
 	for _, arg := range call_.args {
 		argsValue = append(argsValue, arg.get())
 	}
-	return FuncScope.Find(call_.name).run(argsValue)
+	return WantFunc(call_.name.get()).run(argsValue)
 }
 
 /* output to stdout */

@@ -58,3 +58,11 @@ func WantStruct(value interface{}) Struct {
 	}
 	return v
 }
+
+func WantFunc(value interface{}) Func_ {
+	v, ok := value.(Func_)
+	if !ok {
+		fmt.Println("Error: function wanted, but got other type value")
+	}
+	return v
+}

@@ -20,12 +20,6 @@ func ParseValue(token lexer.Token) Value {
 	} else if token.Type() == lexer.SYMBOL {
 		splited := strings.Split(token.Value(), ".")
 		return Symbol_{splited[0], splited[1:]}
-	} else if token.Type() == lexer.TMP {
-		if token.Value() == "" {
-			return Tmp_{nil}
-		} else {
-			return Tmp_{strings.Split(token.Value(), ".")}
-		}
 	} else if token.Type() == lexer.XEXP {
 		return Exp_{xlexer.Lex(strings.Split(token.Value(), ""))}
 	} else if token.Type() == lexer.STR {
@@ -182,7 +176,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				if index+1 < len(tokens) {
 					index++
 					switch tokens[index].Type() {
-					case lexer.NUM, lexer.SYMBOL, lexer.STR, lexer.TMP:
+					case lexer.NUM, lexer.SYMBOL, lexer.STR:
 						/* initialize with given value */
 						op = ParseValue(tokens[index])
 					default:
@@ -244,7 +238,6 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				(tokens[index].Type() == lexer.NUM ||
 					tokens[index].Type() == lexer.STR ||
 					tokens[index].Type() == lexer.CHAR ||
-					tokens[index].Type() == lexer.TMP ||
 					tokens[index].Type() == lexer.SYMBOL ||
 					tokens[index].Type() == lexer.XEXP) {
 				ops = append(ops, ParseValue(tokens[index]))
@@ -364,15 +357,12 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			}
 		} else if tokens[index].Type() == lexer.NUM {
 			fmt.Println("Error: unexpected constant number. Token: ", index)
-		} else if tokens[index].Type() == lexer.TMP {
-			fmt.Println("Error: unexpected ' - ' (tmp mark) . Token: ", index)
 		} else if tokens[index].Type() == lexer.SYMBOL {
-			name := tokens[index].Value()
+			name := ParseValue(tokens[index])
 			index++
 			args := make([]Value, 0)
 			for ; index < len(tokens) && (tokens[index].Type() == lexer.NUM ||
-				tokens[index].Type() == lexer.SYMBOL ||
-				tokens[index].Type() == lexer.TMP); index++ {
+				tokens[index].Type() == lexer.SYMBOL); index++ {
 				args = append(args, ParseValue(tokens[index]))
 			}
 			index--
