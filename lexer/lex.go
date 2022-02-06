@@ -44,6 +44,10 @@ func Lex(str []string) []Token {
 				result = append(result, Token{AND, ""})
 			} else if word == "or" {
 				result = append(result, Token{OR, ""})
+			} else if word == "xor" {
+				result = append(result, Token{XOR, ""})
+			} else if word == "expr" {
+				result = append(result, Token{EXPR, ""})
 			} else if word == "var" {
 				result = append(result, Token{VAR, ""})
 			} else if word == "if" {

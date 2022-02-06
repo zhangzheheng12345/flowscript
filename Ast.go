@@ -123,7 +123,16 @@ type And_ struct {
 }
 
 func (and_ And_) run() interface{} {
-	return BoolToInt((WantInt(and_.op1.get()) != 0) && (WantInt(and_.op2.get()) != 0))
+	return WantInt(and_.op1.get()) & WantInt(and_.op2.get())
+}
+
+type Xor_ struct {
+	op1 Value
+	op2 Value
+}
+
+func (xor_ Xor_) run() interface{} {
+	return WantInt(xor_.op1.get()) ^ WantInt(xor_.op1.get())
 }
 
 type Or_ struct {
@@ -132,7 +141,7 @@ type Or_ struct {
 }
 
 func (or_ Or_) run() interface{} {
-	return BoolToInt((WantInt(or_.op1.get()) != 0) || (WantInt(or_.op1.get()) != 0))
+	return WantInt(or_.op1.get()) | WantInt(or_.op1.get())
 }
 
 type Not_ struct {
@@ -141,6 +150,14 @@ type Not_ struct {
 
 func (not_ Not_) run() interface{} {
 	return BoolToInt(WantInt(not_.op.get()) == 0)
+}
+
+type Expr_ struct {
+	op Value
+}
+
+func (expr_ Expr_) run() interface{} {
+	return expr_.op.get()
 }
 
 type Var_ struct {

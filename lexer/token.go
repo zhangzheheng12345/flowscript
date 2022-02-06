@@ -14,6 +14,8 @@ const (
 	NOT
 	AND
 	OR
+	XOR
+	EXPR
 	VAR
 	IF
 	ELSE
