@@ -78,7 +78,11 @@ func (queue_ *Queue_) Add(value interface{}) {
 }
 
 func (queue_ Queue_) Get() interface{} {
-	return queue_.data[0]
+	if dataLen > 0 {
+		return queue_.data[0]
+	}
+	fmt.Println("Error: try to get a value from temp queue while it's empty")
+	return nil
 }
 
 func (queue_ *Queue_) Pop() {
