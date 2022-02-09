@@ -17,7 +17,7 @@ var Scope *Scope_ = &Scope_{nil, nil, make(map[string]interface{})}
 exp1 > exp2 > exp3
 The values of the send sequence expressions will be pushed to this queue.
 */
-var tmpQueue *Queue_ = nil
+var tmpQueue *Queue_ = MakeTmpQueue(nil)
 
 /* scope system ( only for variables ) */
 type Scope_ struct {
@@ -78,7 +78,7 @@ func (queue_ *Queue_) Add(value interface{}) {
 }
 
 func (queue_ Queue_) Get() interface{} {
-	if dataLen > 0 {
+	if queue_.dataLen > 0 {
 		return queue_.data[0]
 	}
 	fmt.Println("Error: try to get a value from temp queue while it's empty")
