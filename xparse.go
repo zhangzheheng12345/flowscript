@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/zhangzheheng12345/FlowScript/xlexer"
+	"github.com/zhangzheheng12345/flowscript/xlexer"
 )
 
 func E_(tokens []xlexer.Token, value int) int {

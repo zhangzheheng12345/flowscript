@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/zhangzheheng12345/FlowScript/lex_tools"
+	"github.com/zhangzheheng12345/flowscript/lex_tools"
 )
 
 // TODO: Support string and list syntax and more

@@ -3,7 +3,7 @@ package xlexer
 import (
 	"fmt"
 
-	"github.com/zhangzheheng12345/FlowScript/lex_tools"
+	"github.com/zhangzheheng12345/flowscript/lex_tools"
 )
 
 func Lex(str []string) []Token {

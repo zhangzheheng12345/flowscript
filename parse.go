@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/zhangzheheng12345/FlowScript/lexer"
-	"github.com/zhangzheheng12345/FlowScript/xlexer"
+	"github.com/zhangzheheng12345/flowscript/lexer"
+	"github.com/zhangzheheng12345/flowscript/xlexer"
 )
 
 /*

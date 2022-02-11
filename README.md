@@ -9,7 +9,7 @@ A embeded script language interpreter written by Go.
 Use:
 
 ```go
-import "https://github.com/zhangzheheng12345/FlowScript" 
+import "https://github.com/zhangzheheng12345/flowscript" 
 ```
 
 to import it to your Go project. 
