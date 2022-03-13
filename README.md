@@ -9,10 +9,19 @@ A embeded script language interpreter written by Go.
 Use:
 
 ```go
-import "https://github.com/zhangzheheng12345/flowscript" 
+import "https://github.com/zhangzheheng12345/flowscript"
 ```
 
-to import it to your Go project. 
+and add:
+
+```
+require github.com/zhangzheheng12345/flowscript v0.1.1
+replace github.com/zhangzheheng12345/flowscript v0.1.1 => github.com/zhangzheheng12345/FlowScript v0.1.1
+```
+
+in go.mod to import it to your Go project.
+
+( *I don't know why there must be a replacement. Who could give me an answer?* )
 
 Use:
 
