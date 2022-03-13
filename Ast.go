@@ -22,9 +22,9 @@ func (add_ Add_) run() interface{} {
 		return v + WantInt(v2)
 	case byte:
 		return int(v) + WantInt(v2)
-	case []int:
+	case []interface{}:
 		/* Connect two lists */
-		return append(v, WantIntList(v2)...)
+		return append(v, WantList(v2)...)
 	case string:
 		return v + WantString(v2)
 	default:
@@ -100,9 +100,9 @@ func (equal_ Equal_) run() interface{} {
 		return BoolToInt(v == WantInt(v2))
 	case byte:
 		return BoolToInt(int(v) == WantInt(v2))
-	case []int:
+	case []interface{}:
 		/* Compare two lists */
-		li2 := WantIntList(v2)
+		li2 := WantList(v2)
 		for i, value := range v {
 			if value != li2[i] {
 				return 0
@@ -191,7 +191,7 @@ func (len_ Len_) run() interface{} {
 	case int, byte:
 		fmt.Println("Error: Try to get the length of a int or char value.")
 		return 0
-	case []int:
+	case []interface{}:
 		return len(v)
 	case string:
 		return len(strings.Split(v, ""))
@@ -212,7 +212,7 @@ func (index_ Index_) run() interface{} {
 	case int, byte:
 		fmt.Println("Error: Try to index a int or char value.")
 		return 0
-	case []int:
+	case []interface{}:
 		abs, err := AbsIndex(len(v), index)
 		if err {
 			return 0
@@ -242,8 +242,8 @@ func (app_ App_) run() interface{} {
 	case int, byte:
 		fmt.Println("Error: Try to append a value after a int or char value.")
 		return 0
-	case []int:
-		return append(v, WantInt(app_.op2.get()))
+	case []interface{}:
+		return append(v, app_.op2.get())
 	case string:
 		return v + string([]byte{byte(WantInt(app_.op2.get()))})
 	default:
@@ -267,7 +267,7 @@ func (slice_ Slice_) run() interface{} {
 	case int, byte:
 		fmt.Println("Error: Try to slice a int or char value.")
 		return 0
-	case []int:
+	case []interface{}:
 		begin, err1 = AbsIndex(len(v), begin)
 		end, err2 = AbsIndex(len(v), end)
 		if err1 || err2 {
@@ -295,9 +295,9 @@ type List_ struct {
 }
 
 func (list_ List_) run() interface{} {
-	res := make([]int, 0)
+	res := make([]interface{}, 0)
 	for _, v := range list_.ops {
-		res = append(res, WantInt(v.get()))
+		res = append(res, v.get())
 	}
 	return res
 }

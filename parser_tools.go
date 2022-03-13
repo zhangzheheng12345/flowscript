@@ -24,8 +24,8 @@ func WantInt(value interface{}) int {
 	return v
 }
 
-func WantIntList(value interface{}) []int {
-	v, ok := value.([]int)
+func WantList(value interface{}) []interface{} {
+	v, ok := value.([]interface{})
 	if !ok {
 		fmt.Println("Error: int list wanted, but got other type value")
 	}
