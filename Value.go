@@ -25,7 +25,6 @@ type Symbol_ struct {
 }
 
 func (symbol_ Symbol_) get() interface{} {
-	// TODO: Will len(symbol_.name) == 0 ?
 	var base interface{}
 	if symbol_.base == "-" {
 		base = tmpQueue.Get()
@@ -56,7 +55,7 @@ func (char_ Char_) get() interface{} {
 	return char_.value
 }
 
-// TODO: Find out a way to avoid call useless Want... while using Exp_
+// TODO: Find out a way to avoid calling useless Want... while using Exp_
 /* X-expression only support int value */
 type Exp_ struct {
 	tokens []xlexer.Token

@@ -7,7 +7,6 @@ import (
 	"github.com/zhangzheheng12345/flowscript/lex_tools"
 )
 
-// TODO: Support string and list syntax and more
 /* Core lexer code */
 func Lex(str []string) []Token {
 	result := make([]Token, 0)
@@ -131,7 +130,7 @@ func Lex(str []string) []Token {
 			result = append(result, Token{STOP, ""})
 		} else if str[index] == "\"" {
 			index++
-			// TODO: Avoid connect string very often ( res is connected very often
+			// TODO: Avoid connecting string very often ( res is connected very often
 			res := ""
 			for index < len(str) && str[index] != "\"" {
 				if str[index] == "\\" {

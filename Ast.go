@@ -259,7 +259,6 @@ type Slice_ struct {
 }
 
 func (slice_ Slice_) run() interface{} {
-	// TODO: Support minus index in slice
 	begin := WantInt(slice_.op2.get())
 	end := WantInt(slice_.op3.get())
 	var err1, err2 bool
