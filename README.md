@@ -30,3 +30,24 @@ parser.RunCode( <your codes(type string)> )
 ```
 
 to run FlowScript code.
+
+## Examples
+
+### Hello World
+
+```
+echo "Hello World!\n" # output: Hello World!
+```
+
+### Fibonacci sequence
+
+```
+def fibonacci a b begin
+    add a b > echo - > echo "\n"
+    add a b > smlr - 10000 > if - begin
+        add a b > fibonacci b -
+    end else begin end # else block is a must
+end
+echo "fibonacci begins ...\n"
+fibonacci 1 1
+```
