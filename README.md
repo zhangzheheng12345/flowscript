@@ -1,6 +1,4 @@
-# FlowScript
-
-![FlowScript Logo](icon/FlowScriptIcon.jpeg)
+# ![FlowScript!](icon/flowscript.png)
 
 A embeded script language interpreter written by Go.
 
@@ -21,7 +19,7 @@ replace github.com/zhangzheheng12345/flowscript v0.1.1 => github.com/zhangzhehen
 
 in go.mod to import it to your Go project.
 
-( *I don't know why there must be a replacement. Who could give me an answer?* )
+( *I don't know why there must be a replacement on my machine. Who could give me an answer?* )
 
 Use:
 
