@@ -49,3 +49,21 @@ end
 echo "fibonacci begins ...\n"
 fibonacci 1 1
 ```
+
+### OOP
+
+```
+def Student name li begin # This function will be used as a constructor
+    echo "constructor called!\n"
+    struct begin
+        def getName begin expr name end
+        def getScore begin expr li end
+        def addScore score begin app li score > Student name - end
+    end
+end
+list 100 96 99 > Student "Zhang" - > var A -
+A.getName > echo -
+A.getScore > echo -
+A.addScore 100 > var B -
+B.getScore > echo -`
+```

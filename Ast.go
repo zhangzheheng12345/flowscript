@@ -170,14 +170,8 @@ func (var_ Var_) run() interface{} {
 		/* give a start value */
 		Scope.Add(var_.name, var_.op.get())
 	} else {
-		if tmpQueue.Size() == 0 {
-			/* default 0 */
-			Scope.Add(var_.name, 0)
-		} else {
-			/* autoly pick value from send queue */
-			Scope.Add(var_.name, tmpQueue.Get())
-			tmpQueue.Pop()
-		}
+		/* default 0 */
+		Scope.Add(var_.name, 0)
 	}
 	return 0
 }

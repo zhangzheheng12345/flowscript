@@ -422,6 +422,9 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			index++
 			args := make([]Value, 0)
 			for ; index < len(tokens) && (tokens[index].Type() == lexer.NUM ||
+				tokens[index].Type() == lexer.STR ||
+				tokens[index].Type() == lexer.CHAR ||
+				tokens[index].Type() == lexer.XEXP ||
 				tokens[index].Type() == lexer.SYMBOL); index++ {
 				args = append(args, ParseValue(tokens[index]))
 			}
@@ -439,15 +442,29 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 }
 
 /*
-RunCode(string) receives a text script ( string ) and run it directly.
+RunBlock(string) receives a text script ( string ) and run it directly.
 The runtime status would not be saved as the script runs in a Block_.
 */
-func RunCode(str string) {
+func RunBlock(str string) {
 	tokens := lexer.Lex(strings.Split(str, ""))
 	codes, index := Parse(tokens)
 	if index < len(tokens) {
 		fmt.Println("Error: unexpected ' end '. Token: ", index)
 	} else {
 		Block_{codes}.run()
+	}
+}
+
+/*
+RunModule(string) receives a text script ( string ) and run it directly.
+The interpreter will add a structure in global scope, which contains all the variables the module defined.
+*/
+func RunModule(str string) {
+	tokens := lexer.Lex(strings.Split(str, ""))
+	codes, index := Parse(tokens)
+	if index < len(tokens) {
+		fmt.Println("Error: unexpected ' end '. Token: ", index)
+	} else {
+		Struct_{codes}.run()
 	}
 }
