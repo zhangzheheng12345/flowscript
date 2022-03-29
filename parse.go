@@ -457,14 +457,14 @@ func RunBlock(str string) {
 
 /*
 RunModule(string) receives a text script ( string ) and run it directly.
-The interpreter will add a structure in global scope, which contains all the variables the module defined.
+The interpreter will add a structure named 'globalName' in global scope, which contains all the variables the module defined.
 */
-func RunModule(str string) {
-	tokens := lexer.Lex(strings.Split(str, ""))
+func RunModule(code string, moduleName string) {
+	tokens := lexer.Lex(strings.Split(code, ""))
 	codes, index := Parse(tokens)
 	if index < len(tokens) {
 		fmt.Println("Error: unexpected ' end '. Token: ", index)
 	} else {
-		Struct_{codes}.run()
+		Scope.Add(moduleName, Struct_{codes}.run())
 	}
 }
