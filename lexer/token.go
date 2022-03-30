@@ -33,6 +33,7 @@ const (
 	CHAR
 	/* Buildin commands */
 	ECHO
+    ECHOLN
 	INPUT
 	LIST
 	LEN

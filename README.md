@@ -1,6 +1,6 @@
 # ![FlowScript!](icon/flowscript.png)
 
-A embeded script language interpreter written by Go.
+A embeded script language interpreter written by Go. The language is functional.
 
 ## Usage
 
@@ -50,20 +50,32 @@ echo "fibonacci begins ...\n"
 fibonacci 1 1
 ```
 
-### OOP
+### OOP Mock (yes, in a functional language)
 
 ```
 def Student name li begin # This function will be used as a constructor
-    echo "constructor called!\n"
+    echoln "constructor called!"
+    def sum li begin
+        len li > equal - 0 > if - begin
+            expr 0
+        end else begin
+            len li > slice li 1 - > sum - > index li 0 > add - -
+        end
+    end
+    sum li > len li > div - - > var avg -
     struct begin
-        def getName begin expr name end
-        def getScore begin expr li end
-        def addScore score begin app li score > Student name - end
+        def getName begin expr name end # Returns the name of the student
+        def getScore begin expr li end # Returns a list which contains the student's score
+        def addScore score begin app li score > Student name - end # Add a score to the list and returns a new object (FP)
+        def avgScore begin expr avg end
     end
 end
-list 100 96 99 > Student "Zhang" - > var A -
-A.getName > echo -
-A.getScore > echo -
+list 95 96 97 > Student "Zhang" - > var A -
+echo "name: "; A.getName > echoln -
+echo "score: " ; A.getScore > echoln -
+echo "avg: "; A.avgScore > echoln -
+echoln "Now the score is updated."
 A.addScore 100 > var B -
-B.getScore > echo -`
+echo "score: "; B.getScore > echoln -
+echo "avg: "; B.avgScore > echoln -
 ```

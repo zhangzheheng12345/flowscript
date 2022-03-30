@@ -63,6 +63,7 @@ func WantFunc(value interface{}) Func_ {
 	v, ok := value.(Func_)
 	if !ok {
 		fmt.Println("Error: function wanted, but got other type value")
+		return Func_{Scope, make([]string, 0), make([]Ast, 0)}
 	}
 	return v
 }

@@ -261,8 +261,8 @@ func (slice_ Slice_) run() interface{} {
 		fmt.Println("Error: Try to slice a int or char value.")
 		return 0
 	case []interface{}:
-		begin, err1 = AbsIndex(len(v), begin)
-		end, err2 = AbsIndex(len(v), end)
+		begin, err1 = AbsIndex(len(v)+1, begin)
+		end, err2 = AbsIndex(len(v)+1, end)
 		if err1 || err2 {
 			return 0
 		} else {
@@ -422,6 +422,22 @@ func (echo_ Echo_) run() interface{} {
 		fmt.Print(string([]byte{v}))
 	} else {
 		fmt.Print(op)
+	}
+	return 0
+}
+
+/* output to stdout */
+type Echoln_ struct {
+	op Value
+}
+
+func (echoln_ Echoln_) run() interface{} {
+	op := echoln_.op.get()
+	v, ok := op.(byte)
+	if ok {
+		fmt.Println(string([]byte{v}))
+	} else {
+		fmt.Println(op)
 	}
 	return 0
 }

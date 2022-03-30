@@ -401,6 +401,13 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			} else {
 				fmt.Println("Error: not complete def block. Token: ", index)
 			}
+		} else if tokens[index].Type() == lexer.ECHOLN {
+			if index+1 < len(tokens) {
+				index++
+				codes = append(codes, Echoln_{ParseValue(tokens[index])})
+			} else {
+				fmt.Println("Error: lose argument to echo. Token: ", index)
+			}
 		} else if tokens[index].Type() == lexer.ECHO {
 			if index+1 < len(tokens) {
 				index++
