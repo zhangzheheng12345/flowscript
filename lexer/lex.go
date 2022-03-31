@@ -1,10 +1,10 @@
 package lexer
 
 import (
-	"fmt"
 	"strings"
 
-	"github.com/zhangzheheng12345/flowscript/lex_tools"
+	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
+	lextools "github.com/zhangzheheng12345/flowscript/lex_tools"
 )
 
 /* Core lexer code */
@@ -126,7 +126,7 @@ func Lex(str []string) []Token {
 			index--
 			result = append(result, Token{XEXP, strings.Join(str[begin:index], "")})
 		} else if str[index] == ")" {
-			fmt.Println("Error: too much back parenthesis. Letter: ", index)
+			errlog.Err("lexer", "too much back parenthesis.")
 		} else if str[index] == "\n" {
 			// ; => end, obviously
 			result = append(result, Token{STOP, ""})
@@ -146,7 +146,7 @@ func Lex(str []string) []Token {
 				index++
 			}
 			if index >= len(str) && str[index-1] == "\"" {
-				fmt.Println("Error: lose \" while giving a string value.")
+				errlog.Err("lexer", "lose \" while giving a string value.")
 			}
 			result = append(result, Token{STR, res})
 		} else if str[index] == "'" {
@@ -154,7 +154,7 @@ func Lex(str []string) []Token {
 			index++
 			if index+1 < len(str) {
 				if len(str[index]) > 1 {
-					fmt.Println("Error: a char value must be ascii but not other wide codeset. Letter: ", index)
+					errlog.Err("lexer", "a char value must be ascii but not other wide codeset.")
 				} else {
 					res := ""
 					if str[index] == "\\" {
@@ -168,14 +168,14 @@ func Lex(str []string) []Token {
 					if str[index] == "'" {
 						result = append(result, Token{CHAR, res})
 					} else {
-						fmt.Println("Error: lose ' while giving a char value")
+						errlog.Err("lexer", "lose ' while giving a char value")
 					}
 				}
 			} else {
-				fmt.Println("Error: lose ' while giving a char value")
+				errlog.Err("lexer", "lose ' while giving a char value")
 			}
 		} else {
-			fmt.Println("Error: unexpected token of: ", index+1, str[index])
+			errlog.Err("lexer", "unexpected token")
 		}
 	}
 	return result

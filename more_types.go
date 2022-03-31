@@ -1,8 +1,6 @@
 package parser
 
-import (
-	"fmt"
-)
+import errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 
 /*
 Structure Func_ contains all the information for a function to run.
@@ -43,12 +41,12 @@ type Struct struct {
 	members map[string]interface{}
 }
 
-func (this Struct) Member(name string) interface{} {
-	v, ok := this.members[name]
+func (struct_ Struct) Member(name string) interface{} {
+	v, ok := struct_.members[name]
 	if ok {
 		return v
 	} else {
-		fmt.Println("Error: Try to find a no-existing member in the structure.")
-		return nil // TODO:Is nil safe?
+		errlog.Err("runtime", "Try to find a no-existing member in the structure.")
+		return nil // nil is safe, as the type checkings (Want...) will process them
 	}
 }

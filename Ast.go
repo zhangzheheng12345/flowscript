@@ -3,6 +3,8 @@ package parser
 import (
 	"fmt"
 	"strings"
+
+	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 )
 
 type Ast interface {
@@ -28,7 +30,7 @@ func (add_ Add_) run() interface{} {
 	case string:
 		return v + WantString(v2)
 	default:
-		fmt.Println("Error: try to add a unkown type value with another")
+		errlog.Err("runtime", "Try to add a unkown type value with another")
 		return nil
 	}
 }
@@ -112,7 +114,7 @@ func (equal_ Equal_) run() interface{} {
 	case string:
 		return BoolToInt(v == WantString(v2))
 	default:
-		fmt.Println("Error: try to compare a unkown type value to another. Operation: equal")
+		errlog.Err("runtime", "Try to compare a unkown type value to another. Operation: equal")
 		return nil
 	}
 }
@@ -183,14 +185,14 @@ type Len_ struct {
 func (len_ Len_) run() interface{} {
 	switch v := len_.op.get().(type) {
 	case int, byte:
-		fmt.Println("Error: Try to get the length of a int or char value.")
+		errlog.Err("runtime", "Try to get the length of a int or char value.")
 		return 0
 	case []interface{}:
 		return len(v)
 	case string:
 		return len(strings.Split(v, ""))
 	default:
-		fmt.Println("Error: Try to get the length of a unknown type value.")
+		errlog.Err("runtime", "Try to get the length of a unknown type value.")
 		return 0
 	}
 }
@@ -204,7 +206,7 @@ func (index_ Index_) run() interface{} {
 	index := WantInt(index_.index.get())
 	switch v := index_.op.get().(type) {
 	case int, byte:
-		fmt.Println("Error: Try to index a int or char value.")
+		errlog.Err("runtime", "Try to index a int or char value.")
 		return 0
 	case []interface{}:
 		abs, err := AbsIndex(len(v), index)
@@ -221,7 +223,7 @@ func (index_ Index_) run() interface{} {
 			return strings.Split(v, "")[abs]
 		}
 	default:
-		fmt.Println("Error: Try to index a unknown type value.")
+		errlog.Err("runtime", "Try to index a unknown type value.")
 		return 0
 	}
 }
@@ -234,14 +236,14 @@ type App_ struct {
 func (app_ App_) run() interface{} {
 	switch v := app_.op1.get().(type) {
 	case int, byte:
-		fmt.Println("Error: Try to append a value after a int or char value.")
+		errlog.Err("runtime", "Try to append a value after a int or char value.")
 		return 0
 	case []interface{}:
 		return append(v, app_.op2.get())
 	case string:
 		return v + string([]byte{byte(WantInt(app_.op2.get()))})
 	default:
-		fmt.Println("Error: Try to append sth after a unknown type value.")
+		errlog.Err("runtime", "Try to append sth after a unknown type value.")
 		return 0
 	}
 }
@@ -258,13 +260,13 @@ func (slice_ Slice_) run() interface{} {
 	var err1, err2 bool
 	switch v := slice_.op1.get().(type) {
 	case int, byte:
-		fmt.Println("Error: Try to slice a int or char value.")
+		errlog.Err("runtime", "Try to slice a int or char value.")
 		return 0
 	case []interface{}:
 		begin, err1 = AbsIndex(len(v)+1, begin)
 		end, err2 = AbsIndex(len(v)+1, end)
 		if err1 || err2 {
-			return 0
+			return []interface{}{}
 		} else {
 			return v[begin:end]
 		}
@@ -278,7 +280,7 @@ func (slice_ Slice_) run() interface{} {
 			return strings.Join(splited[begin:end], "")
 		}
 	default:
-		fmt.Println("Error: Try to slice a unknown type value.")
+		errlog.Err("runtime", "Try to slice a unknown type value.")
 		return 0
 	}
 }

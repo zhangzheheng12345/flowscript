@@ -1,8 +1,6 @@
 package parser
 
-import (
-	"fmt"
-)
+import errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 
 /* Tool function, for cannot convert bool to int directly */
 func BoolToInt(value bool) int {
@@ -17,7 +15,7 @@ func WantInt(value interface{}) int {
 	if !ok {
 		v, ok := value.(byte)
 		if !ok {
-			fmt.Println("Error: int or char value wanted, but got other type value")
+			errlog.Err("runtime", "int or char value wanted, but got other type value")
 		}
 		return int(v)
 	}
@@ -27,7 +25,7 @@ func WantInt(value interface{}) int {
 func WantList(value interface{}) []interface{} {
 	v, ok := value.([]interface{})
 	if !ok {
-		fmt.Println("Error: int list wanted, but got other type value")
+		errlog.Err("runtime", "int list wanted, but got other type value")
 	}
 	return v
 }
@@ -35,7 +33,7 @@ func WantList(value interface{}) []interface{} {
 func WantString(value interface{}) string {
 	v, ok := value.(string)
 	if !ok {
-		fmt.Println("Error: string wanted, but got other type value")
+		errlog.Err("runtime", "string wanted, but got other type value")
 	}
 	return v
 }
@@ -46,7 +44,7 @@ func AbsIndex(length int, index int) (int, bool) {
 	} else if index < 0 && -index <= length {
 		return length + index, false
 	} else {
-		fmt.Println("Error: index out of range. Index: ", index, " length of the list: ", length)
+		errlog.Err("runtime", "index out of range. Index: ", index, " length of the list: ", length)
 		return 0, true
 	}
 }
@@ -54,7 +52,7 @@ func AbsIndex(length int, index int) (int, bool) {
 func WantStruct(value interface{}) Struct {
 	v, ok := value.(Struct)
 	if !ok {
-		fmt.Println("Error: struct wanted, but got other type value")
+		errlog.Err("runtime", "struct wanted, but got other type value")
 	}
 	return v
 }
@@ -62,7 +60,7 @@ func WantStruct(value interface{}) Struct {
 func WantFunc(value interface{}) Func_ {
 	v, ok := value.(Func_)
 	if !ok {
-		fmt.Println("Error: function wanted, but got other type value")
+		errlog.Err("runtime", "function wanted, but got other type value")
 		return Func_{Scope, make([]string, 0), make([]Ast, 0)}
 	}
 	return v

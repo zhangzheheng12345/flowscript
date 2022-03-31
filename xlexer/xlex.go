@@ -1,9 +1,8 @@
 package xlexer
 
 import (
-	"fmt"
-
-	"github.com/zhangzheheng12345/flowscript/lex_tools"
+	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
+	lextools "github.com/zhangzheheng12345/flowscript/lex_tools"
 )
 
 func Lex(str []string) []Token {
@@ -43,7 +42,7 @@ func Lex(str []string) []Token {
 		} else if str[index] == "/" {
 			result = append(result, Token{DIV, ""})
 		} else {
-			fmt.Println("Warn: unknown token in X expression. Token: ", index)
+			errlog.Err("Warn: unknown token in X expression.")
 		}
 	}
 	return result

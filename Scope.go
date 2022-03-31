@@ -1,8 +1,6 @@
 package parser
 
-import (
-	"fmt"
-)
+import errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 
 /*
 Global variable, Scope, contains all the variable at present.
@@ -33,7 +31,7 @@ func MakeScope(father *Scope_, last *Scope_) *Scope_ {
 func (scope_ Scope_) Add(key string, value interface{}) {
 	_, ok := scope_.vars[key]
 	if ok {
-		fmt.Println("Error: Try to add a variable that has been added. var: " + key)
+		errlog.Err("runtime", "Try to add a variable that has been added. var: "+key)
 	} else {
 		scope_.vars[key] = value
 	}
@@ -46,7 +44,7 @@ func (scope_ Scope_) Find(key string) interface{} {
 	} else if scope_.father != nil {
 		return scope_.father.Find(key)
 	} else {
-		fmt.Println("Error: Try to read a variable that hasn't been added. var: " + key)
+		errlog.Err("runtime", "Try to read a variable that hasn't been added. var: "+key)
 	}
 	return 0
 }
@@ -81,7 +79,7 @@ func (queue_ Queue_) Get() interface{} {
 	if queue_.dataLen > 0 {
 		return queue_.data[0]
 	}
-	fmt.Println("Error: try to get a value from temp queue while it's empty")
+	errlog.Err("runtime", "Try to get a value from temp queue while it's empty")
 	return nil
 }
 

@@ -1,10 +1,10 @@
 package parser
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
+	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 	"github.com/zhangzheheng12345/flowscript/lexer"
 	"github.com/zhangzheheng12345/flowscript/xlexer"
 )
@@ -27,7 +27,7 @@ func ParseValue(token lexer.Token) Value {
 	} else if token.Type() == lexer.CHAR {
 		return Char_{token.Value()[0]}
 	} else {
-		fmt.Println("Error: expecting a Value but got kind: ", token.Type())
+		errlog.Err("parser", "expecting a Value but got kind: ", token.Type())
 		return nil
 	}
 }
@@ -59,7 +59,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Add_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to add. Token: ", index)
+				errlog.Err("parser", "lose argumanet to add.")
 			}
 		} else if tokens[index].Type() == lexer.SUB {
 			if index+2 < len(tokens) {
@@ -69,7 +69,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Sub_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to substrict. Token: ", index)
+				errlog.Err("parser", "lose argumanet to substrict.")
 			}
 		} else if tokens[index].Type() == lexer.MULTI {
 			if index+2 < len(tokens) {
@@ -79,7 +79,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Multi_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to multiply. Token: ", index)
+				errlog.Err("parser", "lose argumanet to multiply.")
 			}
 		} else if tokens[index].Type() == lexer.DIV {
 			if index+2 < len(tokens) {
@@ -89,7 +89,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Div_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to divide. Token: ", index)
+				errlog.Err("parser", "lose argumanet to divide.")
 			}
 		} else if tokens[index].Type() == lexer.MOD {
 			if index+2 < len(tokens) {
@@ -99,7 +99,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Mod_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to mod. Token: ", index)
+				errlog.Err("parser", "lose argumanet to mod.")
 			}
 		} else if tokens[index].Type() == lexer.BIGR {
 			if index+2 < len(tokens) {
@@ -109,7 +109,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Bigr_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to compare. Token: ", index)
+				errlog.Err("parser", "lose argumanet to compare.")
 			}
 		} else if tokens[index].Type() == lexer.SMLR {
 			if index+2 < len(tokens) {
@@ -119,7 +119,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Smlr_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to compare. Token: ", index)
+				errlog.Err("parser", "lose argumanet to compare.")
 			}
 		} else if tokens[index].Type() == lexer.EQUAL {
 			if index+2 < len(tokens) {
@@ -129,7 +129,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Equal_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to compare. Token: ", index)
+				errlog.Err("parser", "lose argumanet to compare.")
 			}
 		} else if tokens[index].Type() == lexer.AND {
 			if index+2 < len(tokens) {
@@ -139,7 +139,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, And_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to and. Token: ", index)
+				errlog.Err("parser", "lose argumanet to and.")
 			}
 		} else if tokens[index].Type() == lexer.OR {
 			if index+2 < len(tokens) {
@@ -149,7 +149,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Or_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to or. Token: ", index)
+				errlog.Err("parser", "lose argumanet to or.")
 			}
 		} else if tokens[index].Type() == lexer.XOR {
 			if index+2 < len(tokens) {
@@ -159,21 +159,21 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Xor_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to or. Token: ", index)
+				errlog.Err("parser", "lose argumanet to or.")
 			}
 		} else if tokens[index].Type() == lexer.NOT {
 			if index+1 < len(tokens) {
 				index++
 				codes = append(codes, Not_{ParseValue(tokens[index])})
 			} else {
-				fmt.Println("Error: lose argumanet to not. Token: ", index)
+				errlog.Err("parser", "lose argumanet to not.")
 			}
 		} else if tokens[index].Type() == lexer.EXPR {
 			if index+1 < len(tokens) {
 				index++
 				codes = append(codes, Expr_{ParseValue(tokens[index])})
 			} else {
-				fmt.Println("Error: lose argumanet to not. Token: ", index)
+				errlog.Err("parser", "lose argumanet to not.")
 			}
 		} else if tokens[index].Type() == lexer.VAR {
 			/*
@@ -186,7 +186,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				if tokens[index].Type() == lexer.SYMBOL {
 					name = tokens[index].Value()
 				} else {
-					fmt.Println("Error: unallowed variable name. Token: ", index)
+					errlog.Err("parser", "unallowed variable name.")
 					name = ""
 				}
 				var op Value
@@ -206,7 +206,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				}
 				codes = append(codes, Var_{name, op})
 			} else {
-				fmt.Println("Error: lost the variable's name while trying to define one")
+				errlog.Err("parser", "lost the variable's name while trying to define one")
 			}
 		} else if tokens[index].Type() == lexer.LEN {
 			if index+1 < len(tokens) {
@@ -214,7 +214,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op := ParseValue(tokens[index])
 				codes = append(codes, Len_{op})
 			} else {
-				fmt.Println("Error: lose argumanet to not. Token: ", index)
+				errlog.Err("parser", "lose argumanet to not.")
 			}
 		} else if tokens[index].Type() == lexer.INDEX {
 			if index+2 < len(tokens) {
@@ -224,7 +224,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, Index_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to index. Token: ", index)
+				errlog.Err("parser", "lose argumanet to index.")
 			}
 		} else if tokens[index].Type() == lexer.APP {
 			if index+2 < len(tokens) {
@@ -234,7 +234,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op2 := ParseValue(tokens[index])
 				codes = append(codes, App_{op1, op2})
 			} else {
-				fmt.Println("Error: lose argumanet to index. Token: ", index)
+				errlog.Err("parser", "lose argumanet to index.")
 			}
 		} else if tokens[index].Type() == lexer.SLICE {
 			if index+3 < len(tokens) {
@@ -246,7 +246,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				op3 := ParseValue(tokens[index])
 				codes = append(codes, Slice_{op1, op2, op3})
 			} else {
-				fmt.Println("Error: lose argumanet to index. Token: ", index)
+				errlog.Err("parser", "lose argumanet to index.")
 			}
 		} else if tokens[index].Type() == lexer.LIST {
 			index++
@@ -279,13 +279,13 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 						ifnode.condition = condition
 						ifnode.ifcodes = codesInBlock
 					} else {
-						fmt.Println("Error: lost ' end ' at the end of the block. Token ", index)
+						errlog.Err("parser", "lost 'end' at the end of the block.")
 					}
 				} else {
-					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+					errlog.Err("parser", "lost ' begin ' at the start of the block.")
 				}
 			} else {
-				fmt.Println("Error: not complete if block. Token: ", index)
+				errlog.Err("parser", "not complete if block.")
 			}
 			if index+3 < len(tokens) && tokens[index+1].Type() == lexer.ELSE {
 				index += 2
@@ -296,13 +296,13 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					if index < len(tokens) && tokens[index].Type() == lexer.END {
 						ifnode.elsecodes = codesInBlock
 					} else {
-						fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+						errlog.Err("parser", "lost 'end' at the end of the block.")
 					}
 				} else {
-					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+					errlog.Err("parser", "lost ' begin ' at the start of the block.")
 				}
 			} else {
-				fmt.Println("Error: not complete else block. Token: ", index)
+				errlog.Err("parser", "not complete else block.")
 			}
 			codes = append(codes, ifnode)
 		} else if tokens[index].Type() == lexer.SEND {
@@ -311,7 +311,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			   ... > ... > ... # right
 			*/
 			if index == 0 || tokens[index-1].Type() == lexer.STOP {
-				fmt.Println("Error: use ' > ' at the start of a sentence. There's nothing to send. Token: ", index)
+				errlog.Err("parser", "use ' > ' at the start of a sentence. There's nothing to send.")
 			} else if len(codes) > 0 {
 				sendList = append(sendList, codes[len(codes)-1])
 				codes = codes[:len(codes)-1]
@@ -323,7 +323,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				if tokens[index].Type() == lexer.SYMBOL {
 					name = tokens[index].Value()
 				} else {
-					fmt.Println("Error: unallowed function name. Token: ", index)
+					errlog.Err("parser", "unallowed function name.")
 					name = ""
 				}
 				index++
@@ -339,13 +339,13 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					if index < len(tokens) && tokens[index].Type() == lexer.END {
 						codes = append(codes, Def_{name, argList, codesInFunc})
 					} else {
-						fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+						errlog.Err("parser", "lost 'end' at the end of the block.")
 					}
 				} else {
-					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+					errlog.Err("parser", "lost ' begin ' at the start of the block.")
 				}
 			} else {
-				fmt.Println("Error: not complete def block. Token: ", index)
+				errlog.Err("parser", "not complete def block.")
 			}
 		} else if tokens[index].Type() == lexer.LAMBDA {
 			if index+2 < len(tokens) {
@@ -362,13 +362,13 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					if index < len(tokens) && tokens[index].Type() == lexer.END {
 						codes = append(codes, Lambda_{argList, codesInFunc})
 					} else {
-						fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+						errlog.Err("parser", "lost 'end' at the end of the block.")
 					}
 				} else {
-					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+					errlog.Err("parser", "lost ' begin ' at the start of the block.")
 				}
 			} else {
-				fmt.Println("Error: not complete lambda block. Token: ", index)
+				errlog.Err("parser", "not complete lambda block.")
 			}
 		} else if tokens[index].Type() == lexer.BEGIN {
 			if index+1 < len(tokens) {
@@ -378,10 +378,10 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				if index < len(tokens) && tokens[index].Type() == lexer.END {
 					codes = append(codes, Block_{codesInBlock})
 				} else {
-					fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+					errlog.Err("parser", "lost 'end' at the end of the block.")
 				}
 			} else {
-				fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+				errlog.Err("parser", "lost 'end' at the end of the block.")
 			}
 		} else if tokens[index].Type() == lexer.STRUCT {
 			if index+2 < len(tokens) {
@@ -393,37 +393,37 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					if index < len(tokens) && tokens[index].Type() == lexer.END {
 						codes = append(codes, Struct_{codesInStruct})
 					} else {
-						fmt.Println("Error: lost ' end ' at the end of the block. Token: ", index)
+						errlog.Err("parser", "lost 'end' at the end of the block.")
 					}
 				} else {
-					fmt.Println("Error: lost ' begin ' at the start of the block. Token: ", index)
+					errlog.Err("parser", "lost ' begin ' at the start of the block.")
 				}
 			} else {
-				fmt.Println("Error: not complete def block. Token: ", index)
+				errlog.Err("parser", "not complete def block.")
 			}
 		} else if tokens[index].Type() == lexer.ECHOLN {
 			if index+1 < len(tokens) {
 				index++
 				codes = append(codes, Echoln_{ParseValue(tokens[index])})
 			} else {
-				fmt.Println("Error: lose argument to echo. Token: ", index)
+				errlog.Err("parser", "lose argument to echo.")
 			}
 		} else if tokens[index].Type() == lexer.ECHO {
 			if index+1 < len(tokens) {
 				index++
 				codes = append(codes, Echo_{ParseValue(tokens[index])})
 			} else {
-				fmt.Println("Error: lose argument to echo. Token: ", index)
+				errlog.Err("parser", "lose argument to echo.")
 			}
 		} else if tokens[index].Type() == lexer.INPUT {
 			if index+1 < len(tokens) {
 				index++
 				codes = append(codes, Input_{ParseValue(tokens[index])})
 			} else {
-				fmt.Println("Error: lose argument to echo. Token: ", index)
+				errlog.Err("parser", "lose argument to echo.")
 			}
 		} else if tokens[index].Type() == lexer.NUM {
-			fmt.Println("Error: unexpected constant number. Token: ", index)
+			errlog.Err("parser", "unexpected constant number.")
 		} else if tokens[index].Type() == lexer.SYMBOL {
 			name := ParseValue(tokens[index])
 			index++
@@ -456,7 +456,7 @@ func RunBlock(str string) {
 	tokens := lexer.Lex(strings.Split(str, ""))
 	codes, index := Parse(tokens)
 	if index < len(tokens) {
-		fmt.Println("Error: unexpected ' end '. Token: ", index)
+		errlog.Err("parser", "unexpected 'end'.")
 	} else {
 		Block_{codes}.run()
 	}
@@ -470,7 +470,7 @@ func RunModule(code string, moduleName string) {
 	tokens := lexer.Lex(strings.Split(code, ""))
 	codes, index := Parse(tokens)
 	if index < len(tokens) {
-		fmt.Println("Error: unexpected ' end '. Token: ", index)
+		errlog.Err("parser", "unexpected 'end'.")
 	} else {
 		Scope.Add(moduleName, Struct_{codes}.run())
 	}

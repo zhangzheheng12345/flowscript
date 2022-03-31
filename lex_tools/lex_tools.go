@@ -1,8 +1,9 @@
 package lextools
 
 import (
-	"fmt"
 	"strings"
+
+	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 )
 
 /* Check if a character is a number. */
@@ -58,6 +59,6 @@ func PickEscapeChar(str []string, index int) string {
 			return "\b"
 		}
 	}
-	fmt.Println("Error: unexpected escape character. Letter: ", index)
+	errlog.Err("lexer", "unexpected escape character.")
 	return ""
 }
