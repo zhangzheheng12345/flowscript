@@ -31,15 +31,18 @@ const (
 	SYMBOL
 	STR
 	CHAR
+	TYPE
 	/* Buildin commands */
 	ECHO
-    ECHOLN
+	ECHOLN
 	INPUT
 	LIST
 	LEN
 	INDEX
 	APP
 	SLICE
+	WORDS
+	LINES
 )
 
 /* token structure, including kind and value */

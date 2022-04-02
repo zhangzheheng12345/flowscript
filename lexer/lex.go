@@ -63,6 +63,8 @@ func Lex(str []string) []Token {
 				result = append(result, Token{BEGIN, ""})
 			} else if word == "end" {
 				result = append(result, Token{END, ""})
+			} else if word == "type" {
+				result = append(result, Token{TYPE, ""})
 			} else if word == "echo" {
 				result = append(result, Token{ECHO, ""})
 			} else if word == "echoln" {
@@ -79,6 +81,10 @@ func Lex(str []string) []Token {
 				result = append(result, Token{APP, ""})
 			} else if word == "slice" {
 				result = append(result, Token{SLICE, ""})
+			} else if word == "words" {
+				result = append(result, Token{WORDS, ""})
+			} else if word == "lines" {
+				result = append(result, Token{LINES, ""})
 			} else {
 				result = append(result, Token{SYMBOL, word})
 			}

@@ -208,6 +208,14 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			} else {
 				errlog.Err("parser", "lost the variable's name while trying to define one")
 			}
+		} else if tokens[index].Type() == lexer.TYPE {
+			if index+1 < len(tokens) {
+				index++
+				op := ParseValue(tokens[index])
+				codes = append(codes, Type_{op})
+			} else {
+				errlog.Err("parser", "lose argumanet to not.")
+			}
 		} else if tokens[index].Type() == lexer.LEN {
 			if index+1 < len(tokens) {
 				index++
@@ -245,6 +253,22 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				index++
 				op3 := ParseValue(tokens[index])
 				codes = append(codes, Slice_{op1, op2, op3})
+			} else {
+				errlog.Err("parser", "lose argumanet to index.")
+			}
+		} else if tokens[index].Type() == lexer.WORDS {
+			if index+1 < len(tokens) {
+				index++
+				op := ParseValue(tokens[index])
+				codes = append(codes, Words_{op})
+			} else {
+				errlog.Err("parser", "lose argumanet to index.")
+			}
+		} else if tokens[index].Type() == lexer.LINES {
+			if index+1 < len(tokens) {
+				index++
+				op := ParseValue(tokens[index])
+				codes = append(codes, Lines_{op})
 			} else {
 				errlog.Err("parser", "lose argumanet to index.")
 			}

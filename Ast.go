@@ -178,6 +178,31 @@ func (var_ Var_) run() interface{} {
 	return 0
 }
 
+/* type cmd returns a string which tells the operand's type */
+type Type_ struct {
+	op Value
+}
+
+func (type_ Type_) run() interface{} {
+	switch v := type_.op.get().(type) {
+	case int:
+		_ = v // FIXME: why must i write like this
+		return "int"
+	case byte:
+		return "char"
+	case []interface{}:
+		return "list"
+	case string:
+		return "string"
+	case Func_:
+		return "function"
+	case Struct:
+		return "struct"
+	default:
+		return "?unknown_type?"
+	}
+}
+
 type Len_ struct {
 	op Value
 }
@@ -283,6 +308,26 @@ func (slice_ Slice_) run() interface{} {
 		errlog.Err("runtime", "Try to slice a unknown type value.")
 		return 0
 	}
+}
+
+/* Split the string by words */
+type Words_ struct {
+	op Value
+}
+
+func (words_ Words_) run() interface{} {
+	str := WantString(words_.op.get())
+	return strings.Split(str, " ")
+}
+
+/* Split the string by lines*/
+type Lines_ struct {
+	op Value
+}
+
+func (lines_ Lines_) run() interface{} {
+	str := WantString(lines_.op.get())
+	return strings.Split(str, "\n")
 }
 
 type List_ struct {
