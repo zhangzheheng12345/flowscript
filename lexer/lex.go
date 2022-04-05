@@ -108,6 +108,7 @@ func Lex(str []string) []Token {
 				result = append(result, Token{SYMBOL, "-"})
 			}
 		} else if str[index] == ";" {
+			// ; => end, obviously
 			result = append(result, Token{STOP, ""})
 		} else if str[index] == "\n" {
 			if len(result) > 0 && result[len(result)-1].Type() != SEND && result[len(result)-1].Type() != BEGIN {
@@ -133,9 +134,6 @@ func Lex(str []string) []Token {
 			result = append(result, Token{XEXP, strings.Join(str[begin:index], "")})
 		} else if str[index] == ")" {
 			errlog.Err("lexer", "too much back parenthesis.")
-		} else if str[index] == "\n" {
-			// ; => end, obviously
-			result = append(result, Token{STOP, ""})
 		} else if str[index] == "\"" {
 			index++
 			// TODO: Avoid connecting string very often ( res is connected very often

@@ -14,7 +14,7 @@ import (
 
 and add:
 
-```
+```go.mod
 require github.com/zhangzheheng12345/flowscript v0.1.1
 replace github.com/zhangzheheng12345/flowscript v0.1.1 => github.com/zhangzheheng12345/FlowScript v0.1.1
 ```
