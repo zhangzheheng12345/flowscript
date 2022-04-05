@@ -471,31 +471,3 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 	checkSend()
 	return codes, index
 }
-
-/*
-RunBlock(string) receives a text script ( string ) and run it directly.
-The runtime status would not be saved as the script runs in a Block_.
-*/
-func RunBlock(str string) {
-	tokens := lexer.Lex(strings.Split(str, ""))
-	codes, index := Parse(tokens)
-	if index < len(tokens) {
-		errlog.Err("parser", "unexpected 'end'.")
-	} else {
-		Block_{codes}.run()
-	}
-}
-
-/*
-RunModule(string) receives a text script ( string ) and run it directly.
-The interpreter will add a structure named 'globalName' in global scope, which contains all the variables the module defined.
-*/
-func RunModule(code string, moduleName string) {
-	tokens := lexer.Lex(strings.Split(code, ""))
-	codes, index := Parse(tokens)
-	if index < len(tokens) {
-		errlog.Err("parser", "unexpected 'end'.")
-	} else {
-		Scope.Add(moduleName, Struct_{codes}.run())
-	}
-}

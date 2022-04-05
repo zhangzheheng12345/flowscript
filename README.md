@@ -7,7 +7,9 @@ A embeded script language interpreter written by Go. The language is functional.
 Use:
 
 ```go
-import "https://github.com/zhangzheheng12345/flowscript"
+import (
+    parser "https://github.com/zhangzheheng12345/flowscript"
+)
 ```
 
 and add:
@@ -33,13 +35,14 @@ to run FlowScript code.
 
 ### Hello World
 
-```
+<!--- highlight FlowScript as Ruby --->
+```ruby
 echo "Hello World!\n" # output: Hello World!
 ```
 
 ### Fibonacci sequence
 
-```
+```ruby
 def fibonacci a b begin
     add a b > echo - > echo "\n"
     add a b > smlr - 10000 > if - begin
@@ -52,7 +55,7 @@ fibonacci 1 1
 
 ### OOP Mock (yes, in a functional language)
 
-```
+```ruby
 def Student name li begin # This function will be used as a constructor
     echoln "constructor called!"
     def sum li begin
