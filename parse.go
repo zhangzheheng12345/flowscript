@@ -326,7 +326,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					errlog.Err("parser", "lost ' begin ' at the start of the block.")
 				}
 			} else {
-				errlog.Err("parser", "not complete else block.")
+				ifnode.elsecodes = make([]Ast, 0)
 			}
 			codes = append(codes, ifnode)
 		} else if tokens[index].Type() == lexer.SEND {

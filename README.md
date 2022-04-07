@@ -37,19 +37,19 @@ to run FlowScript code.
 
 <!--- highlight FlowScript as Ruby --->
 ```ruby
-echo "Hello World!\n" # output: Hello World!
+echoln "Hello World!" # output: Hello World!
 ```
 
 ### Fibonacci sequence
 
 ```ruby
 def fibonacci a b begin
-    add a b > echo - > echo "\n"
+    add a b > echoln -
     add a b > smlr - 10000 > if - begin
         add a b > fibonacci b -
-    end else begin end # else block is a must
+    end
 end
-echo "fibonacci begins ...\n"
+echoln "fibonacci begins ..."
 fibonacci 1 1
 ```
 
