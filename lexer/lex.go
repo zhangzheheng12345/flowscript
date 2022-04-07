@@ -21,70 +21,9 @@ func Lex(str []string) []Token {
 		} else if lextools.IsSingleAlpha(str[index]) || str[index] == "_" {
 			var word string
 			word, index = lextools.PickSymbol(str, index)
-			if word == "add" {
-				result = append(result, Token{ADD, ""})
-			} else if word == "sub" {
-				result = append(result, Token{SUB, ""})
-			} else if word == "multi" {
-				result = append(result, Token{MULTI, ""})
-			} else if word == "div" {
-				result = append(result, Token{DIV, ""})
-			} else if word == "mod" {
-				result = append(result, Token{MOD, ""})
-			} else if word == "equal" {
-				result = append(result, Token{EQUAL, ""})
-			} else if word == "bigr" {
-				result = append(result, Token{BIGR, ""})
-			} else if word == "smlr" {
-				result = append(result, Token{SMLR, ""})
-			} else if word == "not" {
-				result = append(result, Token{NOT, ""})
-			} else if word == "and" {
-				result = append(result, Token{AND, ""})
-			} else if word == "or" {
-				result = append(result, Token{OR, ""})
-			} else if word == "xor" {
-				result = append(result, Token{XOR, ""})
-			} else if word == "expr" {
-				result = append(result, Token{EXPR, ""})
-			} else if word == "var" {
-				result = append(result, Token{VAR, ""})
-			} else if word == "if" {
-				result = append(result, Token{IF, ""})
-			} else if word == "else" {
-				result = append(result, Token{ELSE, ""})
-			} else if word == "def" {
-				result = append(result, Token{DEF, ""})
-			} else if word == "lambda" {
-				result = append(result, Token{LAMBDA, ""})
-			} else if word == "struct" {
-				result = append(result, Token{STRUCT, ""})
-			} else if word == "begin" {
-				result = append(result, Token{BEGIN, ""})
-			} else if word == "end" {
-				result = append(result, Token{END, ""})
-			} else if word == "type" {
-				result = append(result, Token{TYPE, ""})
-			} else if word == "echo" {
-				result = append(result, Token{ECHO, ""})
-			} else if word == "echoln" {
-				result = append(result, Token{ECHOLN, ""})
-			} else if word == "input" {
-				result = append(result, Token{INPUT, ""})
-			} else if word == "list" {
-				result = append(result, Token{LIST, ""})
-			} else if word == "len" {
-				result = append(result, Token{LEN, ""})
-			} else if word == "index" {
-				result = append(result, Token{INDEX, ""})
-			} else if word == "app" {
-				result = append(result, Token{APP, ""})
-			} else if word == "slice" {
-				result = append(result, Token{SLICE, ""})
-			} else if word == "words" {
-				result = append(result, Token{WORDS, ""})
-			} else if word == "lines" {
-				result = append(result, Token{LINES, ""})
+			v, ok := buildinCmdMap[word]
+			if ok {
+				result = append(result, Token{v, ""})
 			} else {
 				result = append(result, Token{SYMBOL, word})
 			}

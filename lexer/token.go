@@ -31,8 +31,8 @@ const (
 	SYMBOL
 	STR
 	CHAR
-	TYPE
 	/* Buildin commands */
+	TYPE
 	ECHO
 	ECHOLN
 	INPUT
