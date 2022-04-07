@@ -26,10 +26,17 @@ in go.mod to import it to your Go project.
 Use:
 
 ```go
-parser.RunCode( <your codes(type string)> )
+parser.RunBlock( <your codes(type string)> )
 ```
 
-to run FlowScript code.
+to run FlowScript code in a independent scope which will not influence the outside context.
+
+Use:
+
+```go
+parser.RunModule( <your codes(type string)> )
+```
+to run FlowScript code as a module. All the variables declared outside functions & and blocks will be wrapped in a structure and add to global scope.
 
 ## Examples
 
