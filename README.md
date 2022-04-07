@@ -15,8 +15,8 @@ import (
 and add:
 
 ```go.mod
-require github.com/zhangzheheng12345/flowscript v0.1.1
-replace github.com/zhangzheheng12345/flowscript v0.1.1 => github.com/zhangzheheng12345/FlowScript v0.1.1
+require github.com/zhangzheheng12345/flowscript v0.2.0
+replace github.com/zhangzheheng12345/flowscript v0.2.0 => github.com/zhangzheheng12345/FlowScript v0.2.0
 ```
 
 in go.mod to import it to your Go project.
@@ -69,7 +69,9 @@ def Student name li begin # This function will be used as a constructor
     struct begin
         def getName begin expr name end # Returns the name of the student
         def getScore begin expr li end # Returns a list which contains the student's score
-        def addScore score begin app li score > Student name - end # Add a score to the list and returns a new object (FP)
+        def addScore score begin
+            app li score > Student name - # Add a score to the list and returns a new object (FP)
+        end
         def avgScore begin expr avg end
     end
 end
