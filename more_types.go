@@ -46,7 +46,7 @@ func (struct_ Struct) Member(name string) interface{} {
 	if ok {
 		return v
 	} else {
-		errlog.Err("runtime", "Try to find a no-existing member in the structure.")
+		errlog.Err("runtime", errlog.Line, "Try to find a no-existing member in the structure.")
 		return nil // nil is safe, as the type checkings (Want...) will process them
 	}
 }

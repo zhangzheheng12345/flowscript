@@ -41,7 +41,7 @@ func PickNum(str []string, index int) (string, int) {
 	return strings.Join(str[begin:index], ""), index - 1
 }
 
-func PickEscapeChar(str []string, index int) string {
+func PickEscapeChar(str []string, index int, line int) string {
 	if index < len(str) {
 		if str[index] == "\"" {
 			return "\""
@@ -59,6 +59,6 @@ func PickEscapeChar(str []string, index int) string {
 			return "\b"
 		}
 	}
-	errlog.Err("lexer", "unexpected escape character.")
+	errlog.Err("lexer", line, "unexpected escape character.")
 	return ""
 }

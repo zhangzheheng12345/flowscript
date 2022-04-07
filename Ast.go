@@ -12,11 +12,13 @@ type Ast interface {
 }
 
 type Add_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (add_ Add_) run() interface{} {
+	errlog.Line = add_.line
 	v1 := add_.op1.get()
 	v2 := add_.op2.get()
 	switch v := v1.(type) {
@@ -30,32 +32,37 @@ func (add_ Add_) run() interface{} {
 	case string:
 		return v + WantString(v2)
 	default:
-		errlog.Err("runtime", "Try to add a unkown type value with another")
+		errlog.Err("runtime", add_.line, "Try to add a unkown type value with another")
 		return nil
 	}
 }
 
 type Sub_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (sub_ Sub_) run() interface{} {
+	errlog.Line = sub_.line
 	return WantInt(sub_.op1.get()) - WantInt(sub_.op2.get())
 }
 
 type Multi_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (multi_ Multi_) run() interface{} {
+	errlog.Line = multi_.line
 	return WantInt(multi_.op1.get()) * WantInt(multi_.op2.get())
 }
 
 type Div_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (div_ Div_) run() interface{} {
@@ -63,38 +70,46 @@ func (div_ Div_) run() interface{} {
 }
 
 type Mod_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (mod_ Mod_) run() interface{} {
+	errlog.Line = mod_.line
 	return WantInt(mod_.op1.get()) % WantInt(mod_.op2.get())
 }
 
 type Bigr_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (bigr_ Bigr_) run() interface{} {
+	errlog.Line = bigr_.line
 	return BoolToInt(WantInt(bigr_.op1.get()) > WantInt(bigr_.op2.get()))
 }
 
 type Smlr_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (smlr_ Smlr_) run() interface{} {
+	errlog.Line = smlr_.line
 	return BoolToInt(WantInt(smlr_.op1.get()) < WantInt(smlr_.op2.get()))
 }
 
 type Equal_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (equal_ Equal_) run() interface{} {
+	errlog.Line = equal_.line
 	v1 := equal_.op1.get()
 	v2 := equal_.op2.get()
 	switch v := v1.(type) {
@@ -114,60 +129,72 @@ func (equal_ Equal_) run() interface{} {
 	case string:
 		return BoolToInt(v == WantString(v2))
 	default:
-		errlog.Err("runtime", "Try to compare a unkown type value to another. Operation: equal")
+		errlog.Err("runtime", equal_.line, "Try to compare a unkown type value to another. Operation: equal")
 		return nil
 	}
 }
 
 type And_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (and_ And_) run() interface{} {
+	errlog.Line = and_.line
 	return WantInt(and_.op1.get()) & WantInt(and_.op2.get())
 }
 
 type Xor_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (xor_ Xor_) run() interface{} {
+	errlog.Line = xor_.line
 	return WantInt(xor_.op1.get()) ^ WantInt(xor_.op1.get())
 }
 
 type Or_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (or_ Or_) run() interface{} {
+	errlog.Line = or_.line
 	return WantInt(or_.op1.get()) | WantInt(or_.op1.get())
 }
 
 type Not_ struct {
-	op Value
+	op   Value
+	line int
 }
 
 func (not_ Not_) run() interface{} {
+	errlog.Line = not_.line
 	return BoolToInt(WantInt(not_.op.get()) == 0)
 }
 
 type Expr_ struct {
-	op Value
+	op   Value
+	line int
 }
 
 func (expr_ Expr_) run() interface{} {
+	errlog.Line = expr_.line
 	return expr_.op.get()
 }
 
 type Var_ struct {
 	name string
 	op   Value
+	line int
 }
 
 func (var_ Var_) run() interface{} {
+	errlog.Line = var_.line
 	if var_.op != nil {
 		/* give a start value */
 		Scope.Add(var_.name, var_.op.get())
@@ -180,10 +207,12 @@ func (var_ Var_) run() interface{} {
 
 /* type cmd returns a string which tells the operand's type */
 type Type_ struct {
-	op Value
+	op   Value
+	line int
 }
 
 func (type_ Type_) run() interface{} {
+	errlog.Line = type_.line
 	switch v := type_.op.get().(type) {
 	case int:
 		_ = v // FIXME: why must i write like this
@@ -204,20 +233,22 @@ func (type_ Type_) run() interface{} {
 }
 
 type Len_ struct {
-	op Value
+	op   Value
+	line int
 }
 
 func (len_ Len_) run() interface{} {
+	errlog.Line = len_.line
 	switch v := len_.op.get().(type) {
 	case int, byte:
-		errlog.Err("runtime", "Try to get the length of a int or char value.")
+		errlog.Err("runtime", len_.line, "Try to get the length of a int or char value.")
 		return 0
 	case []interface{}:
 		return len(v)
 	case string:
 		return len(strings.Split(v, ""))
 	default:
-		errlog.Err("runtime", "Try to get the length of a unknown type value.")
+		errlog.Err("runtime", len_.line, "Try to get the length of a unknown type value.")
 		return 0
 	}
 }
@@ -225,13 +256,15 @@ func (len_ Len_) run() interface{} {
 type Index_ struct {
 	op    Value
 	index Value
+	line  int
 }
 
 func (index_ Index_) run() interface{} {
+	errlog.Line = index_.line
 	index := WantInt(index_.index.get())
 	switch v := index_.op.get().(type) {
 	case int, byte:
-		errlog.Err("runtime", "Try to index a int or char value.")
+		errlog.Err("runtime", index_.line, "Try to index a int or char value.")
 		return 0
 	case []interface{}:
 		abs, err := AbsIndex(len(v), index)
@@ -248,44 +281,48 @@ func (index_ Index_) run() interface{} {
 			return strings.Split(v, "")[abs]
 		}
 	default:
-		errlog.Err("runtime", "Try to index a unknown type value.")
+		errlog.Err("runtime", index_.line, "Try to index a unknown type value.")
 		return 0
 	}
 }
 
 type App_ struct {
-	op1 Value
-	op2 Value
+	op1  Value
+	op2  Value
+	line int
 }
 
 func (app_ App_) run() interface{} {
+	errlog.Line = app_.line
 	switch v := app_.op1.get().(type) {
 	case int, byte:
-		errlog.Err("runtime", "Try to append a value after a int or char value.")
+		errlog.Err("runtime", app_.line, "Try to append a value after a int or char value.")
 		return 0
 	case []interface{}:
 		return append(v, app_.op2.get())
 	case string:
 		return v + string([]byte{byte(WantInt(app_.op2.get()))})
 	default:
-		errlog.Err("runtime", "Try to append sth after a unknown type value.")
+		errlog.Err("runtime", app_.line, "Try to append sth after a unknown type value.")
 		return 0
 	}
 }
 
 type Slice_ struct {
-	op1 Value
-	op2 Value
-	op3 Value
+	op1  Value
+	op2  Value
+	op3  Value
+	line int
 }
 
 func (slice_ Slice_) run() interface{} {
+	errlog.Line = slice_.line
 	begin := WantInt(slice_.op2.get())
 	end := WantInt(slice_.op3.get())
 	var err1, err2 bool
 	switch v := slice_.op1.get().(type) {
 	case int, byte:
-		errlog.Err("runtime", "Try to slice a int or char value.")
+		errlog.Err("runtime", slice_.line, "Try to slice a int or char value.")
 		return 0
 	case []interface{}:
 		begin, err1 = AbsIndex(len(v)+1, begin)
@@ -305,36 +342,42 @@ func (slice_ Slice_) run() interface{} {
 			return strings.Join(splited[begin:end], "")
 		}
 	default:
-		errlog.Err("runtime", "Try to slice a unknown type value.")
+		errlog.Err("runtime", slice_.line, "Try to slice a unknown type value.")
 		return 0
 	}
 }
 
 /* Split the string by words */
 type Words_ struct {
-	op Value
+	op   Value
+	line int
 }
 
 func (words_ Words_) run() interface{} {
+	errlog.Line = words_.line
 	str := WantString(words_.op.get())
 	return strings.Split(str, " ")
 }
 
 /* Split the string by lines*/
 type Lines_ struct {
-	op Value
+	op   Value
+	line int
 }
 
 func (lines_ Lines_) run() interface{} {
+	errlog.Line = lines_.line
 	str := WantString(lines_.op.get())
 	return strings.Split(str, "\n")
 }
 
 type List_ struct {
-	ops []Value
+	ops  []Value
+	line int
 }
 
 func (list_ List_) run() interface{} {
+	errlog.Line = list_.line
 	res := make([]interface{}, 0)
 	for _, v := range list_.ops {
 		res = append(res, v.get())
@@ -346,9 +389,11 @@ type Def_ struct {
 	name  string
 	args  []string
 	codes []Ast
+	line  int
 }
 
 func (def_ Def_) run() interface{} {
+	errlog.Line = def_.line
 	res := Func_{Scope, def_.args, def_.codes}
 	Scope.Add(def_.name, res)
 	return res
@@ -357,18 +402,22 @@ func (def_ Def_) run() interface{} {
 type Lambda_ struct {
 	args  []string
 	codes []Ast
+	line  int
 }
 
 func (lambda_ Lambda_) run() interface{} {
+	errlog.Line = lambda_.line
 	return Func_{Scope, lambda_.args, lambda_.codes}
 }
 
 /* Struct_ ( with one underline ) is the command */
 type Struct_ struct {
 	codes []Ast
+	line  int
 }
 
 func (struct_ Struct_) run() interface{} {
+	errlog.Line = struct_.line
 	Scope = MakeScope(Scope, Scope)
 	for _, code := range struct_.codes {
 		code.run()
@@ -381,9 +430,11 @@ func (struct_ Struct_) run() interface{} {
 /* a send sequence */
 type Send_ struct {
 	codes []Ast
+	line  int
 }
 
 func (send_ Send_) run() interface{} {
+	errlog.Line = send_.line
 	tmpQueue = MakeTmpQueue(tmpQueue)
 	for _, code := range send_.codes {
 		tmpQueue.Add(code.run())
@@ -400,9 +451,11 @@ end
 */
 type Block_ struct {
 	codes []Ast
+	line  int
 }
 
 func (block_ Block_) run() interface{} {
+	errlog.Line = block_.line
 	Scope = MakeScope(Scope, Scope)
 	var result interface{}
 	for _, code := range block_.codes {
@@ -421,9 +474,11 @@ type If_ struct {
 	condition Value
 	ifcodes   []Ast
 	elsecodes []Ast
+	line      int
 }
 
 func (if_ If_) run() interface{} {
+	errlog.Line = if_.line
 	if WantInt(if_.condition.get()) != 0 {
 		Scope = MakeScope(Scope, Scope)
 		var result interface{}
@@ -447,9 +502,11 @@ func (if_ If_) run() interface{} {
 type Call_ struct {
 	name Value
 	args []Value
+	line int
 }
 
 func (call_ Call_) run() interface{} {
+	errlog.Line = call_.line
 	argsValue := make([]interface{}, 0)
 	for _, arg := range call_.args {
 		argsValue = append(argsValue, arg.get())
@@ -459,10 +516,12 @@ func (call_ Call_) run() interface{} {
 
 /* output to stdout */
 type Echo_ struct {
-	op Value
+	op   Value
+	line int
 }
 
 func (echo_ Echo_) run() interface{} {
+	errlog.Line = echo_.line
 	op := echo_.op.get()
 	v, ok := op.(byte)
 	if ok {
@@ -475,10 +534,12 @@ func (echo_ Echo_) run() interface{} {
 
 /* output to stdout */
 type Echoln_ struct {
-	op Value
+	op   Value
+	line int
 }
 
 func (echoln_ Echoln_) run() interface{} {
+	errlog.Line = echoln_.line
 	op := echoln_.op.get()
 	v, ok := op.(byte)
 	if ok {
@@ -492,11 +553,13 @@ func (echoln_ Echoln_) run() interface{} {
 /* Read from stdin */
 type Input_ struct {
 	// op is a reminding string
-	op Value
+	op   Value
+	line int
 }
 
 func (input_ Input_) run() interface{} {
-	Echo_{input_.op}.run()
+	// errlog.Line = input_.line is not needed because Echo_{input_.op, input_.line}.run() has already done it
+	Echo_(input_).run()
 	var res string
 	_, err := fmt.Scan(&res)
 	if err != nil {

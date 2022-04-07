@@ -31,7 +31,7 @@ func MakeScope(father *Scope_, last *Scope_) *Scope_ {
 func (scope_ Scope_) Add(key string, value interface{}) {
 	_, ok := scope_.vars[key]
 	if ok {
-		errlog.Err("runtime", "Try to add a variable that has been added. var: "+key)
+		errlog.Err("runtime", errlog.Line, "Try to add a variable that has been added. name:", key)
 	} else {
 		scope_.vars[key] = value
 	}
@@ -44,7 +44,7 @@ func (scope_ Scope_) Find(key string) interface{} {
 	} else if scope_.father != nil {
 		return scope_.father.Find(key)
 	} else {
-		errlog.Err("runtime", "Try to read a variable that hasn't been added. var: "+key)
+		errlog.Err("runtime", errlog.Line, "Try to read a variable that hasn't been added. name:", key)
 	}
 	return 0
 }
@@ -79,7 +79,7 @@ func (queue_ Queue_) Get() interface{} {
 	if queue_.dataLen > 0 {
 		return queue_.data[0]
 	}
-	errlog.Err("runtime", "Try to get a value from temp queue while it's empty")
+	errlog.Err("runtime", errlog.Line, "Try to get a value from temp queue while it's empty")
 	return nil
 }
 

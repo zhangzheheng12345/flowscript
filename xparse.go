@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"fmt"
 	"strconv"
 
+	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 	"github.com/zhangzheheng12345/flowscript/xlexer"
 )
 
@@ -18,7 +18,7 @@ func E_(tokens []xlexer.Token, value int) int {
 		tail, v := T(tokens[1:])
 		return E_(tail, value-v)
 	default:
-		fmt.Println("Error: unexpected token in xparser: ", tokens[0].Type())
+		errlog.Err("xparse", tokens[0].Line(), " token in xparser:", tokens[0].Type())
 		return 0
 	}
 }
@@ -41,7 +41,7 @@ func T_(tokens []xlexer.Token, value int) ([]xlexer.Token, int) {
 		tail, v := F(tokens[1:])
 		return T_(tail, value/v)
 	default:
-		fmt.Println("Error: unexpected token in xparser: ", tokens[0].Type())
+		errlog.Err("xparse", tokens[0].Line(), "unexpected token in xparser:", tokens[0].Type())
 		return tokens[1:], 0
 	}
 }
@@ -72,11 +72,11 @@ func F(tokens []xlexer.Token) ([]xlexer.Token, int) {
 			index++
 		}
 		if index >= len(tokens) && tokens[index-1].Type() != xlexer.BPAREN {
-			fmt.Println("Error: lose back parenthesis in xparser")
+			errlog.Err("xparser", tokens[index-1].Line(), "lose back parenthesis in xparser")
 		}
 		return tokens[index:], WantInt(Exp_{tokens[1 : index-1]}.get())
 	default:
-		fmt.Println("Error: X expression mistake")
+		errlog.Err("xparse", tokens[0].Line(), "unexpected token in xparser:", tokens[0].Type())
 		return tokens[1:], 0
 	}
 }

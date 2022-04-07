@@ -15,7 +15,7 @@ func WantInt(value interface{}) int {
 	if !ok {
 		v, ok := value.(byte)
 		if !ok {
-			errlog.Err("runtime", "int or char value wanted, but got other type value")
+			errlog.Err("runtime", errlog.Line, "int or char value wanted, but got other type value")
 		}
 		return int(v)
 	}
@@ -25,7 +25,7 @@ func WantInt(value interface{}) int {
 func WantList(value interface{}) []interface{} {
 	v, ok := value.([]interface{})
 	if !ok {
-		errlog.Err("runtime", "int list wanted, but got other type value")
+		errlog.Err("runtime", errlog.Line, "int list wanted, but got other type value")
 	}
 	return v
 }
@@ -33,7 +33,7 @@ func WantList(value interface{}) []interface{} {
 func WantString(value interface{}) string {
 	v, ok := value.(string)
 	if !ok {
-		errlog.Err("runtime", "string wanted, but got other type value")
+		errlog.Err("runtime", errlog.Line, "string wanted, but got other type value")
 	}
 	return v
 }
@@ -44,7 +44,7 @@ func AbsIndex(length int, index int) (int, bool) {
 	} else if index < 0 && -index <= length {
 		return length + index, false
 	} else {
-		errlog.Err("runtime", "index out of range. Index: ", index, " length of the list: ", length)
+		errlog.Err("runtime", errlog.Line, "index out of range. index:", index, "length of the list:", length)
 		return 0, true
 	}
 }
@@ -52,7 +52,7 @@ func AbsIndex(length int, index int) (int, bool) {
 func WantStruct(value interface{}) Struct {
 	v, ok := value.(Struct)
 	if !ok {
-		errlog.Err("runtime", "struct wanted, but got other type value")
+		errlog.Err("runtime", errlog.Line, "struct wanted, but got other type value")
 	}
 	return v
 }
@@ -60,7 +60,7 @@ func WantStruct(value interface{}) Struct {
 func WantFunc(value interface{}) Func_ {
 	v, ok := value.(Func_)
 	if !ok {
-		errlog.Err("runtime", "function wanted, but got other type value")
+		errlog.Err("runtime", errlog.Line, "function wanted, but got other type value")
 		return Func_{Scope, make([]string, 0), make([]Ast, 0)}
 	}
 	return v

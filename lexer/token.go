@@ -49,6 +49,7 @@ const (
 type Token struct {
 	kind  byte
 	value string
+	line  int
 }
 
 func (token Token) Type() byte {
@@ -57,4 +58,8 @@ func (token Token) Type() byte {
 
 func (token Token) Value() string {
 	return token.value
+}
+
+func (token Token) Line() int {
+	return token.line
 }

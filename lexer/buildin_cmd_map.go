@@ -1,5 +1,6 @@
 package lexer
 
+/* Buildin cmd to token type. This map should not be changed */
 var buildinCmdMap = map[string]byte{
 	"add":    ADD,
 	"sub":    SUB,
