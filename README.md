@@ -36,6 +36,7 @@ Use:
 ```go
 parser.RunModule( <your codes(type string)> )
 ```
+
 to run FlowScript code as a module. All the variables declared outside functions & and blocks will be wrapped in a structure and add to global scope.
 
 ## Examples

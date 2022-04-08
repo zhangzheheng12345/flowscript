@@ -128,6 +128,9 @@ func (equal_ Equal_) run() interface{} {
 		return 1
 	case string:
 		return BoolToInt(v == WantString(v2))
+	case Func_:
+		errlog.Err("runtime", equal_.line, "Try to compare a function to another. Operation: equal")
+		return nil
 	default:
 		errlog.Err("runtime", equal_.line, "Try to compare a unkown type value to another. Operation: equal")
 		return nil
