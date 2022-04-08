@@ -9,10 +9,7 @@ func Err(kind string, line int, msg ...interface{}) {
 		fmt.Println("errlog: len(msg) == 0 !!!")
 	}
 	fmt.Print(kind, ":", line, ": ")
-	for _, v := range msg {
-		fmt.Print(v, " ")
-	}
-	fmt.Println()
+	fmt.Println(msg...)
 }
 
 /* The line recorder for runtime */

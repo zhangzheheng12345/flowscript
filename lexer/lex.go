@@ -22,7 +22,7 @@ func Lex(str []string) []Token {
 		} else if lextools.IsSingleAlpha(str[index]) || str[index] == "_" {
 			var word string
 			word, index = lextools.PickSymbol(str, index)
-			v, ok := buildinCmdMap[word]
+			v, ok := BuildinCmdMap[word]
 			if ok {
 				result = append(result, Token{v, "", line})
 			} else {

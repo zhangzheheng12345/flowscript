@@ -28,7 +28,7 @@ func ParseValue(token lexer.Token) Value {
 		return Char_{token.Value()[0]}
 	} else {
 		errlog.Err("parser", token.Line(), "expecting a Value but got kind:", token.Type())
-		return nil
+		return Int_{0} // to avoid err
 	}
 }
 
@@ -457,7 +457,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				index++
 				codes = append(codes, Echoln_{ParseValue(tokens[index]), parseLine})
 			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argument to echo.")
+				errlog.Err("parser", tokens[index].Line(), "lose argument to echoln.")
 			}
 		} else if tokens[index].Type() == lexer.ECHO {
 			if index+1 < len(tokens) {
@@ -471,7 +471,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				index++
 				codes = append(codes, Input_{ParseValue(tokens[index]), parseLine})
 			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argument to echo.")
+				errlog.Err("parser", tokens[index].Line(), "lose argument to input.")
 			}
 		} else if tokens[index].Type() == lexer.NUM {
 			errlog.Err("parser", tokens[index].Line(), "unexpected constant number.")

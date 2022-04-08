@@ -394,7 +394,7 @@ type Def_ struct {
 
 func (def_ Def_) run() interface{} {
 	errlog.Line = def_.line
-	res := Func_{Scope, def_.args, def_.codes}
+	res := FlowFunc{Scope, def_.args, def_.codes}
 	Scope.Add(def_.name, res)
 	return res
 }
@@ -407,7 +407,7 @@ type Lambda_ struct {
 
 func (lambda_ Lambda_) run() interface{} {
 	errlog.Line = lambda_.line
-	return Func_{Scope, lambda_.args, lambda_.codes}
+	return FlowFunc{Scope, lambda_.args, lambda_.codes}
 }
 
 /* Struct_ ( with one underline ) is the command */

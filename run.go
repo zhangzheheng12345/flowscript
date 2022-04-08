@@ -31,3 +31,19 @@ The interpreter will add a structure named 'globalName' in global scope, which c
 func RunModule(str string, moduleName string) {
 	Scope.Add(moduleName, Struct_{Build(str), 0}.run())
 }
+
+/*
+GoFunc wraps native Go functions to enable you to call Go functions inside FlowScript.
+*/
+type GoFunc struct {
+	fn func([]interface{}) interface{}
+}
+
+func (goFunc GoFunc) run(args []interface{}) interface{} {
+	return goFunc.fn(args)
+}
+
+/* Add a native Go function to global scope. The function will be named as `name` */
+func AddGoFunc(name string, fn func([]interface{}) interface{}) {
+	Scope.Add(name, GoFunc{fn})
+}
