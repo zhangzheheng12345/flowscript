@@ -27,7 +27,15 @@ func ParseValue(token lexer.Token) Value {
 	} else if token.Type() == lexer.CHAR {
 		return Char_{token.Value()[0]}
 	} else {
-		errlog.Err("parser", token.Line(), "expecting a Value but got kind:", token.Type())
+		t := token.Type()
+		s := strconv.Itoa(int(t))
+		for k, v := range lexer.BuildinCmdMap {
+			if v == t {
+				s = k
+				break
+			}
+		}
+		errlog.Err("parser", token.Line(), "expecting a Value but got kind:", s)
 		return Int_{0} // to avoid err
 	}
 }
