@@ -24,22 +24,27 @@ type FlowFunc struct {
 FlowFunc.run([]int) run the codes in the function.
 */
 func (flowFunc FlowFunc) run(args []interface{}) interface{} {
-	/* provide a independence scope for the function*/
+	/* delete the local variables and change the scope before leave the function */
+	defer func() { Scope = Scope.Back() }()
 	Scope = MakeScope(flowFunc.fathers, Scope)
+	if len(args) > len(flowFunc.args) {
+		errlog.Err("runtime", errlog.Line, "Too many arguments while calling function.")
+		return 0
+	}
 	/* add the arguments to the local scope*/
 	for key, arg := range args {
 		Scope.Add(flowFunc.args[key], arg)
 	}
+	if len(args) < len(flowFunc.args) {
+		return FlowFunc{Scope, flowFunc.args[len(args):], flowFunc.codes}
+	}
 	/* run the codes.
-	   the last expression will give the return value.
 	   the default return value is 0.
 	*/
 	var result interface{}
 	for _, code := range flowFunc.codes {
 		result = code.run()
 	}
-	/* delete the local variables and change the scope before leave the function*/
-	Scope = Scope.Back()
 	return result
 }
 
