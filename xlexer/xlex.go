@@ -41,6 +41,8 @@ func Lex(str []string, startLine int) []Token {
 			result = append(result, Token{MULTI, "", startLine})
 		} else if str[index] == "/" {
 			result = append(result, Token{DIV, "", startLine})
+		} else if str[index] == "%" {
+			result = append(result, Token{MOD, "", startLine})
 		} else if str[index] == "\n" {
 			startLine++
 		} else {

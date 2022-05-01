@@ -5,6 +5,7 @@ const (
 	SUB
 	MULTI
 	DIV
+	MOD
 	FPAREN
 	BPAREN
 	NUM
