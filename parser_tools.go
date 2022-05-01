@@ -61,7 +61,9 @@ func WantFunc(value interface{}) Func_ {
 	v, ok := value.(Func_)
 	if !ok {
 		errlog.Err("runtime", errlog.Line, "function wanted, but got other type value")
-		return GoFunc{func(i []interface{}) interface{} { return nil }}
+		return GoFunc{
+			func(i []interface{}) interface{} { return nil },
+			0, make([]interface{}, 0)}
 	}
 	return v
 }

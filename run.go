@@ -36,14 +36,21 @@ func RunModule(str string, moduleName string) {
 GoFunc wraps native Go functions to enable you to call Go functions inside FlowScript.
 */
 type GoFunc struct {
-	fn func([]interface{}) interface{}
+	fn       func([]interface{}) interface{}
+	argnum   int
+	foreArgs []interface{} // for curried
 }
 
 func (goFunc GoFunc) run(args []interface{}) interface{} {
-	return goFunc.fn(args)
+	if goFunc.argnum < len(args) {
+		errlog.Err("runtime", errlog.Line, "Too many arguments while calling function.")
+	} else if goFunc.argnum > len(args) {
+		return GoFunc{goFunc.fn, goFunc.argnum - len(args), args}
+	}
+	return goFunc.fn(append(goFunc.foreArgs, args...))
 }
 
 /* Add a native Go function to global scope. The function will be named as `name` */
-func AddGoFunc(name string, fn func([]interface{}) interface{}) {
-	Scope.Add(name, GoFunc{fn})
+func AddGoFunc(name string, fn func([]interface{}) interface{}, argnum int) {
+	Scope.Add(name, GoFunc{fn, argnum, make([]interface{}, 0)})
 }
