@@ -1,6 +1,6 @@
 # ![FlowScript!](icon/flowscript.png)
 
-A embeded script language interpreter written by Go. The language is functional.
+A embeded script language interpreter written by Go. The language (FlowScript) is functional.
 
 ## Usage
 
@@ -38,6 +38,14 @@ parser.RunModule( <your codes(type string)> )
 ```
 
 to run FlowScript code as a module. All the variables declared outside functions & and blocks will be wrapped in a structure and add to global scope.
+
+Use:
+
+```go
+parser.AddGoFunc( <function name(type string)>, <function(type func([]interface{}) interface{})>, <number of args(int, -1 -> limitless args)>)
+```
+
+to add native Go functions to global scope.
 
 ## Examples
 
