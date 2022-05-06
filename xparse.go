@@ -39,17 +39,17 @@ func T_(tokens []xlexer.Token, value int) ([]xlexer.Token, int) {
 		return tail, value * v
 	case xlexer.DIV:
 		tail, v := F(tokens[1:])
-        if v == 0 {
-            errlog.Err("runtime", errlog.Line, "Cannot div 0")
-            return T_(tail, 0)
-        }
+		if v == 0 {
+			errlog.Err("runtime", errlog.Line, "Cannot div 0")
+			return T_(tail, 0)
+		}
 		return T_(tail, value/v)
 	case xlexer.MOD:
 		tail, v := F(tokens[1:])
-        if v == 0 {
-            errlog.Err("runtime", errlog.Line, "Cannot mod 0")
-            return T_(tail, 0)
-        }
+		if v == 0 {
+			errlog.Err("runtime", errlog.Line, "Cannot mod 0")
+			return T_(tail, 0)
+		}
 		return T_(tail, value%v)
 	default:
 		errlog.Err("xparse", tokens[0].Line(), "unexpected token in xparser:", tokens[0].Type())

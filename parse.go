@@ -61,57 +61,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 	}
 	for ; index < len(tokens); index++ {
 		parseLine = tokens[index].Line()
-		if tokens[index].Type() == lexer.ADD {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Add_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to add.")
-			}
-		} else if tokens[index].Type() == lexer.SUB {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Sub_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to substrict.")
-			}
-		} else if tokens[index].Type() == lexer.MULTI {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Multi_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to multiply.")
-			}
-		} else if tokens[index].Type() == lexer.DIV {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Div_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to divide.")
-			}
-		} else if tokens[index].Type() == lexer.MOD {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Mod_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to mod.")
-			}
-		} else if tokens[index].Type() == lexer.BIGR {
+		if tokens[index].Type() == lexer.BIGR {
 			if index+2 < len(tokens) {
 				index++
 				op1 := ParseValue(tokens[index])

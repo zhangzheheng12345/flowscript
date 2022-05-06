@@ -11,16 +11,9 @@ type Ast interface {
 	run() interface{}
 }
 
-type Add_ struct {
-	op1  Value
-	op2  Value
-	line int
-}
-
-func (add_ Add_) run() interface{} {
-	errlog.Line = add_.line
-	v1 := add_.op1.get()
-	v2 := add_.op2.get()
+func Add_(args []interface{}) interface{} {
+	v1 := args[0]
+	v2 := args[1]
 	switch v := v1.(type) {
 	case int:
 		return v + WantInt(v2)
@@ -32,52 +25,25 @@ func (add_ Add_) run() interface{} {
 	case string:
 		return v + WantString(v2)
 	default:
-		errlog.Err("runtime", add_.line, "Try to add a unkown type value with another")
+		errlog.Err("runtime", errlog.Line, "Try to add a unkown type value with another")
 		return nil
 	}
 }
 
-type Sub_ struct {
-	op1  Value
-	op2  Value
-	line int
+func Sub_(args []interface{}) interface{} {
+	return WantInt(args[0]) - WantInt(args[1])
 }
 
-func (sub_ Sub_) run() interface{} {
-	errlog.Line = sub_.line
-	return WantInt(sub_.op1.get()) - WantInt(sub_.op2.get())
+func Multi_(args []interface{}) interface{} {
+	return WantInt(args[0]) * WantInt(args[1])
 }
 
-type Multi_ struct {
-	op1  Value
-	op2  Value
-	line int
+func Div_(args []interface{}) interface{} {
+	return WantInt(args[0]) / WantInt(args[1])
 }
 
-func (multi_ Multi_) run() interface{} {
-	errlog.Line = multi_.line
-	return WantInt(multi_.op1.get()) * WantInt(multi_.op2.get())
-}
-
-type Div_ struct {
-	op1  Value
-	op2  Value
-	line int
-}
-
-func (div_ Div_) run() interface{} {
-	return WantInt(div_.op1.get()) / WantInt(div_.op2.get())
-}
-
-type Mod_ struct {
-	op1  Value
-	op2  Value
-	line int
-}
-
-func (mod_ Mod_) run() interface{} {
-	errlog.Line = mod_.line
-	return WantInt(mod_.op1.get()) % WantInt(mod_.op2.get())
+func Mod_(args []interface{}) interface{} {
+	return WantInt(args[0]) % WantInt(args[1])
 }
 
 type Bigr_ struct {

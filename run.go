@@ -54,3 +54,11 @@ func (goFunc GoFunc) run(args []interface{}) interface{} {
 func AddGoFunc(name string, fn func([]interface{}) interface{}, argnum int) {
 	Scope.Add(name, GoFunc{fn, argnum, make([]interface{}, 0)})
 }
+
+func init() {
+	AddGoFunc("add", Add_, 2)
+	AddGoFunc("sub", Sub_, 2)
+	AddGoFunc("multi", Multi_, 2)
+	AddGoFunc("div", Div_, 2)
+	AddGoFunc("mod", Mod_, 2)
+}

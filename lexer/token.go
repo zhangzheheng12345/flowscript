@@ -3,12 +3,7 @@ package lexer
 /* token kinds */
 const (
 	/* Basic tokens */
-	ADD = iota
-	SUB
-	MULTI
-	DIV
-	MOD
-	EQUAL
+	EQUAL = iota
 	BIGR
 	SMLR
 	NOT
