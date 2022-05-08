@@ -56,9 +56,5 @@ func AddGoFunc(name string, fn func([]interface{}) interface{}, argnum int) {
 }
 
 func init() {
-	AddGoFunc("add", Add_, 2)
-	AddGoFunc("sub", Sub_, 2)
-	AddGoFunc("multi", Multi_, 2)
-	AddGoFunc("div", Div_, 2)
-	AddGoFunc("mod", Mod_, 2)
+	AddBuildinFuncs()
 }

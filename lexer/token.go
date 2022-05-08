@@ -3,15 +3,7 @@ package lexer
 /* token kinds */
 const (
 	/* Basic tokens */
-	EQUAL = iota
-	BIGR
-	SMLR
-	NOT
-	AND
-	OR
-	XOR
-	EXPR
-	VAR
+	VAR = iota
 	IF
 	ELSE
 	SEND
@@ -27,17 +19,7 @@ const (
 	STR
 	CHAR
 	/* Buildin commands */
-	TYPE
-	ECHO
-	ECHOLN
-	INPUT
-	LIST
-	LEN
-	INDEX
-	APP
-	SLICE
-	WORDS
-	LINES
+	LIST // TODO: Change list to buildin function
 )
 
 /* token structure, including kind and value */
@@ -57,4 +39,18 @@ func (token Token) Value() string {
 
 func (token Token) Line() int {
 	return token.line
+}
+
+/* Buildin cmd to token type. This map should not be changed */
+var BuildinCmdMap = map[string]byte{
+	"var":    VAR,
+	"if":     IF,
+	"else":   ELSE,
+	"send":   SEND,
+	"def":    DEF,
+	"lambda": LAMBDA,
+	"struct": STRUCT,
+	"begin":  BEGIN,
+	"end":    END,
+	"list":   LIST,
 }

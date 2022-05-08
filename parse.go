@@ -61,81 +61,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 	}
 	for ; index < len(tokens); index++ {
 		parseLine = tokens[index].Line()
-		if tokens[index].Type() == lexer.BIGR {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Bigr_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to compare.")
-			}
-		} else if tokens[index].Type() == lexer.SMLR {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Smlr_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to compare.")
-			}
-		} else if tokens[index].Type() == lexer.EQUAL {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Equal_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to compare.")
-			}
-		} else if tokens[index].Type() == lexer.AND {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, And_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to and.")
-			}
-		} else if tokens[index].Type() == lexer.OR {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Or_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to or.")
-			}
-		} else if tokens[index].Type() == lexer.XOR {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Xor_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to or.")
-			}
-		} else if tokens[index].Type() == lexer.NOT {
-			if index+1 < len(tokens) {
-				index++
-				codes = append(codes, Not_{ParseValue(tokens[index]), parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to not.")
-			}
-		} else if tokens[index].Type() == lexer.EXPR {
-			if index+1 < len(tokens) {
-				index++
-				codes = append(codes, Expr_{ParseValue(tokens[index]), parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to not.")
-			}
-		} else if tokens[index].Type() == lexer.VAR {
+		if tokens[index].Type() == lexer.VAR {
 			/*
 			   var name => initialize with 0
 			   var name v => initialize with v
@@ -167,70 +93,6 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				codes = append(codes, Var_{name, op, parseLine})
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "lost the variable's name while trying to define one")
-			}
-		} else if tokens[index].Type() == lexer.TYPE {
-			if index+1 < len(tokens) {
-				index++
-				op := ParseValue(tokens[index])
-				codes = append(codes, Type_{op, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to not.")
-			}
-		} else if tokens[index].Type() == lexer.LEN {
-			if index+1 < len(tokens) {
-				index++
-				op := ParseValue(tokens[index])
-				codes = append(codes, Len_{op, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to not.")
-			}
-		} else if tokens[index].Type() == lexer.INDEX {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, Index_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to index.")
-			}
-		} else if tokens[index].Type() == lexer.APP {
-			if index+2 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				codes = append(codes, App_{op1, op2, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to index.")
-			}
-		} else if tokens[index].Type() == lexer.SLICE {
-			if index+3 < len(tokens) {
-				index++
-				op1 := ParseValue(tokens[index])
-				index++
-				op2 := ParseValue(tokens[index])
-				index++
-				op3 := ParseValue(tokens[index])
-				codes = append(codes, Slice_{op1, op2, op3, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to index.")
-			}
-		} else if tokens[index].Type() == lexer.WORDS {
-			if index+1 < len(tokens) {
-				index++
-				op := ParseValue(tokens[index])
-				codes = append(codes, Words_{op, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to index.")
-			}
-		} else if tokens[index].Type() == lexer.LINES {
-			if index+1 < len(tokens) {
-				index++
-				op := ParseValue(tokens[index])
-				codes = append(codes, Lines_{op, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argumanet to index.")
 			}
 		} else if tokens[index].Type() == lexer.LIST {
 			index++
@@ -409,27 +271,6 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				}
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "not complete def block.")
-			}
-		} else if tokens[index].Type() == lexer.ECHOLN {
-			if index+1 < len(tokens) {
-				index++
-				codes = append(codes, Echoln_{ParseValue(tokens[index]), parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argument to echoln.")
-			}
-		} else if tokens[index].Type() == lexer.ECHO {
-			if index+1 < len(tokens) {
-				index++
-				codes = append(codes, Echo_{ParseValue(tokens[index]), parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argument to echo.")
-			}
-		} else if tokens[index].Type() == lexer.INPUT {
-			if index+1 < len(tokens) {
-				index++
-				codes = append(codes, Input_{ParseValue(tokens[index]), parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lose argument to input.")
 			}
 		} else if tokens[index].Type() == lexer.NUM {
 			errlog.Err("parser", tokens[index].Line(), "unexpected constant number.")
