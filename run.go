@@ -54,6 +54,10 @@ func (goFunc GoFunc) run(args []interface{}) interface{} {
 
 /* Add a native Go function to global scope. The function will be named as `name` */
 func AddGoFunc(name string, fn func([]interface{}) interface{}, argnum int) {
+	if argnum < -1 {
+		errlog.Err("runtime", -1, "Cannot set argnum smaller than -1 while using AddGoFunc(...)")
+		return
+	}
 	Scope.Add(name, GoFunc{fn, argnum, make([]interface{}, 0)})
 }
 

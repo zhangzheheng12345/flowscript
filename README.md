@@ -62,8 +62,8 @@ echoln "Hello World!" # output: Hello World!
 ```ruby
 def fibonacci a b begin
     add a b > echoln -
-    add a b > smlr - 10000 > if - begin
-        add a b > fibonacci b -
+    smlr (a+b) 1000 > if - begin
+        fibonacci b (a+b)
     end
 end
 echoln "fibonacci begins ..."
