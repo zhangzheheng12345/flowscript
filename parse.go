@@ -94,20 +94,6 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "lost the variable's name while trying to define one")
 			}
-		} else if tokens[index].Type() == lexer.LIST {
-			index++
-			ops := make([]Value, 0)
-			for index < len(tokens) &&
-				(tokens[index].Type() == lexer.NUM ||
-					tokens[index].Type() == lexer.STR ||
-					tokens[index].Type() == lexer.CHAR ||
-					tokens[index].Type() == lexer.SYMBOL ||
-					tokens[index].Type() == lexer.XEXP) {
-				ops = append(ops, ParseValue(tokens[index]))
-				index++
-			}
-			codes = append(codes, List_{ops, parseLine})
-			index--
 		} else if tokens[index].Type() == lexer.IF {
 			/*
 			   if codition begin ... end

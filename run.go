@@ -25,7 +25,7 @@ func RunBlock(str string) {
 }
 
 /*
-RunModule(string) receives a text script ( string ) and run it directly.
+RunModule(string) receives a text script (string) and run it directly.
 The interpreter will add a structure named 'globalName' in global scope, which contains all the variables the module defined.
 */
 func RunModule(str string, moduleName string) {
@@ -42,7 +42,9 @@ type GoFunc struct {
 }
 
 func (goFunc GoFunc) run(args []interface{}) interface{} {
-	if goFunc.argnum < len(args) {
+	if goFunc.argnum == -1 { // limitless args
+		return goFunc.fn(args)
+	} else if goFunc.argnum < len(args) {
 		errlog.Err("runtime", errlog.Line, "Too many arguments while calling function.")
 	} else if goFunc.argnum > len(args) {
 		return GoFunc{goFunc.fn, goFunc.argnum - len(args), args}

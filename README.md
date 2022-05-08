@@ -46,6 +46,7 @@ parser.AddGoFunc( <function name(type string)>, <function(type func([]interface{
 ```
 
 to add native Go functions to global scope.
+Have a look at `buildin_funcs.go` to learn more about using native Go functions in FlowScript.
 
 ## Examples
 

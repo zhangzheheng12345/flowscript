@@ -26,20 +26,6 @@ func (var_ Var_) run() interface{} {
 	return 0
 }
 
-type List_ struct {
-	ops  []Value
-	line int
-}
-
-func (list_ List_) run() interface{} {
-	errlog.Line = list_.line
-	res := make([]interface{}, 0)
-	for _, v := range list_.ops {
-		res = append(res, v.get())
-	}
-	return res
-}
-
 type Def_ struct {
 	name  string
 	args  []string

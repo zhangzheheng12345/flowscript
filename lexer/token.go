@@ -18,8 +18,6 @@ const (
 	SYMBOL
 	STR
 	CHAR
-	/* Buildin commands */
-	LIST // TODO: Change list to buildin function
 )
 
 /* token structure, including kind and value */
@@ -52,5 +50,4 @@ var BuildinCmdMap = map[string]byte{
 	"struct": STRUCT,
 	"begin":  BEGIN,
 	"end":    END,
-	"list":   LIST,
 }

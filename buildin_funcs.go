@@ -2,8 +2,9 @@ package parser
 
 import (
 	"fmt"
-	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 	"strings"
+
+	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 )
 
 func Add_(args []interface{}) interface{} {
@@ -130,7 +131,7 @@ func Echo_(args []interface{}) interface{} {
 	return 0
 }
 
-/* output to stdout */
+/* Output to stdout */
 func Echoln_(args []interface{}) interface{} {
 	op := args[0]
 	v, ok := op.(byte)
@@ -152,6 +153,10 @@ func Input_(args []interface{}) interface{} {
 		return ""
 	}
 	return res
+}
+
+func List_(args []interface{}) interface{} {
+	return args
 }
 
 func Len_(args []interface{}) interface{} {
@@ -271,6 +276,7 @@ func AddBuildinFuncs() {
 	AddGoFunc("echo", Echo_, 1)
 	AddGoFunc("echoln", Echoln_, 1)
 	AddGoFunc("input", Input_, 1)
+	AddGoFunc("list", List_, -1) // args num = -1 means the arg num is limitless
 	AddGoFunc("len", Len_, 1)
 	AddGoFunc("index", Index_, 2)
 	AddGoFunc("app", App_, 2)
