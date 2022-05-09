@@ -15,7 +15,7 @@ var Scope *Scope_ = &Scope_{nil, nil, make(map[string]interface{})}
 exp1 > exp2 > exp3
 The values of the send sequence expressions will be pushed to this queue.
 */
-var tmpQueue *Queue_ = MakeTmpQueue(nil)
+var tmpQueue *Queue_ = MakeTmpQueue(nil, 0)
 
 /* scope system ( only for variables ) */
 type Scope_ struct {
@@ -53,26 +53,19 @@ func (scope_ Scope_) Back() *Scope_ {
 	return scope_.last
 }
 
-// Give a proper beginning size of a queue
-const maxBufferSize = 5
-
 type Queue_ struct {
 	father  *Queue_
 	data    []interface{}
 	dataLen int
 }
 
-func MakeTmpQueue(father *Queue_) *Queue_ {
-	return &Queue_{father, make([]interface{}, maxBufferSize), 0}
+func MakeTmpQueue(father *Queue_, initSize int) *Queue_ {
+	return &Queue_{father, make([]interface{}, initSize), 0}
 }
 
 func (queue_ *Queue_) Add(value interface{}) {
 	queue_.dataLen++
-	if queue_.dataLen > maxBufferSize {
-		queue_.data = append(queue_.data, value)
-	} else {
-		queue_.data[queue_.dataLen-1] = value
-	}
+	queue_.data[queue_.dataLen-1] = value
 }
 
 func (queue_ Queue_) Get() interface{} {

@@ -42,22 +42,24 @@ type GoFunc struct {
 }
 
 func (goFunc GoFunc) run(args []interface{}) interface{} {
-	if goFunc.argnum == -1 { // limitless args
-		return goFunc.fn(args)
+	if goFunc.argnum < 0 {
+		if -goFunc.argnum > len(args) {
+			return GoFunc{goFunc.fn, goFunc.argnum + len(args), args}
+		}
 	} else if goFunc.argnum < len(args) {
 		errlog.Err("runtime", errlog.Line, "Too many arguments while calling function.")
+		return 0
 	} else if goFunc.argnum > len(args) {
 		return GoFunc{goFunc.fn, goFunc.argnum - len(args), args}
 	}
 	return goFunc.fn(append(goFunc.foreArgs, args...))
 }
 
-/* Add a native Go function to global scope. The function will be named as `name` */
+/*
+Add a native Go function to global scope. The function will be named as `name`
+If argnum is smaller than 0, it means the function needs at least -argnum arguments
+*/
 func AddGoFunc(name string, fn func([]interface{}) interface{}, argnum int) {
-	if argnum < -1 {
-		errlog.Err("runtime", -1, "Cannot set argnum smaller than -1 while using AddGoFunc(...)")
-		return
-	}
 	Scope.Add(name, GoFunc{fn, argnum, make([]interface{}, 0)})
 }
 

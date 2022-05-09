@@ -76,7 +76,7 @@ type Send_ struct {
 
 func (send_ Send_) run() interface{} {
 	errlog.Line = send_.line
-	tmpQueue = MakeTmpQueue(tmpQueue)
+	tmpQueue = MakeTmpQueue(tmpQueue, len(send_.codes))
 	for _, code := range send_.codes {
 		tmpQueue.Add(code.run())
 	}
