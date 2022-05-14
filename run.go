@@ -20,7 +20,7 @@ func Build(str string) []Ast {
 RunBlock(string) receives a text script ( string ) and run it directly.
 The runtime status would not be saved as the script runs in a Block_.
 */
-func RunBlock(str string) interface {} {
+func RunBlock(str string) interface{} {
 	return Block_{Build(str), 0}.run()
 }
 

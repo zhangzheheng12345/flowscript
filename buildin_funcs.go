@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
@@ -116,6 +117,77 @@ func Type_(args []interface{}) interface{} {
 		return "struct"
 	default:
 		return "?unknown_type?"
+	}
+}
+
+func Toint_(args []interface{}) interface{} {
+	switch v := args[0].(type) {
+	case int:
+		return v
+	case byte:
+		return int(v)
+	case []interface{}:
+		errlog.Err("runtime", errlog.Line, "Cannot convert list to int")
+		return 0
+	case string:
+		res, err := strconv.Atoi(v)
+		if err != nil {
+			errlog.Err("runtime", errlog.Line, "Cannot convert string to int. string:", v)
+			return 0
+		}
+		return res
+	case Func_:
+		errlog.Err("runtime", errlog.Line, "Cannot convert function to int")
+		return 0
+	case Struct:
+		errlog.Err("runtime", errlog.Line, "Cannot convert structure to int")
+		return 0
+	default:
+		return 0
+	}
+}
+
+func Tochar_(args []interface{}) interface{} {
+	switch v := args[0].(type) {
+	case int:
+		return byte(v)
+	case byte:
+		return v
+	case []interface{}:
+		errlog.Err("runtime", errlog.Line, "Cannot convert list to char")
+		return 0
+	case string:
+		errlog.Err("runtime", errlog.Line, "Cannot convert string to char")
+		return 0
+	case Func_:
+		errlog.Err("runtime", errlog.Line, "Cannot convert function to char")
+		return 0
+	case Struct:
+		errlog.Err("runtime", errlog.Line, "Cannot convert structure to char")
+		return 0
+	default:
+		return 0
+	}
+}
+
+func Tostr_(args []interface{}) interface{} {
+	switch v := args[0].(type) {
+	case int:
+		return strconv.Itoa(v)
+	case byte:
+		return string(v)
+	case []interface{}:
+		return fmt.Sprint(v)
+	case string:
+		return v
+	case Func_:
+		errlog.Err("runtime", errlog.Line, "Cannot convert function to string")
+		return 0
+	case Struct:
+		errlog.Err("runtime", errlog.Line, "Cannot convert structure to string")
+		return 0
+	default:
+		return 0
 	}
 }
 
@@ -273,6 +345,9 @@ func AddBuildinFuncs() {
 	AddGoFunc("not", Not_, 1)
 	AddGoFunc("expr", Expr_, 1)
 	AddGoFunc("type", Type_, 1)
+	AddGoFunc("toint", Toint_, 1)
+	AddGoFunc("tochar", Tochar_, 1)
+	AddGoFunc("tostr", Tostr_, 1)
 	AddGoFunc("echo", Echo_, 1)
 	AddGoFunc("echoln", Echoln_, 1)
 	AddGoFunc("input", Input_, 1)
