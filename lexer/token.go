@@ -4,6 +4,7 @@ package lexer
 const (
 	/* Basic tokens */
 	VAR = iota
+	ENUM
 	IF
 	ELSE
 	SEND
@@ -50,4 +51,5 @@ var BuildinCmdMap = map[string]byte{
 	"struct": STRUCT,
 	"begin":  BEGIN,
 	"end":    END,
+	"enum":   ENUM,
 }

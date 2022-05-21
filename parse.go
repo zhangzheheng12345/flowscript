@@ -94,6 +94,17 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "lost the variable's name while trying to define one")
 			}
+		} else if tokens[index].Type() == lexer.ENUM {
+			if index+1 < len(tokens) {
+				index++
+				var names []string
+				for ; index < len(tokens) && tokens[index].Type() == lexer.SYMBOL; index++ {
+					names = append(names, tokens[index].Value())
+				}
+				codes = append(codes, Enum_{names, tokens[index].Line()})
+			} else {
+				errlog.Err("parser", tokens[index].Line(), "cannot use enum without delcaring any enum value")
+			}
 		} else if tokens[index].Type() == lexer.IF {
 			/*
 			   if codition begin ... end

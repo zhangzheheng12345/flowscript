@@ -26,6 +26,20 @@ func (var_ Var_) run() interface{} {
 	return 0
 }
 
+type Enum_ struct {
+	names []string
+	line  int
+}
+
+func (enum_ Enum_) run() interface{} {
+	errlog.Line = enum_.line
+	for _, v := range enum_.names {
+		Scope.Add(v, Scope.enumCounter)
+		Scope.enumCounter++
+	}
+	return 0
+}
+
 type Def_ struct {
 	name  string
 	args  []string

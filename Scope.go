@@ -9,7 +9,7 @@ he should Scope.Add(string,interface{}) variable to Scope directly,
 because all the codes run with RunCode(string) will be inside a independence Block_,
 so you can't add global variable / function by native FlowScript.
 */
-var Scope *Scope_ = &Scope_{nil, nil, make(map[string]interface{})}
+var Scope *Scope_ = &Scope_{nil, nil, make(map[string]interface{}), 0}
 
 /*
 exp1 > exp2 > exp3
@@ -19,13 +19,14 @@ var tmpQueue *Queue_ = MakeTmpQueue(nil, 0)
 
 /* scope system ( only for variables ) */
 type Scope_ struct {
-	last   *Scope_
-	father *Scope_
-	vars   map[string]interface{}
+	last        *Scope_
+	father      *Scope_
+	vars        map[string]interface{}
+	enumCounter int
 }
 
 func MakeScope(father *Scope_, last *Scope_) *Scope_ {
-	return &Scope_{last, father, make(map[string]interface{})}
+	return &Scope_{last, father, make(map[string]interface{}), father.enumCounter}
 }
 
 func (scope_ Scope_) Add(key string, value interface{}) {
