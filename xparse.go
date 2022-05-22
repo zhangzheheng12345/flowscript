@@ -7,19 +7,43 @@ import (
 	"github.com/zhangzheheng12345/flowscript/xlexer"
 )
 
-func E_(tokens []xlexer.Token, value int) int {
+func B_(tokens []xlexer.Token, value int) int {
 	if len(tokens) == 0 {
 		return value
 	}
 	switch tokens[0].Type() {
+	case xlexer.AND:
+		return value & B_(E(tokens[1:]))
+	case xlexer.OR:
+		return value | B_(E(tokens[1:]))
+	case xlexer.XOR:
+		return value ^ B_(E(tokens[1:]))
+	default:
+		errlog.Err("xparser", tokens[0].Line(), "unexpected token in xparser:", tokens[0].Type())
+		return 0
+	}
+}
+
+func E(tokens []xlexer.Token) ([]xlexer.Token, int) {
+	return E_(T(tokens))
+}
+
+func E_(tokens []xlexer.Token, value int) ([]xlexer.Token, int) {
+	if len(tokens) == 0 {
+		return tokens, value
+	}
+	switch tokens[0].Type() {
+	case xlexer.AND, xlexer.OR, xlexer.XOR:
+		return tokens, value
 	case xlexer.ADD:
-		return value + E_(T(tokens[1:]))
+		tail, v := E_(T(tokens[1:]))
+		return tail, value + v
 	case xlexer.SUB:
 		tail, v := T(tokens[1:])
 		return E_(tail, value-v)
 	default:
-		errlog.Err("xparse", tokens[0].Line(), " token in xparser:", tokens[0].Type())
-		return 0
+		errlog.Err("xparse", tokens[0].Line(), "unexpected token in xparser:", tokens[0].Type())
+		return tokens[1:], 0
 	}
 }
 
@@ -32,7 +56,7 @@ func T_(tokens []xlexer.Token, value int) ([]xlexer.Token, int) {
 		return tokens, value
 	}
 	switch tokens[0].Type() {
-	case xlexer.ADD, xlexer.SUB:
+	case xlexer.ADD, xlexer.SUB, xlexer.AND, xlexer.OR, xlexer.XOR:
 		return tokens, value
 	case xlexer.MULTI:
 		tail, v := T_(F(tokens[1:]))

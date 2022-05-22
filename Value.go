@@ -63,5 +63,5 @@ type Exp_ struct {
 
 func (exp_ Exp_) get() interface{} {
 	/* in xparse */
-	return E_(T(exp_.tokens))
+	return B_(E(exp_.tokens))
 }

@@ -6,6 +6,9 @@ const (
 	MULTI
 	DIV
 	MOD
+	AND
+	OR
+	XOR
 	FPAREN
 	BPAREN
 	NUM

@@ -10,6 +10,8 @@ func Lex(str []string, startLine int) []Token {
 	for index := 0; index < len(str); index++ {
 		if str[index] == " " || str[index] == "\t" {
 			// Do nothing
+		} else if str[index] == "^" {
+			result = append(result, Token{XOR, "", startLine})
 		} else if str[index] == "_" || lextools.IsSingleAlpha(str[index]) {
 			var symbol string
 			symbol, index = lextools.PickSymbol(str, index)
@@ -43,8 +45,12 @@ func Lex(str []string, startLine int) []Token {
 			result = append(result, Token{DIV, "", startLine})
 		} else if str[index] == "%" {
 			result = append(result, Token{MOD, "", startLine})
+		} else if str[index] == "&" {
+			result = append(result, Token{AND, "", startLine})
 		} else if str[index] == "\n" {
 			startLine++
+		} else if str[index] == "|" {
+			result = append(result, Token{OR, "", startLine})
 		} else {
 			errlog.Err("xlexer", startLine, "unexpected character in X expression")
 		}
