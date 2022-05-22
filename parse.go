@@ -59,6 +59,25 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			sendList = make([]Ast, 0)
 		}
 	}
+	parseBlock := func() []Ast {
+		if tokens[index].Type() == lexer.BEGIN {
+			index++
+			codesInCode, i := Parse(tokens[index:])
+			index += i
+			if index < len(tokens) {
+				if tokens[index].Type() == lexer.END {
+					return codesInCode
+				} else {
+					errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
+				}
+			} else {
+				errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
+			}
+		} else {
+			errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
+		}
+		return nil
+	}
 	for ; index < len(tokens); index++ {
 		parseLine = tokens[index].Line()
 		if tokens[index].Type() == lexer.VAR {
@@ -114,45 +133,13 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 				index++
 				condition := ParseValue(tokens[index])
 				index++
-				if tokens[index].Type() == lexer.BEGIN {
-					index++
-					codesInBlock, i := Parse(tokens[index:])
-					index += i
-
-					if index < len(tokens) {
-						if tokens[index].Type() == lexer.END {
-							ifnode.condition = condition
-							ifnode.ifcodes = codesInBlock
-						} else {
-							errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
-						}
-					} else {
-						errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
-					}
-				} else {
-					errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
-				}
+				ifnode = If_{condition, parseBlock(), nil, parseLine}
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "not complete if block.")
 			}
 			if index+3 < len(tokens) && tokens[index+1].Type() == lexer.ELSE {
 				index += 2
-				if tokens[index].Type() == lexer.BEGIN {
-					index++
-					codesInBlock, i := Parse(tokens[index:])
-					index += i
-					if index < len(tokens) {
-						if tokens[index].Type() == lexer.END {
-							ifnode.elsecodes = codesInBlock
-						} else {
-							errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
-						}
-					} else {
-						errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
-					}
-				} else {
-					errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
-				}
+				ifnode.elsecodes = parseBlock()
 			} else {
 				ifnode.elsecodes = make([]Ast, 0)
 			}
@@ -184,22 +171,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					argList = append(argList, tokens[index].Value())
 					index++
 				}
-				if tokens[index].Type() == lexer.BEGIN {
-					index++
-					codesInFunc, i := Parse(tokens[index:])
-					index += i
-					if index < len(tokens) {
-						if tokens[index].Type() == lexer.END {
-							codes = append(codes, Def_{name, argList, codesInFunc, parseLine})
-						} else {
-							errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
-						}
-					} else {
-						errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
-					}
-				} else {
-					errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
-				}
+				codes = append(codes, Def_{name, argList, parseBlock(), parseLine})
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "not complete def block.")
 			}
@@ -211,61 +183,16 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 					argList = append(argList, tokens[index].Value())
 					index++
 				}
-				if tokens[index].Type() == lexer.BEGIN {
-					index++
-					codesInFunc, i := Parse(tokens[index:])
-					index += i
-					if index < len(tokens) {
-						if tokens[index].Type() == lexer.END {
-							codes = append(codes, Lambda_{argList, codesInFunc, parseLine})
-						} else {
-							errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
-						}
-					} else {
-						errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
-					}
-				} else {
-					errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
-				}
+				codes = append(codes, Lambda_{argList, parseBlock(), parseLine})
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "not complete lambda block.")
 			}
 		} else if tokens[index].Type() == lexer.BEGIN {
-			if index+1 < len(tokens) {
-				index++
-				codesInBlock, i := Parse(tokens[index:])
-				index += i
-				if index < len(tokens) {
-					if tokens[index].Type() == lexer.END {
-						codes = append(codes, Block_{codesInBlock, parseLine})
-					} else {
-						errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
-					}
-				} else {
-					errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
-				}
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
-			}
+			codes = append(codes, Block_{parseBlock(), parseLine})
 		} else if tokens[index].Type() == lexer.STRUCT {
 			if index+2 < len(tokens) {
 				index++
-				if tokens[index].Type() == lexer.BEGIN {
-					index++
-					codesInStruct, i := Parse(tokens[index:])
-					index += i
-					if index < len(tokens) {
-						if tokens[index].Type() == lexer.END {
-							codes = append(codes, Struct_{codesInStruct, parseLine})
-						} else {
-							errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
-						}
-					} else {
-						errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
-					}
-				} else {
-					errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
-				}
+				codes = append(codes, Struct_{parseBlock(), parseLine})
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "not complete def block.")
 			}
