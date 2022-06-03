@@ -15,8 +15,8 @@ and translate it into a value which is able to get directly (Value_).
 */
 func ParseValue(token lexer.Token) Value {
 	if token.Type() == lexer.NUM {
-		num, _ := strconv.Atoi(token.Value())
-		return Int_{num}
+		num, _ := strconv.ParseInt(token.Value(), 0, 0)
+		return Int_{int(num)}
 	} else if token.Type() == lexer.SYMBOL {
 		splited := strings.Split(token.Value(), ".")
 		return Symbol_{splited[0], splited[1:]}
