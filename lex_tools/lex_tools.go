@@ -1,6 +1,7 @@
 package lextools
 
 import (
+	"strconv"
 	"strings"
 
 	errlog "github.com/zhangzheheng12345/flowscript/error_logger"
@@ -41,24 +42,28 @@ func PickNum(str []string, index int) (string, int) {
 	return strings.Join(str[begin:index], ""), index - 1
 }
 
-func PickEscapeChar(str []string, index int, line int) string {
+func PickEscapeChar(str []string, index int, line int) (string, int) {
 	if index < len(str) {
 		if str[index] == "\"" {
-			return "\""
+			return "\"", 0
 		} else if str[index] == "\\" {
-			return "\\"
+			return "\\", 0
 		} else if str[index] == "n" {
-			return "\n"
+			return "\n", 0
 		} else if str[index] == "r" {
-			return "\r"
+			return "\r", 0
 		} else if str[index] == "t" {
-			return "\t"
+			return "\t", 0
 		} else if str[index] == "a" {
-			return "\a"
+			return "\a", 0
 		} else if str[index] == "b" {
-			return "\b"
+			return "\b", 0
+		} else if IsSingleNum(str[index]) {
+			str, newIndex := PickNum(str, index)
+			num, _ := strconv.Atoi(str)
+			return string(num), newIndex - index
 		}
 	}
 	errlog.Err("lexer", line, "unexpected escape character.")
-	return ""
+	return "", 0
 }

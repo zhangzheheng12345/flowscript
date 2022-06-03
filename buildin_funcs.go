@@ -336,12 +336,12 @@ func Fmap_(args []interface{}) interface{} {
 		errlog.Err("runtime", errlog.Line, "Try to fmap a value after a int, string, char value.")
 		return 0
 	case []interface{}:
-        res := make([]interface{}, len(v))
-        f := WantFunc(args[1])
+		res := make([]interface{}, len(v))
+		f := WantFunc(args[1])
 		for k, value := range v {
-            res[k] = f.run([]interface{}{value})
-        }
-        return res
+			res[k] = f.run([]interface{}{value})
+		}
+		return res
 	default:
 		errlog.Err("runtime", errlog.Line, "Try to fmap sth after a unknown type value.")
 		return 0
@@ -376,5 +376,5 @@ func AddBuildinFuncs() {
 	AddGoFunc("slice", Slice_, 3)
 	AddGoFunc("words", Words_, 1)
 	AddGoFunc("lines", Lines_, 1)
-    AddGoFunc("fmap", Fmap_, 2)
+	AddGoFunc("fmap", Fmap_, 2)
 }

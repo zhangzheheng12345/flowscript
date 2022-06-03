@@ -83,7 +83,8 @@ func Lex(str []string) []Token {
 				if str[index] == "\\" {
 					/* Escape character */
 					index++
-					escChar := lextools.PickEscapeChar(str, index, line)
+					escChar, offset := lextools.PickEscapeChar(str, index, line)
+					index += offset
 					res += escChar
 				} else {
 					res += str[index]
@@ -105,10 +106,12 @@ func Lex(str []string) []Token {
 					errlog.Err("lexer", line, "a char value must be ascii but not other wide codeset.")
 				} else {
 					res := ""
+					offset := 0
 					if str[index] == "\\" {
 						/* Escape character */
 						index++
-						res = lextools.PickEscapeChar(str, index, line)
+						res, offset = lextools.PickEscapeChar(str, index, line)
+						index += offset
 					} else {
 						res = str[index]
 					}
