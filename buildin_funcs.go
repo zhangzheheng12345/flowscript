@@ -193,25 +193,30 @@ func Tostr_(args []interface{}) interface{} {
 
 /* output to stdout */
 func Echo_(args []interface{}) interface{} {
-	op := args[0]
-	v, ok := op.(byte)
-	if ok {
-		fmt.Print(string([]byte{v}))
-	} else {
-		fmt.Print(op)
+	for k, op := range args {
+        if k != 0 {
+            fmt.Print(" ")
+        }
+		v, ok := op.(byte)
+		if ok {
+			fmt.Print(string([]byte{v}))
+		} else {
+			fmt.Print(op)
+		}
 	}
 	return 0
 }
 
 /* Output to stdout */
 func Echoln_(args []interface{}) interface{} {
-	op := args[0]
+    for _, op := range args {
 	v, ok := op.(byte)
 	if ok {
 		fmt.Println(string([]byte{v}))
 	} else {
 		fmt.Println(op)
 	}
+        }
 	return 0
 }
 
@@ -366,10 +371,10 @@ func AddBuildinFuncs() {
 	AddGoFunc("toint", Toint_, 1)
 	AddGoFunc("tochar", Tochar_, 1)
 	AddGoFunc("tostr", Tostr_, 1)
-	AddGoFunc("echo", Echo_, 1)
-	AddGoFunc("echoln", Echoln_, 1)
+	AddGoFunc("echo", Echo_, -1) // args num = -1 means the arg num is limitless
+	AddGoFunc("echoln", Echoln_, -1)
 	AddGoFunc("input", Input_, 1)
-	AddGoFunc("list", List_, -1) // args num = -1 means the arg num is limitless
+	AddGoFunc("list", List_, -1)
 	AddGoFunc("len", Len_, 1)
 	AddGoFunc("index", Index_, 2)
 	AddGoFunc("app", App_, 2)
