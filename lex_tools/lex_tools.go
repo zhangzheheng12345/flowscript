@@ -13,7 +13,7 @@ func IsSingleNum(str string) bool {
 }
 
 func IsSingleHexNum(str string) bool {
-	return len(str) == 1 && (IsSingleNum(str) || ([]byte(str)[0]>= 97 && []byte(str)[0] <= 102))
+	return len(str) == 1 && (IsSingleNum(str) || ([]byte(str)[0] >= 97 && []byte(str)[0] <= 102))
 }
 
 func IsSingleOctNum(str string) bool {
@@ -52,11 +52,11 @@ func PickNum(str []string, index int) (string, int) {
 				// Do nothing
 			}
 		} else if IsSingleOctNum(str[index]) {
-            index++
+			index++
 			for ; index < len(str) && IsSingleOctNum(str[index]); index++ {
 				// Do nothing
 			}
-        }
+		}
 	}
 	for ; index < len(str) && IsSingleNum(str[index]); index++ {
 		// Do nothing

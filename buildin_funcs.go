@@ -194,9 +194,9 @@ func Tostr_(args []interface{}) interface{} {
 /* output to stdout */
 func Echo_(args []interface{}) interface{} {
 	for k, op := range args {
-        if k != 0 {
-            fmt.Print(" ")
-        }
+		if k != 0 {
+			fmt.Print(" ")
+		}
 		v, ok := op.(byte)
 		if ok {
 			fmt.Print(string([]byte{v}))
@@ -209,14 +209,14 @@ func Echo_(args []interface{}) interface{} {
 
 /* Output to stdout */
 func Echoln_(args []interface{}) interface{} {
-    for _, op := range args {
-	v, ok := op.(byte)
-	if ok {
-		fmt.Println(string([]byte{v}))
-	} else {
-		fmt.Println(op)
+	for _, op := range args {
+		v, ok := op.(byte)
+		if ok {
+			fmt.Println(string([]byte{v}))
+		} else {
+			fmt.Println(op)
+		}
 	}
-        }
 	return 0
 }
 
