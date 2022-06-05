@@ -336,21 +336,26 @@ func Lines_(args []interface{}) interface{} {
 }
 
 func Fmap_(args []interface{}) interface{} {
-	switch v := args[0].(type) {
-	case int, byte:
-		errlog.Err("runtime", errlog.Line, "Try to fmap a value after a int, string, char value.")
-		return 0
-	case []interface{}:
-		res := make([]interface{}, len(v))
-		f := WantFunc(args[1])
-		for k, value := range v {
-			res[k] = f.run([]interface{}{value})
-		}
-		return res
-	default:
-		errlog.Err("runtime", errlog.Line, "Try to fmap sth after a unknown type value.")
-		return 0
+	v := WantList(args[0])
+	res := make([]interface{}, len(v))
+	f := WantFunc(args[1])
+	for k, value := range v {
+		res[k] = f.run([]interface{}{value})
 	}
+	return res
+}
+
+func Reduce_(args []interface{}) interface{} {
+	f := WantFunc(args[1])
+	var res interface{}
+	for k, v := range WantList(args[0]) {
+		if k == 0 {
+			res = v
+		} else {
+			res = f.run([]interface{}{res, v})
+		}
+	}
+	return res
 }
 
 func AddBuildinFuncs() {
@@ -382,4 +387,5 @@ func AddBuildinFuncs() {
 	AddGoFunc("words", Words_, 1)
 	AddGoFunc("lines", Lines_, 1)
 	AddGoFunc("fmap", Fmap_, 2)
+	AddGoFunc("reduce", Reduce_, 2)
 }

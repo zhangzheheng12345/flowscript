@@ -70,17 +70,41 @@ echoln "fibonacci begins ..."
 fibonacci 1 1
 ```
 
+### Sum of a list
+
+Of course **better** and **faster** to use `reduce`:
+
+```ruby
+def sum li begin
+    lambda total v begin add total v end > reduce li -
+end
+
+#test
+list 1 2 3 4 > sum - > echoln -
+```
+
+Here is another old-fashioned, slower and more complex version:
+
+```ruby
+def sum li begin
+    len li > equal - 0 > if - begin
+        expr 0
+    end else begin
+        len li > slice li 1 - > sum - > index li 0 > add - -
+    end
+end
+
+# test
+list 1 2 3 4 > sum - > echoln -
+```
+
 ### OOP Mock (yes, in a functional language)
 
 ```ruby
 def Student name li begin # This function will be used as a constructor
     echoln "constructor called!"
     def sum li begin
-        len li > equal - 0 > if - begin
-            expr 0
-        end else begin
-            len li > slice li 1 - > sum - > index li 0 > add - -
-        end
+        lambda total v begin add total v end > reduce li -
     end
     sum li > len li > div - - > var avg -
     struct begin
