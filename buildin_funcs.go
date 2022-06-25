@@ -358,6 +358,18 @@ func Reduce_(args []interface{}) interface{} {
 	return res
 }
 
+func Filter_(args []interface{}) interface{} {
+	v := WantList(args[0])
+	res := make([]interface{}, 0)
+	f := WantFunc(args[1])
+	for _, value := range v {
+		if f.run([]interface{}{value}) != 0 {
+			res = append(res, value)
+		}
+	}
+	return res
+}
+
 func AddBuildinFuncs() {
 	AddGoFunc("add", Add_, 2)
 	AddGoFunc("sub", Sub_, 2)
@@ -388,4 +400,5 @@ func AddBuildinFuncs() {
 	AddGoFunc("lines", Lines_, 1)
 	AddGoFunc("fmap", Fmap_, 2)
 	AddGoFunc("reduce", Reduce_, 2)
+    AddGoFunc("filter", Filter_, 2)
 }

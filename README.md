@@ -103,10 +103,8 @@ list 1 2 3 4 > sum - > echoln -
 ```ruby
 def Student name li begin # This function will be used as a constructor
     echoln "constructor called!"
-    def sum li begin
-        lambda total v begin add total v end > reduce li -
-    end
-    sum li > len li > div - - > var avg -
+    lambda total v begin add total v end > reduce li - > # calculate sum
+        len li > div - - > var avg -
     struct begin
         def getName begin expr name end # Returns the name of the student
         def getScore begin expr li end # Returns a list which contains the student's score
