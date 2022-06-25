@@ -15,8 +15,8 @@ import (
 and add:
 
 ```go.mod
-require github.com/zhangzheheng12345/flowscript v0.2.0
-replace github.com/zhangzheheng12345/flowscript v0.2.0 => github.com/zhangzheheng12345/FlowScript v0.2.0
+require github.com/zhangzheheng12345/flowscript v0.3
+replace github.com/zhangzheheng12345/flowscript v0.3 => github.com/zhangzheheng12345/FlowScript v0.3
 ```
 
 in go.mod to import it to your Go project.
