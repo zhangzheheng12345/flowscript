@@ -26,6 +26,28 @@ func (var_ Var_) run() interface{} {
 	return 0
 }
 
+type Fill_ struct {
+	fn   Value
+	line int
+}
+
+func (fill_ Fill_) run() interface{} {
+	errlog.Line = fill_.line
+	fn := WantFunc(fill_.fn.get())
+	var argsLen int
+	if tmpQueue.Size() < fn.argsNum() || fn.argsNum() < 0 {
+		argsLen = tmpQueue.Size()
+	} else {
+		argsLen = fn.argsNum()
+	}
+	args := make([]interface{}, argsLen)
+	for i := 0; i < argsLen; i++ {
+		args[i] = tmpQueue.Get()
+		tmpQueue.Pop()
+	}
+	return fn.run(args)
+}
+
 type Enum_ struct {
 	names []string
 	line  int

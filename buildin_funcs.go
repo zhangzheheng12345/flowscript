@@ -400,5 +400,5 @@ func AddBuildinFuncs() {
 	AddGoFunc("lines", Lines_, 1)
 	AddGoFunc("fmap", Fmap_, 2)
 	AddGoFunc("reduce", Reduce_, 2)
-    AddGoFunc("filter", Filter_, 2)
+	AddGoFunc("filter", Filter_, 2)
 }

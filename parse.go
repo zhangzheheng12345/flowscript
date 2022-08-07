@@ -113,6 +113,14 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			} else {
 				errlog.Err("parser", tokens[index].Line(), "lost the variable's name while trying to define one")
 			}
+		} else if tokens[index].Type() == lexer.FILL {
+			if index+1 < len(tokens) {
+				index++
+				fn := ParseValue(tokens[index])
+				codes = append(codes, Fill_{fn, parseLine})
+			} else {
+				errlog.Err("parser", tokens[index].Line(), "lost the function while using fill")
+			}
 		} else if tokens[index].Type() == lexer.ENUM {
 			if index+1 < len(tokens) {
 				index++

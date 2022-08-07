@@ -4,6 +4,7 @@ package lexer
 const (
 	/* Basic tokens */
 	VAR = iota
+	FILL
 	ENUM
 	IF
 	ELSE
@@ -43,6 +44,7 @@ func (token Token) Line() int {
 /* Buildin cmd to token type. This map should not be changed */
 var BuildinCmdMap = map[string]byte{
 	"var":    VAR,
+	"fill":   FILL,
 	"if":     IF,
 	"else":   ELSE,
 	"send":   SEND,

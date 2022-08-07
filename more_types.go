@@ -7,6 +7,7 @@ This interface units GoFunc and FlowFunc, enabling you to add both go functions 
 */
 type Func_ interface {
 	run([]interface{}) interface{}
+	argsNum() int
 }
 
 /*
@@ -46,6 +47,10 @@ func (flowFunc FlowFunc) run(args []interface{}) interface{} {
 		result = code.run()
 	}
 	return result
+}
+
+func (flowFunc FlowFunc) argsNum() int {
+	return len(flowFunc.args)
 }
 
 /* Struct ( no underlines ) is a type */

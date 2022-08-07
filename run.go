@@ -43,7 +43,8 @@ type GoFunc struct {
 
 func (goFunc GoFunc) run(args []interface{}) interface{} {
 	if goFunc.argnum < 0 {
-		if -goFunc.argnum > len(args) {
+		// argnum < 0, argnum = -n => at least n-1 arguments
+		if -goFunc.argnum-1 > len(args) {
 			return GoFunc{goFunc.fn, goFunc.argnum + len(args), args}
 		}
 	} else if goFunc.argnum < len(args) {
@@ -52,7 +53,11 @@ func (goFunc GoFunc) run(args []interface{}) interface{} {
 	} else if goFunc.argnum > len(args) {
 		return GoFunc{goFunc.fn, goFunc.argnum - len(args), args}
 	}
-	return goFunc.fn(append(goFunc.foreArgs, args...))
+	return goFunc.fn(append(goFunc.foreArgs, args...)) // call & return
+}
+
+func (goFunc GoFunc) argsNum() int {
+	return goFunc.argnum
 }
 
 /*

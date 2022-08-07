@@ -61,7 +61,7 @@ echoln "Hello World!" # output: Hello World!
 
 ```ruby
 def fibonacci a b begin
-    add a b > echoln -
+    add a b >> echoln
     smlr (a+b) 1000 > if - begin
         fibonacci b (a+b)
     end
@@ -80,7 +80,7 @@ def sum li begin
 end
 
 #test
-list 1 2 3 4 > sum - > echoln -
+list 1 2 3 4 >> sum >> echoln
 ```
 
 Here is another old-fashioned, slower and more complex version:
@@ -90,12 +90,12 @@ def sum li begin
     len li > equal - 0 > if - begin
         expr 0
     end else begin
-        len li > slice li 1 - > sum - > index li 0 > add - -
+        len li > slice li 1 - >> sum > index li 0 >> add
     end
 end
 
 # test
-list 1 2 3 4 > sum - > echoln -
+list 1 2 3 4 > sum - >> echoln
 ```
 
 ### OOP Mock (yes, in a functional language)
@@ -104,7 +104,7 @@ list 1 2 3 4 > sum - > echoln -
 def Student name li begin # This function will be used as a constructor
     echoln "constructor called!"
     lambda total v begin add total v end > reduce li - > # calculate sum
-        len li > div - - > var avg -
+        len li >> div > var avg -
     struct begin
         def getName begin expr name end # Returns the name of the student
         def getScore begin expr li end # Returns a list which contains the student's score
@@ -115,11 +115,11 @@ def Student name li begin # This function will be used as a constructor
     end
 end
 list 95 96 97 > Student "Zhang" - > var A -
-echo "name: "; A.getName > echoln -
-echo "score: " ; A.getScore > echoln -
-echo "avg: "; A.avgScore > echoln -
+echo "name: "; A.getName >> echoln
+echo "score: " ; A.getScore >> echoln
+echo "avg: "; A.avgScore >> echoln
 echoln "Now the score is updated."
 A.addScore 100 > var B -
-echo "score: "; B.getScore > echoln -
-echo "avg: "; B.avgScore > echoln -
+echo "score: "; B.getScore >> echoln
+echo "avg: "; B.avgScore >> echoln
 ```

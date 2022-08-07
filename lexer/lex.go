@@ -34,6 +34,10 @@ func Lex(str []string) []Token {
 			result = append(result, Token{NUM, num, line})
 		} else if str[index] == ">" {
 			result = append(result, Token{SEND, "", line})
+			if index+1 < len(str) && str[index+1] == ">" {
+				result = append(result, Token{FILL, "", line})
+                index++
+			}
 		} else if str[index] == "-" {
 			if index+1 < len(str) && lextools.IsSingleNum(str[index+1]) {
 				var num string
