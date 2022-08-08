@@ -40,6 +40,169 @@ func ParseValue(token lexer.Token) Value {
 	}
 }
 
+func parseBlock(tokens []lexer.Token, index int) ([]Ast, int) {
+	if tokens[index].Type() != lexer.BEGIN {
+		errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
+		return nil, index
+	}
+	index++
+	codesInCode, i := Parse(tokens[index:])
+	index += i
+	if index >= len(tokens) {
+		errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
+		return nil, index
+	}
+	if tokens[index].Type() != lexer.END {
+		errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
+		return nil, index
+	}
+	return codesInCode, index
+}
+
+func parseVar(tokens []lexer.Token, index int) (Ast, int) {
+	/*
+	   var name => initialize with 0
+	   var name v => initialize with v
+	*/
+	if index+1 >= len(tokens) {
+		errlog.Err("parser", tokens[index].Line(), "lost the variable's name while trying to define one")
+		return nil, index // nil: failed
+	}
+	index++
+	var name string
+	if tokens[index].Type() == lexer.SYMBOL {
+		name = tokens[index].Value()
+	} else {
+		errlog.Err("parser", tokens[index].Line(), "unallowed variable name.")
+		return nil, index
+	}
+	var op Value
+	if index+1 < len(tokens) {
+		index++
+		switch tokens[index].Type() {
+		case lexer.NUM, lexer.SYMBOL, lexer.STR:
+			/* initialize with given value */
+			op = ParseValue(tokens[index])
+		default:
+			/* initialize with 0 */
+			op = nil
+		}
+	} else {
+		/* initialize with 0 */
+		op = nil
+	}
+	return Var_{name, op, tokens[index].Line()}, index
+}
+
+func parseFill(tokens []lexer.Token, index int) (Ast, int) {
+	if index+1 >= len(tokens) {
+		errlog.Err("parser", tokens[index].Line(), "lost the function while using fill")
+		return nil, index
+	}
+	index++
+	fn := ParseValue(tokens[index])
+	return Fill_{fn, tokens[index].Line()}, index
+}
+
+func parseEnum(tokens []lexer.Token, index int) (Ast, int) {
+	if index+1 >= len(tokens) {
+		errlog.Err("parser", tokens[index].Line(), "cannot use enum without delcaring any enum value")
+		return nil, index
+	}
+	index++
+	var names []string
+	for ; index < len(tokens) && tokens[index].Type() == lexer.SYMBOL; index++ {
+		names = append(names, tokens[index].Value())
+	}
+	return Enum_{names, tokens[index].Line()}, index
+}
+
+func parseIf(tokens []lexer.Token, index int) (Ast, int) {
+	/*
+	   if codition begin ... end
+	*/
+	if index+3 >= len(tokens) {
+		errlog.Err("parser", tokens[index].Line(), "not complete if block.")
+		return nil, index
+	}
+	var ifnode If_
+	index++
+	condition := ParseValue(tokens[index])
+	index++
+	block, index := parseBlock(tokens, index)
+	ifnode = If_{condition, block, nil, tokens[index].Line()}
+	if index+3 < len(tokens) && tokens[index+1].Type() == lexer.ELSE {
+		index += 2
+		ifnode.elsecodes, index = parseBlock(tokens, index)
+	} else {
+		ifnode.elsecodes = make([]Ast, 0)
+	}
+	return ifnode, index
+}
+
+func parseDef(tokens []lexer.Token, index int) (Ast, int) {
+	if index+3 >= len(tokens) {
+		errlog.Err("parser", tokens[index].Line(), "not complete def block.")
+		return nil, index
+	}
+	index++
+	var name string
+	if tokens[index].Type() == lexer.SYMBOL {
+		name = tokens[index].Value()
+	} else {
+		errlog.Err("parser", tokens[index].Line(), "unallowed function name.")
+		return nil, index
+	}
+	index++
+	argList := make([]string, 0)
+	for tokens[index].Type() == lexer.SYMBOL && index < len(tokens) {
+		argList = append(argList, tokens[index].Value())
+		index++
+	}
+	block, index := parseBlock(tokens, index)
+	return Def_{name, argList, block, tokens[index].Line()}, index
+}
+
+func parseLambda(tokens []lexer.Token, index int) (Ast, int) {
+	if index+2 >= len(tokens) {
+		errlog.Err("parser", tokens[index].Line(), "not complete lambda block.")
+		return nil, index
+	}
+	index++
+	argList := make([]string, 0)
+	for tokens[index].Type() == lexer.SYMBOL && index < len(tokens) {
+		argList = append(argList, tokens[index].Value())
+		index++
+	}
+	block, index := parseBlock(tokens, index)
+	return Lambda_{argList, block, tokens[index].Line()}, index
+}
+
+func parseStruct(tokens []lexer.Token, index int) (Ast, int) {
+	if index+2 >= len(tokens) {
+		errlog.Err("parser", tokens[index].Line(), "not complete def block.")
+		return nil, index
+	}
+	index++
+	block, index := parseBlock(tokens, index)
+	return Struct_{block, tokens[index].Line()}, index
+}
+
+func parseCall(tokens []lexer.Token, index int) (Ast, int) {
+	name := ParseValue(tokens[index])
+	index++
+	args := make([]Value, 0)
+	for ; index < len(tokens) && (tokens[index].Type() == lexer.NUM ||
+		tokens[index].Type() == lexer.STR ||
+		tokens[index].Type() == lexer.CHAR ||
+		tokens[index].Type() == lexer.XEXP ||
+		tokens[index].Type() == lexer.SYMBOL); index++ {
+		args = append(args, ParseValue(tokens[index]))
+	}
+	index--
+	return Call_{name, args, tokens[index].Line()}, index
+}
+
 /*
 Parse([]lexer.Token) receives a token sequence (lexer.Token) ,
 and translates it into AST sequence (Ast_).
@@ -47,6 +210,15 @@ It returns the processed AST sequence and a int number.
 The int number describes where Parse() function stop parsing. (Slice index)
 */
 func Parse(tokens []lexer.Token) ([]Ast, int) {
+	var TokenParseFunc = map[byte]func([]lexer.Token, int) (Ast, int){
+		lexer.VAR:    parseVar,
+		lexer.FILL:   parseFill,
+		lexer.ENUM:   parseEnum,
+		lexer.IF:     parseIf,
+		lexer.DEF:    parseDef,
+		lexer.LAMBDA: parseLambda,
+		lexer.SYMBOL: parseCall,
+	}
 	codes := make([]Ast, 0)
 	sendList := make([]Ast, 0)
 	index := 0
@@ -59,171 +231,42 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			sendList = make([]Ast, 0)
 		}
 	}
-	parseBlock := func() []Ast {
-		if tokens[index].Type() == lexer.BEGIN {
-			index++
-			codesInCode, i := Parse(tokens[index:])
-			index += i
-			if index < len(tokens) {
-				if tokens[index].Type() == lexer.END {
-					return codesInCode
-				} else {
-					errlog.Err("parser", tokens[index].Line(), "lost 'end' at the end of the block.")
-				}
-			} else {
-				errlog.Err("parser", tokens[len(tokens)-1].Line(), "lost 'end' at the end of the block.")
-			}
-		} else {
-			errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
-		}
-		return nil
-	}
 	for ; index < len(tokens); index++ {
-		parseLine = tokens[index].Line()
-		if tokens[index].Type() == lexer.VAR {
-			/*
-			   var name => initialize with 0
-			   var name v => initialize with v
-			*/
-			if index+1 < len(tokens) {
-				index++
-				var name string
-				if tokens[index].Type() == lexer.SYMBOL {
-					name = tokens[index].Value()
-				} else {
-					errlog.Err("parser", tokens[index].Line(), "unallowed variable name.")
-					name = ""
-				}
-				var op Value
-				if index+1 < len(tokens) {
-					index++
-					switch tokens[index].Type() {
-					case lexer.NUM, lexer.SYMBOL, lexer.STR:
-						/* initialize with given value */
-						op = ParseValue(tokens[index])
-					default:
-						/* initialize with 0 */
-						op = nil
-					}
-				} else {
-					/* initialize with 0 */
-					op = nil
-				}
-				codes = append(codes, Var_{name, op, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lost the variable's name while trying to define one")
-			}
-		} else if tokens[index].Type() == lexer.FILL {
-			if index+1 < len(tokens) {
-				index++
-				fn := ParseValue(tokens[index])
-				codes = append(codes, Fill_{fn, parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "lost the function while using fill")
-			}
-		} else if tokens[index].Type() == lexer.ENUM {
-			if index+1 < len(tokens) {
-				index++
-				var names []string
-				for ; index < len(tokens) && tokens[index].Type() == lexer.SYMBOL; index++ {
-					names = append(names, tokens[index].Value())
-				}
-				codes = append(codes, Enum_{names, tokens[index].Line()})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "cannot use enum without delcaring any enum value")
-			}
-		} else if tokens[index].Type() == lexer.IF {
-			/*
-			   if codition begin ... end
-			*/
-			var ifnode If_
-			if index+3 < len(tokens) {
-				index++
-				condition := ParseValue(tokens[index])
-				index++
-				ifnode = If_{condition, parseBlock(), nil, parseLine}
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "not complete if block.")
-			}
-			if index+3 < len(tokens) && tokens[index+1].Type() == lexer.ELSE {
-				index += 2
-				ifnode.elsecodes = parseBlock()
-			} else {
-				ifnode.elsecodes = make([]Ast, 0)
-			}
-			codes = append(codes, ifnode)
-		} else if tokens[index].Type() == lexer.SEND {
+		if tokens[index].Type() == lexer.SEND {
 			/*
 			   > ... > ... # wrong
 			   ... > ... > ... # right
 			*/
 			if index == 0 || tokens[index-1].Type() == lexer.STOP {
 				errlog.Err("parser", tokens[index].Line(), "use ' > ' at the start of a sentence. There's nothing to send.")
-			} else if len(codes) > 0 {
-				sendList = append(sendList, codes[len(codes)-1])
-				codes = codes[:len(codes)-1]
+				return nil, index
 			}
-		} else if tokens[index].Type() == lexer.DEF {
-			if index+3 < len(tokens) {
-				index++
-				var name string
-				if tokens[index].Type() == lexer.SYMBOL {
-					name = tokens[index].Value()
-				} else {
-					errlog.Err("parser", tokens[index].Line(), "unallowed function name.")
-					name = ""
-				}
-				index++
-				argList := make([]string, 0)
-				for tokens[index].Type() == lexer.SYMBOL && index < len(tokens) {
-					argList = append(argList, tokens[index].Value())
-					index++
-				}
-				codes = append(codes, Def_{name, argList, parseBlock(), parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "not complete def block.")
-			}
-		} else if tokens[index].Type() == lexer.LAMBDA {
-			if index+2 < len(tokens) {
-				index++
-				argList := make([]string, 0)
-				for tokens[index].Type() == lexer.SYMBOL && index < len(tokens) {
-					argList = append(argList, tokens[index].Value())
-					index++
-				}
-				codes = append(codes, Lambda_{argList, parseBlock(), parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "not complete lambda block.")
-			}
+			sendList = append(sendList, codes[len(codes)-1])
+			codes = codes[:len(codes)-1]
 		} else if tokens[index].Type() == lexer.BEGIN {
-			codes = append(codes, Block_{parseBlock(), parseLine})
-		} else if tokens[index].Type() == lexer.STRUCT {
-			if index+2 < len(tokens) {
-				index++
-				codes = append(codes, Struct_{parseBlock(), parseLine})
-			} else {
-				errlog.Err("parser", tokens[index].Line(), "not complete def block.")
-			}
+			var block []Ast
+			block, index = parseBlock(tokens, index)
+			codes = append(codes, Block_{block, tokens[index].Line()})
 		} else if tokens[index].Type() == lexer.NUM {
 			errlog.Err("parser", tokens[index].Line(), "unexpected constant number.")
-		} else if tokens[index].Type() == lexer.SYMBOL {
-			name := ParseValue(tokens[index])
-			index++
-			args := make([]Value, 0)
-			for ; index < len(tokens) && (tokens[index].Type() == lexer.NUM ||
-				tokens[index].Type() == lexer.STR ||
-				tokens[index].Type() == lexer.CHAR ||
-				tokens[index].Type() == lexer.XEXP ||
-				tokens[index].Type() == lexer.SYMBOL); index++ {
-				args = append(args, ParseValue(tokens[index]))
-			}
-			index--
-			codes = append(codes, Call_{name, args, parseLine})
+			return nil, index
 		} else if tokens[index].Type() == lexer.STOP {
 			checkSend()
 		} else if tokens[index].Type() == lexer.END {
 			checkSend()
 			return codes, index
+		} else {
+			f, ok := TokenParseFunc[tokens[index].Type()]
+			if !ok {
+				errlog.Err("parser", tokens[index].Line(), "Unknown token type", tokens[index].Type())
+				return nil, index
+			}
+			var astNode Ast
+			astNode, index = f(tokens, index)
+			if astNode == nil { // parse failed
+				return nil, index
+			}
+			codes = append(codes, astNode)
 		}
 	}
 	checkSend()
