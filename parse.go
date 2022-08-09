@@ -9,6 +9,14 @@ import (
 	"github.com/zhangzheheng12345/flowscript/xlexer"
 )
 
+func isValue(token lexer.Token) bool {
+	return token.Type() == lexer.NUM ||
+		token.Type() == lexer.STR ||
+		token.Type() == lexer.CHAR ||
+		token.Type() == lexer.XEXP ||
+		token.Type() == lexer.SYMBOL
+}
+
 /*
 ParseValue(lexer.Token) receive a single token (lexer.Token) ,
 and translate it into a value which is able to get directly (Value_).
@@ -100,8 +108,17 @@ func parseFill(tokens []lexer.Token, index int) (Ast, int) {
 		return nil, index
 	}
 	index++
-	fn := ParseValue(tokens[index])
-	return Fill_{fn, tokens[index].Line()}, index
+	if index+1 < len(tokens) && isValue(tokens[index+1]) { // A not complete function call
+		var fn Ast
+		fn, index = parseCall(tokens, index)
+		return Fill_{fn, nil, tokens[index].Line()}, index
+	} else {
+		// avoid that cannot fill echo, echoln, etc. as they have no arg num limit
+		// which makes them never return a curried func
+		return Fill_{
+			nil, ParseValue(tokens[index]), tokens[index].Line(),
+		}, index
+	}
 }
 
 func parseEnum(tokens []lexer.Token, index int) (Ast, int) {
@@ -192,11 +209,7 @@ func parseCall(tokens []lexer.Token, index int) (Ast, int) {
 	name := ParseValue(tokens[index])
 	index++
 	args := make([]Value, 0)
-	for ; index < len(tokens) && (tokens[index].Type() == lexer.NUM ||
-		tokens[index].Type() == lexer.STR ||
-		tokens[index].Type() == lexer.CHAR ||
-		tokens[index].Type() == lexer.XEXP ||
-		tokens[index].Type() == lexer.SYMBOL); index++ {
+	for ; index < len(tokens) && isValue(tokens[index]); index++ {
 		args = append(args, ParseValue(tokens[index]))
 	}
 	index--

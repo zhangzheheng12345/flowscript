@@ -27,13 +27,19 @@ func (var_ Var_) run() interface{} {
 }
 
 type Fill_ struct {
-	fn   Value
+	fn   Ast // A expression which returns func
+	op   Value
 	line int
 }
 
 func (fill_ Fill_) run() interface{} {
 	errlog.Line = fill_.line
-	fn := WantFunc(fill_.fn.get())
+	var fn Func_
+	if fill_.fn == nil {
+		fn = WantFunc(fill_.op.get())
+	} else {
+		fn = WantFunc(fill_.fn.run())
+	}
 	var argsLen int
 	if tmpQueue.Size() < fn.argsNum() || fn.argsNum() < 0 {
 		argsLen = tmpQueue.Size()

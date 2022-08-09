@@ -7,6 +7,9 @@ import (
 	"github.com/zhangzheheng12345/flowscript/lexer"
 )
 
+/*
+Build(str string) receives a string of FlowScript code and build it to runnable AST.
+*/
 func Build(str string) []Ast {
 	tokens := lexer.Lex(strings.Split(str, ""))
 	codes, index := Parse(tokens)
