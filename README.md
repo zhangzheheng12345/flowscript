@@ -76,7 +76,7 @@ Of course **better** and **faster** to use `reduce`:
 
 ```ruby
 def sum li begin
-    lambda total v begin add total v end > reduce li -
+    lambda total v begin add total v end >> reduce li
 end
 
 #test
@@ -90,12 +90,12 @@ def sum li begin
     len li > equal - 0 > if - begin
         expr 0
     end else begin
-        len li > slice li 1 - >> sum > index li 0 >> add
+        len li >> slice li 1 >> sum > index li 0 >> add
     end
 end
 
 # test
-list 1 2 3 4 > sum - >> echoln
+list 1 2 3 4 >> sum >> echoln
 ```
 
 ### OOP Mock (yes, in a functional language)
@@ -103,19 +103,19 @@ list 1 2 3 4 > sum - >> echoln
 ```ruby
 def Student name li begin # This function will be used as a constructor
     echoln "constructor called!"
-    lambda total v begin add total v end >
-	    reduce li - > # calculate sum
+    lambda total v begin add total v end >>
+	    reduce li > # calculate sum
         len li >> div > var avg -
     struct begin
         def getName begin expr name end # Returns the name of the student
         def getScore begin expr li end # Returns a list which contains the student's score
         def addScore score begin
-            app li score > Student name - # Add a score to the list and returns a new object (FP)
+            app li score >> Student name # Add a score to the list and returns a new object (FP)
         end
         def avgScore begin expr avg end
     end
 end
-list 95 96 97 > Student "Zhang" - > var A -
+list 95 96 97 >> Student "Zhang" > var A -
 echo "name: "; A.getName >> echoln
 echo "score: " ; A.getScore >> echoln
 echo "avg: "; A.avgScore >> echoln
