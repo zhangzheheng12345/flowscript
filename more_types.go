@@ -6,7 +6,7 @@ import errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 This interface units GoFunc and FlowFunc, enabling you to add both go functions & FlowScript function.
 */
 type Func_ interface {
-	run([]interface{}) interface{}
+	run([]interface{}, *Context) interface{}
 	argsNum() int
 }
 
@@ -24,20 +24,20 @@ type FlowFunc struct {
 /*
 FlowFunc.run([]int) run the codes in the function.
 */
-func (flowFunc FlowFunc) run(args []interface{}) interface{} {
+func (flowFunc FlowFunc) run(args []interface{}, ctx *Context) interface{} {
 	/* delete the local variables and change the scope before leave the function */
-	defer func() { Scope = Scope.Back() }()
-	Scope = MakeScope(flowFunc.fathers, Scope)
+	defer func() { ctx.scope = ctx.scope.Back() }()
+	ctx.scope = MakeScope(flowFunc.fathers, ctx.scope)
 	if len(args) > len(flowFunc.args) {
 		errlog.Err("runtime", errlog.Line, "Too many arguments while calling function.")
 		return 0
 	}
 	/* add the arguments to the local scope*/
 	for key, arg := range args {
-		Scope.Add(flowFunc.args[key], arg)
+		ctx.scope.Add(flowFunc.args[key], arg)
 	}
 	if len(args) < len(flowFunc.args) {
-		return FlowFunc{Scope, flowFunc.args[len(args):], flowFunc.codes}
+		return FlowFunc{ctx.scope, flowFunc.args[len(args):], flowFunc.codes}
 	}
 	/* run the codes.
 	   the default return value is 0.
