@@ -5,7 +5,7 @@ import (
 )
 
 type Ast interface {
-	run() interface{}
+	run(*Context) interface{}
 }
 
 type Var_ struct {
@@ -14,14 +14,14 @@ type Var_ struct {
 	line int
 }
 
-func (var_ Var_) run() interface{} {
-	errlog.Line = var_.line
+func (var_ Var_) run(ctx *Context) interface{} {
+	ctx.line = var_.line
 	if var_.op != nil {
 		/* give a start value */
-		Scope.Add(var_.name, var_.op.get())
+		ctx.scope.Add(var_.name, var_.op.get(ctx))
 	} else {
 		/* default 0 */
-		Scope.Add(var_.name, 0)
+		ctx.scope.Add(var_.name, 0)
 	}
 	return 0
 }
@@ -32,13 +32,13 @@ type Fill_ struct {
 	line int
 }
 
-func (fill_ Fill_) run() interface{} {
+func (fill_ Fill_) run(ctx *Context) interface{} {
 	errlog.Line = fill_.line
 	var fn Func_
 	if fill_.fn == nil {
-		fn = WantFunc(fill_.op.get())
+		fn = WantFunc(fill_.op.get(ctx))
 	} else {
-		fn = WantFunc(fill_.fn.run())
+		fn = WantFunc(fill_.fn.run(ctx))
 	}
 	var argsLen int
 	if tmpQueue.Size() < fn.argsNum() || fn.argsNum() < 0 {
@@ -59,11 +59,11 @@ type Enum_ struct {
 	line  int
 }
 
-func (enum_ Enum_) run() interface{} {
+func (enum_ Enum_) run(ctx *Context) interface{} {
 	errlog.Line = enum_.line
 	for _, v := range enum_.names {
-		Scope.Add(v, Scope.enumCounter)
-		Scope.enumCounter++
+		ctx.scope.Add(v, ctx.scope.enumCounter)
+		ctx.scope.enumCounter++
 	}
 	return 0
 }
@@ -75,10 +75,10 @@ type Def_ struct {
 	line  int
 }
 
-func (def_ Def_) run() interface{} {
+func (def_ Def_) run(ctx *Context) interface{} {
 	errlog.Line = def_.line
-	res := FlowFunc{Scope, def_.args, def_.codes}
-	Scope.Add(def_.name, res)
+	res := FlowFunc{ctx.scope, def_.args, def_.codes}
+	ctx.scope.Add(def_.name, res)
 	return res
 }
 
@@ -88,9 +88,9 @@ type Lambda_ struct {
 	line  int
 }
 
-func (lambda_ Lambda_) run() interface{} {
+func (lambda_ Lambda_) run(ctx *Context) interface{} {
 	errlog.Line = lambda_.line
-	return FlowFunc{Scope, lambda_.args, lambda_.codes}
+	return FlowFunc{ctx.scope, lambda_.args, lambda_.codes}
 }
 
 /* Struct_ ( with one underline ) is the command */
@@ -99,14 +99,14 @@ type Struct_ struct {
 	line  int
 }
 
-func (struct_ Struct_) run() interface{} {
+func (struct_ Struct_) run(ctx *Context) interface{} {
 	errlog.Line = struct_.line
-	Scope = MakeScope(Scope, Scope)
+	ctx.scope = MakeScope(ctx.scope, ctx.scope)
 	for _, code := range struct_.codes {
-		code.run()
+		code.run(ctx)
 	}
-	result := Scope.vars
-	Scope = Scope.Back()
+	result := ctx.scope.vars
+	ctx.scope = ctx.scope.Back()
 	return Struct{result}
 }
 
@@ -116,11 +116,11 @@ type Send_ struct {
 	line  int
 }
 
-func (send_ Send_) run() interface{} {
+func (send_ Send_) run(ctx *Context) interface{} {
 	errlog.Line = send_.line
 	tmpQueue = MakeTmpQueue(tmpQueue, len(send_.codes))
 	for _, code := range send_.codes {
-		tmpQueue.Add(code.run())
+		tmpQueue.Add(code.run(ctx))
 	}
 	result := tmpQueue.Get()
 	tmpQueue = tmpQueue.Clear()
@@ -137,14 +137,14 @@ type Block_ struct {
 	line  int
 }
 
-func (block_ Block_) run() interface{} {
+func (block_ Block_) run(ctx *Context) interface{} {
 	errlog.Line = block_.line
-	Scope = MakeScope(Scope, Scope)
+	ctx.scope = MakeScope(ctx.scope, ctx.scope)
 	var result interface{}
 	for _, code := range block_.codes {
-		result = code.run()
+		result = code.run(ctx)
 	}
-	Scope = Scope.Back()
+	ctx.scope = ctx.scope.Back()
 	return result
 }
 
@@ -160,23 +160,23 @@ type If_ struct {
 	line      int
 }
 
-func (if_ If_) run() interface{} {
+func (if_ If_) run(ctx *Context) interface{} {
 	errlog.Line = if_.line
-	if WantInt(if_.condition.get()) != 0 {
-		Scope = MakeScope(Scope, Scope)
+	if WantInt(if_.condition.get(ctx)) != 0 {
+		ctx.scope = MakeScope(ctx.scope, ctx.scope)
 		var result interface{}
 		for _, code := range if_.ifcodes {
-			result = code.run()
+			result = code.run(ctx)
 		}
-		Scope = Scope.Back()
+		ctx.scope = ctx.scope.Back()
 		return result
 	} else {
-		Scope = MakeScope(Scope, Scope)
+		ctx.scope = MakeScope(ctx.scope, ctx.scope)
 		var result interface{} = 0
 		for _, code := range if_.elsecodes {
-			result = code.run()
+			result = code.run(ctx)
 		}
-		Scope = Scope.Back()
+		ctx.scope = ctx.scope.Back()
 		return result
 	}
 }
@@ -188,11 +188,11 @@ type Call_ struct {
 	line int
 }
 
-func (call_ Call_) run() interface{} {
+func (call_ Call_) run(ctx *Context) interface{} {
 	errlog.Line = call_.line
 	argsValue := make([]interface{}, 0)
 	for _, arg := range call_.args {
-		argsValue = append(argsValue, arg.get())
+		argsValue = append(argsValue, arg.get(ctx))
 	}
-	return WantFunc(call_.name.get()).run(argsValue)
+	return WantFunc(call_.name.get(ctx)).run(argsValue)
 }

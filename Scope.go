@@ -3,13 +3,12 @@ package parser
 import errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 
 /*
-Global variable, Scope, contains all the variable at present.
-If someone want to add global variable by Golang in a embeding way,
-he should Scope.Add(string,interface{}) variable to Scope directly,
-because all the codes run with RunCode(string) will be inside a independence Block_,
-so you can't add global variable / function by native FlowScript.
+Global scope
 */
-var Scope *Scope_ = &Scope_{nil, nil, make(map[string]interface{}), 0}
+var Global *Context = &Context{
+	&Scope_{nil, nil, make(map[string]interface{}), 0},
+	1,
+}
 
 /*
 exp1 > exp2 > exp3
@@ -17,7 +16,7 @@ The values of the send sequence expressions will be pushed to this queue.
 */
 var tmpQueue *Queue_ = MakeTmpQueue(nil, 0)
 
-/* scope system ( only for variables ) */
+/* scope system */
 type Scope_ struct {
 	last        *Scope_
 	father      *Scope_

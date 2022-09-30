@@ -87,7 +87,7 @@ func F(tokens []xlexer.Token) ([]xlexer.Token, int) {
 	}
 	switch tokens[0].Type() {
 	case xlexer.SYMBOL:
-		return tokens[1:], WantInt(Scope.Find(tokens[0].Value()))
+		return tokens[1:], WantInt(ctx.scope.Find(tokens[0].Value()))
 	case xlexer.TMP:
 		result := tmpQueue.Get()
 		tmpQueue.Pop()
@@ -109,7 +109,7 @@ func F(tokens []xlexer.Token) ([]xlexer.Token, int) {
 		if index >= len(tokens) && tokens[index-1].Type() != xlexer.BPAREN {
 			errlog.Err("xparser", tokens[index-1].Line(), "lose back parenthesis in xparser")
 		}
-		return tokens[index:], WantInt(Exp_{tokens[1 : index-1]}.get())
+		return tokens[index:], WantInt(Exp_{tokens[1 : index-1]}.get(ctx))
 	default:
 		errlog.Err("xparser", tokens[0].Line(), "unexpected token in xparser:", tokens[0].Type())
 		return tokens[1:], 0
