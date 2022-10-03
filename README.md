@@ -34,14 +34,6 @@ to run FlowScript code in a independent scope which will not influence the outsi
 Use:
 
 ```go
-parser.RunModule( <your codes(type string)> )
-```
-
-to run FlowScript code as a module. All the variables declared outside functions & and blocks will be wrapped in a structure and add to global scope.
-
-Use:
-
-```go
 parser.AddGoFunc( <function name(type string)>, <function(type func([]interface{}) interface{})>, <number of args(int, -1 -> limitless args)>)
 ```
 

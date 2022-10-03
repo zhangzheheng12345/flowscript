@@ -28,23 +28,23 @@ func MakeScope(father *Scope_, last *Scope_) *Scope_ {
 	return &Scope_{last, father, make(map[string]interface{}), father.enumCounter}
 }
 
-func (scope_ Scope_) Add(key string, value interface{}) {
+func (scope_ Scope_) Add(key string, value interface{}, ctx *Context) {
 	_, ok := scope_.vars[key]
 	if ok {
-		errlog.Err("runtime", errlog.Line, "Try to add a variable that has been added. name:", key)
+		errlog.Err("runtime", ctx.Line, "Try to add a variable that has been added. name:", key)
 	} else {
 		scope_.vars[key] = value
 	}
 }
 
-func (scope_ Scope_) Find(key string) interface{} {
+func (scope_ Scope_) Find(key string, ctx *Context) interface{} {
 	v, ok := scope_.vars[key]
 	if ok {
 		return v
 	} else if scope_.father != nil {
-		return scope_.father.Find(key)
+		return scope_.father.Find(key, ctx)
 	} else {
-		errlog.Err("runtime", errlog.Line, "Try to read a variable that hasn't been added. name:", key)
+		errlog.Err("runtime", ctx.Line, "Try to read a variable that hasn't been added. name:", key)
 	}
 	return 0
 }
@@ -68,11 +68,11 @@ func (queue_ *Queue_) Add(value interface{}) {
 	queue_.data[queue_.dataLen-1] = value
 }
 
-func (queue_ Queue_) Get() interface{} {
+func (queue_ Queue_) Get(ctx *Context) interface{} {
 	if queue_.dataLen > 0 {
 		return queue_.data[0]
 	}
-	errlog.Err("runtime", errlog.Line, "Try to get a value from temp queue while it's empty")
+	errlog.Err("runtime", ctx.Line, "Try to get a value from temp queue while it's empty")
 	return nil
 }
 

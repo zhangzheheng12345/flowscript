@@ -27,14 +27,14 @@ type Symbol_ struct {
 func (symbol_ Symbol_) get(ctx *Context) interface{} {
 	var base interface{}
 	if symbol_.base == "-" {
-		base = tmpQueue.Get()
+		base = tmpQueue.Get(ctx)
 		tmpQueue.Pop()
 	} else {
-		base = ctx.scope.Find(symbol_.base)
+		base = ctx.scope.Find(symbol_.base, ctx)
 	}
 	// Iterating the chain
 	for _, memberName := range symbol_.after {
-		base = WantStruct(base).Member(memberName)
+		base = WantStruct(base, ctx).Member(memberName, ctx)
 	}
 	return base
 }
@@ -63,5 +63,6 @@ type Exp_ struct {
 
 func (exp_ Exp_) get(ctx *Context) interface{} {
 	/* in xparse */
-	return B_(E(exp_.tokens))
+	rest, res := E(exp_.tokens, ctx)
+	return B_(rest, res, ctx)
 }

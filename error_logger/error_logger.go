@@ -11,6 +11,3 @@ func Err(kind string, line int, msg ...interface{}) {
 	fmt.Print(kind, ":", line, ": ")
 	fmt.Println(msg...)
 }
-
-/* The line recorder for runtime */
-var Line int = 0

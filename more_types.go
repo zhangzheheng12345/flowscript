@@ -13,7 +13,7 @@ type Func_ interface {
 /*
 Structure FlowFunc contains all the information for a function to run.
 FlowFunc.args contains the arguments' name in order to add them in a new variable scope after calling the function.
-FlowFunc.codes contains the codes in the function to run later.
+FlowFunc.codes contains the codes in the function to run.
 */
 type FlowFunc struct {
 	fathers *Scope_
@@ -22,19 +22,19 @@ type FlowFunc struct {
 }
 
 /*
-FlowFunc.run([]int) run the codes in the function.
+Runs the flowscript codes in the function.
 */
 func (flowFunc FlowFunc) run(args []interface{}, ctx *Context) interface{} {
-	/* delete the local variables and change the scope before leave the function */
+	/* delete the local variables and change the scope before leaving the function */
 	defer func() { ctx.scope = ctx.scope.Back() }()
 	ctx.scope = MakeScope(flowFunc.fathers, ctx.scope)
 	if len(args) > len(flowFunc.args) {
-		errlog.Err("runtime", errlog.Line, "Too many arguments while calling function.")
+		errlog.Err("runtime", ctx.Line, "Too many arguments while calling function.")
 		return 0
 	}
 	/* add the arguments to the local scope*/
 	for key, arg := range args {
-		ctx.scope.Add(flowFunc.args[key], arg)
+		ctx.scope.Add(flowFunc.args[key], arg, ctx)
 	}
 	if len(args) < len(flowFunc.args) {
 		return FlowFunc{ctx.scope, flowFunc.args[len(args):], flowFunc.codes}
@@ -44,7 +44,7 @@ func (flowFunc FlowFunc) run(args []interface{}, ctx *Context) interface{} {
 	*/
 	var result interface{}
 	for _, code := range flowFunc.codes {
-		result = code.run()
+		result = code.run(ctx)
 	}
 	return result
 }
@@ -53,17 +53,17 @@ func (flowFunc FlowFunc) argsNum() int {
 	return len(flowFunc.args)
 }
 
-/* Struct ( no underlines ) is a type */
+/* Struct ( with no underline ) is a type */
 type Struct struct {
 	members map[string]interface{}
 }
 
-func (struct_ Struct) Member(name string) interface{} {
+func (struct_ Struct) Member(name string, ctx *Context) interface{} {
 	v, ok := struct_.members[name]
 	if ok {
 		return v
 	} else {
-		errlog.Err("runtime", errlog.Line, "Try to find a no-existing member in the structure.")
+		errlog.Err("runtime", ctx.Line, "Try to find a no-existing member in the structure.")
 		return nil // nil is safe, as the type checkings (Want...) will process them
 	}
 }
