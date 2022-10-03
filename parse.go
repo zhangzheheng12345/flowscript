@@ -197,7 +197,7 @@ func parseLambda(tokens []lexer.Token, index int) (Ast, int) {
 
 func parseStruct(tokens []lexer.Token, index int) (Ast, int) {
 	if index+2 >= len(tokens) {
-		errlog.Err("parser", tokens[index].Line(), "not complete def block.")
+		errlog.Err("parser", tokens[index].Line(), "not complete struct block.")
 		return nil, index
 	}
 	index++
@@ -229,6 +229,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 		lexer.ENUM:   parseEnum,
 		lexer.IF:     parseIf,
 		lexer.DEF:    parseDef,
+		lexer.STRUCT: parseStruct,
 		lexer.LAMBDA: parseLambda,
 		lexer.SYMBOL: parseCall,
 	}
