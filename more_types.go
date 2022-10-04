@@ -3,7 +3,7 @@ package parser
 import errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 
 /*
-This interface units GoFunc and FlowFunc, enabling you to add both go functions & FlowScript function.
+This interface units GoFunc and FlowFunc, enabling you to use both Go functions & FlowScript functions.
 */
 type Func_ interface {
 	run([]interface{}, *Context) interface{}
@@ -11,7 +11,7 @@ type Func_ interface {
 }
 
 /*
-Structure FlowFunc contains all the information for a function to run.
+Contains all the information for a function to run.
 FlowFunc.args contains the arguments' name in order to add them in a new variable scope after calling the function.
 FlowFunc.codes contains the codes in the function to run.
 */

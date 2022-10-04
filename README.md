@@ -9,7 +9,7 @@ Use:
 ```go
 import (
     parser "https://github.com/zhangzheheng12345/flowscript"
-)
+) // parser actually contains the whole flowscript interpreter
 ```
 
 and add:
@@ -26,15 +26,20 @@ in go.mod to import it to your Go project.
 Use:
 
 ```go
-parser.RunBlock( <your codes(type string)> )
+parser.Global.RunBlock( <your codes(type string)> )
 ```
 
 to run FlowScript code in a independent scope which will not influence the outside context.
+`parser.Global` is the global context which provides buildin functions.
 
 Use:
 
 ```go
-parser.AddGoFunc( <function name(type string)>, <function(type func([]interface{}) interface{})>, <number of args(int, -1 -> limitless args)>)
+parser.AddGoFunc(
+  <function name(type string)>,
+  <function(type parser.GoFuncForFS, same as func([]interface{}, *parser.Context) interface{})>,
+  <number of arguments(type int)(-n => needs at least n-1 arguments )>,
+)
 ```
 
 to add native Go functions to global scope.

@@ -7,6 +7,9 @@ import (
 	"github.com/zhangzheheng12345/flowscript/lexer"
 )
 
+/*
+Provide a independent context to run codes.
+*/
 type Context struct {
 	scope *Scope_
 	Line  int
@@ -25,7 +28,7 @@ func Build(str string) []Ast {
 }
 
 /*
-RunBlock(string) receives a text script ( string ) and run it directly in a seperate env.
+RunBlock(string) receives a text script ( string ) and run it in a seperate env.
 The runtime status would not be saved as the script runs in a Block_.
 */
 func (ctx *Context) RunBlock(str string) interface{} {

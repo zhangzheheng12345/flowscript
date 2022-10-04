@@ -49,6 +49,7 @@ func ParseValue(token lexer.Token) Value {
 }
 
 func parseBlock(tokens []lexer.Token, index int) ([]Ast, int) {
+	/* begin ... end */
 	if tokens[index].Type() != lexer.BEGIN {
 		errlog.Err("parser", tokens[index].Line(), "lost ' begin ' at the start of the block.")
 		return nil, index
@@ -108,13 +109,14 @@ func parseFill(tokens []lexer.Token, index int) (Ast, int) {
 		return nil, index
 	}
 	index++
-	if index+1 < len(tokens) && isValue(tokens[index+1]) { // A not complete function call
+	if index+1 < len(tokens) && isValue(tokens[index+1]) {
+		/* A not complete function call => curried */
 		var fn Ast
 		fn, index = parseCall(tokens, index)
 		return Fill_{fn, nil, tokens[index].Line()}, index
 	} else {
 		// avoid that cannot fill echo, echoln, etc. as they have no arg num limit
-		// which makes them never return a curried func
+		// which makes them never return a curried func even if you give no args
 		return Fill_{
 			nil, ParseValue(tokens[index]), tokens[index].Line(),
 		}, index
@@ -135,9 +137,7 @@ func parseEnum(tokens []lexer.Token, index int) (Ast, int) {
 }
 
 func parseIf(tokens []lexer.Token, index int) (Ast, int) {
-	/*
-	   if codition begin ... end
-	*/
+	/* if codition begin ... end */
 	if index+3 >= len(tokens) {
 		errlog.Err("parser", tokens[index].Line(), "not complete if block.")
 		return nil, index
@@ -158,6 +158,7 @@ func parseIf(tokens []lexer.Token, index int) (Ast, int) {
 }
 
 func parseDef(tokens []lexer.Token, index int) (Ast, int) {
+	/* def name arg1 arg2 ... begin ... end */
 	if index+3 >= len(tokens) {
 		errlog.Err("parser", tokens[index].Line(), "not complete def block.")
 		return nil, index
@@ -181,6 +182,7 @@ func parseDef(tokens []lexer.Token, index int) (Ast, int) {
 }
 
 func parseLambda(tokens []lexer.Token, index int) (Ast, int) {
+	/* lambda arg1 arg2 ... begin ... end */
 	if index+2 >= len(tokens) {
 		errlog.Err("parser", tokens[index].Line(), "not complete lambda block.")
 		return nil, index
@@ -196,6 +198,7 @@ func parseLambda(tokens []lexer.Token, index int) (Ast, int) {
 }
 
 func parseStruct(tokens []lexer.Token, index int) (Ast, int) {
+	/* struct begin ... end */
 	if index+2 >= len(tokens) {
 		errlog.Err("parser", tokens[index].Line(), "not complete struct block.")
 		return nil, index
@@ -219,8 +222,8 @@ func parseCall(tokens []lexer.Token, index int) (Ast, int) {
 /*
 Parse([]lexer.Token) receives a token sequence (lexer.Token) ,
 and translates it into AST sequence (Ast_).
-It returns the processed AST sequence and a int number.
-The int number describes where Parse() function stop parsing. (Slice index)
+It returns the processed []AST and a int number,
+which describes where Parse() function stop parsing. (Slice index)
 */
 func Parse(tokens []lexer.Token) ([]Ast, int) {
 	var TokenParseFunc = map[byte]func([]lexer.Token, int) (Ast, int){
@@ -277,7 +280,7 @@ func Parse(tokens []lexer.Token) ([]Ast, int) {
 			}
 			var astNode Ast
 			astNode, index = f(tokens, index)
-			if astNode == nil { // parse failed
+			if astNode == nil { // parse failed, err has been reported
 				return nil, index
 			}
 			codes = append(codes, astNode)
