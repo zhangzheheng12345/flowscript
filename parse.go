@@ -18,8 +18,8 @@ func isValue(token lexer.Token) bool {
 }
 
 /*
-ParseValue(lexer.Token) receive a single token (lexer.Token) ,
-and translate it into a value which is able to get directly (Value_).
+ParseValue(lexer.Token) receive a single token,
+and translate it into a value which is able to get directly.
 */
 func ParseValue(token lexer.Token) Value {
 	if token.Type() == lexer.NUM {
@@ -220,8 +220,8 @@ func parseCall(tokens []lexer.Token, index int) (Ast, int) {
 }
 
 /*
-Parse([]lexer.Token) receives a token sequence (lexer.Token) ,
-and translates it into AST sequence (Ast_).
+Parse([]lexer.Token) receives a token sequence,
+and translates it into AST sequence.
 It returns the processed []AST and a int number,
 which describes where Parse() function stop parsing. (Slice index)
 */

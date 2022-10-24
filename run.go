@@ -28,22 +28,29 @@ func Build(str string) []Ast {
 }
 
 /*
-RunBlock(string) receives a text script ( string ) and run it in a seperate env.
+RunBlock(string) receives a string of FlowScript code and run it in a seperate env.
 The runtime status would not be saved as the script runs in a Block_.
 */
-func (ctx *Context) RunBlock(str string) interface{} {
+func (ctx Context) RunBlock(str string) interface{} {
 	return Block_{Build(str), 0}.run(&Context{MakeScope(ctx.scope, nil), 1})
 }
+
+func (ctx Context) RunTree(program []Ast) interface{} {
+	return Block_{program, 0}.run(&Context{MakeScope(ctx.scope, nil), 1})
+}
+
+/*
+A type that describes a function which can be run in FlowScript system.
+*/
+type GoFuncForFS func([]interface{}, *Context) interface{}
 
 /*
 GoFunc wraps native Go functions to enable you to call Go functions inside FlowScript.
 */
-type GoFuncForFS func([]interface{}, *Context) interface{}
-
 type GoFunc struct {
 	fn       GoFuncForFS
 	argnum   int
-	foreArgs []interface{} // for curried
+	foreArgs []interface{} // for curried functions
 }
 
 func (goFunc GoFunc) run(args []interface{}, ctx *Context) interface{} {
@@ -67,7 +74,7 @@ func (goFunc GoFunc) argsNum() int {
 
 /*
 Add a native Go function to global scope. The function will be named as `name`
-If argnum is smaller than 0, it means the function needs at least -argnum arguments
+If argnum is smaller than 0, it means the function needs at least -argnum-1 arguments
 */
 func AddGoFunc(name string, fn GoFuncForFS, argnum int) {
 	Global.scope.Add(name, GoFunc{fn, argnum, make([]interface{}, 0)}, Global)

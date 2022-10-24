@@ -2,7 +2,9 @@ package parser
 
 import errlog "github.com/zhangzheheng12345/flowscript/error_logger"
 
-/* Tool function, for cannot convert bool to int directly */
+/*
+A tool function, for cannot convert bool to int directly
+*/
 func BoolToInt(value bool) int {
 	if value {
 		return 1
@@ -10,7 +12,7 @@ func BoolToInt(value bool) int {
 	return 0
 }
 
-func WantInt(value interface{}, ctx *Context) int {
+func WantInt(value interface{}, ctx *Context = Global) int {
 	v, ok := value.(int)
 	if !ok {
 		v, ok := value.(byte)
