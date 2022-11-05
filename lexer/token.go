@@ -1,8 +1,9 @@
 package lexer
 
-/* token kinds */
+/*
+Token types
+*/
 const (
-	/* Basic tokens */
 	VAR = iota
 	FILL
 	ENUM
@@ -22,7 +23,9 @@ const (
 	CHAR
 )
 
-/* token structure, including kind and value */
+/*
+Token structure, including its type, value, and position in original codes
+*/
 type Token struct {
 	kind  byte
 	value string

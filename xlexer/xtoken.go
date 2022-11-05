@@ -1,5 +1,8 @@
 package xlexer
 
+/*
+X-expression token types
+*/
 const (
 	ADD = iota
 	SUB
@@ -16,6 +19,9 @@ const (
 	TMP
 )
 
+/*
+Token structure for X-expression
+*/
 type Token struct {
 	kind  byte
 	value string

@@ -335,7 +335,7 @@ func Lines_(args []interface{}, ctx *Context) interface{} {
 	return strings.Split(str, "\n")
 }
 
-func Fmap_(args []interface{}, ctx *Context) interface{} {
+func Iter_(args []interface{}, ctx *Context) interface{} {
 	v := WantList(args[0], ctx)
 	res := make([]interface{}, len(v))
 	f := WantFunc(args[1], ctx)
@@ -398,7 +398,7 @@ func AddBuildinFuncs() {
 	AddGoFunc("slice", Slice_, 3)
 	AddGoFunc("words", Words_, 1)
 	AddGoFunc("lines", Lines_, 1)
-	AddGoFunc("fmap", Fmap_, 2)
+	AddGoFunc("iter", Iter_, 2)
 	AddGoFunc("reduce", Reduce_, 2)
 	AddGoFunc("filter", Filter_, 2)
 }
