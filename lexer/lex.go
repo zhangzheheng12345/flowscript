@@ -7,7 +7,9 @@ import (
 	lextools "github.com/zhangzheheng12345/flowscript/lex_tools"
 )
 
-/* Core lexer code */
+/* 
+Core lexer
+*/
 func Lex(str []string) []Token {
 	result := make([]Token, 0)
 	line := 0
@@ -22,10 +24,10 @@ func Lex(str []string) []Token {
 		} else if lextools.IsSingleAlpha(str[index]) || str[index] == "_" {
 			var word string
 			word, index = lextools.PickSymbol(str, index)
-			v, ok := BuildinCmdMap[word]
-			if ok {
+			v, ok := BuildinCmdMap[word] // Check keywords
+			if ok { // keywords
 				result = append(result, Token{v, "", line})
-			} else {
+			} else { // identity
 				result = append(result, Token{SYMBOL, word, line})
 			}
 		} else if lextools.IsSingleNum(str[index]) {
@@ -34,21 +36,21 @@ func Lex(str []string) []Token {
 			result = append(result, Token{NUM, num, line})
 		} else if str[index] == ">" {
 			result = append(result, Token{SEND, "", line})
-			if index+1 < len(str) && str[index+1] == ">" {
+			if index+1 < len(str) && str[index+1] == ">" { // fill
 				result = append(result, Token{FILL, "", line})
-                index++
+				index++
 			}
 		} else if str[index] == "-" {
-			if index+1 < len(str) && lextools.IsSingleNum(str[index+1]) {
+			if index+1 < len(str) && lextools.IsSingleNum(str[index+1]) { // minus num
 				var num string
 				num, index = lextools.PickNum(str, index)
 				result = append(result, Token{NUM, num, line})
-			} else if index+1 < len(str) && str[index+1] == "." {
+			} else if index+1 < len(str) && str[index+1] == "." { // tmp mark for struct reading
 				index++
 				var chain string
 				chain, index = lextools.PickSymbol(str, index)
 				result = append(result, Token{SYMBOL, "-" + chain, line})
-			} else {
+			} else { // simple tmp mark
 				result = append(result, Token{SYMBOL, "-", line})
 			}
 		} else if str[index] == ";" {
@@ -64,7 +66,7 @@ func Lex(str []string) []Token {
 				result = append(result, Token{STOP, "", line})
 			}
 			line++
-		} else if str[index] == "(" {
+		} else if str[index] == "(" { // X-expression
 			index++
 			begin := index
 			count := 1

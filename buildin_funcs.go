@@ -339,8 +339,15 @@ func Iter_(args []interface{}, ctx *Context) interface{} {
 	v := WantList(args[0], ctx)
 	res := make([]interface{}, len(v))
 	f := WantFunc(args[1], ctx)
-	for k, value := range v {
-		res[k] = f.run([]interface{}{value}, ctx)
+	if f.argsNum() == 3 {
+		for k, value := range v {
+			// Call thus: f(currentItem, originArray, currentIndex)
+			res[k] = f.run([]interface{}{value, v, k}, ctx)
+		}
+	} else { // simply f.argsNum() == 1 or wanting curried functions
+		for k, value := range v {
+			res[k] = f.run([]interface{}{value}, ctx)
+		}
 	}
 	return res
 }
